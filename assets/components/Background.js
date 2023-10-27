@@ -1,12 +1,12 @@
 import React from 'react';
-import { SafeAreaView, View, Text, Image, StyleSheet } from 'react-native';
+import { SafeAreaView, View, StyleSheet } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import colors from '../config/colors';
 
 export default function Background() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text>Background</Text>
+      
       <View style={styles.images}>
         <Animatable.Image
           animation="swing"
@@ -55,6 +55,24 @@ export default function Background() {
           style={styles.elephantImg}
         />
         </View>
+        <View style={styles.penguin}>
+        <Animatable.Image
+          animation="zoomInUp"
+          iterationCount={2}
+          direction='alternate-reverse'
+          source={require('../img/penguin.png')}
+          style={styles.penguinImg}
+        />
+        </View>
+        <View style={styles.sloth}>
+        <Animatable.Image
+          animation='tada'
+          iterationCount={12}
+          direction='alternate'
+          source={require('../img/sloth.png')}
+          style={styles.slothImg}
+        />
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -63,7 +81,7 @@ export default function Background() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    top: 62,
+    top: 50,
     width: '100%',
     height: '40%',
     justifyContent: 'center',
@@ -77,28 +95,28 @@ const styles = StyleSheet.create({
     top:24,
   },
   funZoneImg: {
-    width: 112,
-    height: 28,
+    width: 152,
+    height: 32,
     bottom: 254,
     borderRadius: 12,
     right: 39,
    
   },
   elephant:{
-    transform: [{rotate: '6deg'}],
-    right:120,
-    top:24,
+    transform: [{rotate: '-21.5deg'}],
+    left:136,
+    bottom:74.7,
   },
   elephantImg:{
-    width:53,
-    height:53,
+    width:45,
+    height:45,
     bottom:418,
     right:73,
-    zIndex:2,
+    zIndex:3,
   },
   images: {
     width: '46%',
-    height: 47,
+    height: 57,
     marginLeft: 162,
   },
   image1: {
@@ -133,4 +151,23 @@ const styles = StyleSheet.create({
     height: 58,
     justifyContent: 'space-around',
   },
+  penguin:{
+    transform: [{rotate: '33deg'}],
+    left:28,
+    bottom:359,
+    zIndex:-1,
+  },
+  penguinImg:{
+    width:45,
+    height:55,
+  },
+  sloth:{
+    transform: [{rotate: '24deg'}],
+    bottom:331,
+    right:50,
+  },
+  slothImg:{
+    width:78,
+    height:46,
+  }
 });

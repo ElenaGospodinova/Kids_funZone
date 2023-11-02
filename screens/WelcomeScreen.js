@@ -11,9 +11,16 @@ import { useNavigation } from '@react-navigation/native';
 
 import Background from '../assets/components/Background';
 import colors from '../assets/config/colors';
+import LogInBtn from '../assets/components/LogInBtn';
 
 export default function WelcomeScreen(props) {
   const navigation = useNavigation();
+ 
+  const navigateItems = () => {
+    navigation.navigate('Kids Zone'); 
+    navigation.navigate('Parents Zone');
+};
+
 
   return (
     <SafeAreaView style={styles.background}>
@@ -23,19 +30,16 @@ export default function WelcomeScreen(props) {
         style={styles.image}
         resizeMode='contain cover'
         />
-      <View style={styles.childBtn}>
-        <Button 
+      <LogInBtn style={styles.childBtn}
           title="LogIn as Child"
-          onPress={() => Alert.alert('Cannot press this one')}
+          onPress={() => navigation.navigate('Kids Zone')}
         />
-      </View>
-      <View style={styles.parentBtn}>
-        <Button
+      <LogInBtn style={styles.parentBtn}
           title="LogIn as Parent"
-          onPress={() => Alert.alert('Cannot press this one')}
+          onPress={() => navigation.navigate('Parents Zone')}
         />
-      </View>
-      <Text>Welcome Screen</Text>
+     
+      {/* <Text>Welcome Screen</Text> */}
     </SafeAreaView>
   );
 }
@@ -71,6 +75,6 @@ const styles = StyleSheet.create({
       borderRadius:12,
       backgroundColor:colors.green,
       color:'white',
-    
+
   }
 });

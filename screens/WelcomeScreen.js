@@ -1,15 +1,11 @@
 import React from 'react';
 import { SafeAreaView,
-         Text, 
          StyleSheet, 
-         ImageBackground,
-         Button,
-         Alert, 
-         View } from 'react-native';
+        } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 
-import Background from '../assets/components/Background';
+import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
 
@@ -17,29 +13,19 @@ export default function WelcomeScreen(props) {
   const navigation = useNavigation();
  
   const navigateItems = () => {
-    navigation.navigate('Kids Zone'); 
-    navigation.navigate('Parents Zone');
+    navigation.navigate('Parents Zone'); 
+    // navigation.navigate('Parents Zone');
 };
 
 
   return (
     <SafeAreaView style={styles.background}>
-      <Background />
-    <ImageBackground 
-        source={require('../assets/img/backgroundImg.jpg')}
-        style={styles.image}
-        resizeMode='contain cover'
-        />
+      <Logo />
+    
       <LogInBtn style={styles.childBtn}
-          title="LogIn as Child"
-          onPress={() => navigation.navigate('Kids Zone')}
-        />
-      <LogInBtn style={styles.parentBtn}
-          title="LogIn as Parent"
+          title="Start"
           onPress={() => navigation.navigate('Parents Zone')}
         />
-     
-      {/* <Text>Welcome Screen</Text> */}
     </SafeAreaView>
   );
 }
@@ -52,11 +38,13 @@ const styles = StyleSheet.create({
     zIndex:12,
   },
   childBtn:{
-    width:150,
-    height:40,
+    width:120,
+    height:50,
     borderRadius:12,
-    backgroundColor:colors.orange,
+    backgroundColor:colors.lightGreen,
     color:'white',
+    top:169,
+    left:136,
   },
   image:{
     flex:1,
@@ -68,13 +56,13 @@ const styles = StyleSheet.create({
     zIndex: -1,
     position: 'absolute',
   },
-  parentBtn:{
-      margin:12,
-      width:150,
-      height:40,
-      borderRadius:12,
-      backgroundColor:colors.green,
-      color:'white',
+  // parentBtn:{
+  //     margin:12,
+  //     width:150,
+  //     height:40,
+  //     borderRadius:12,
+  //     backgroundColor:colors.green,
+  //     color:'white',
 
-  }
+  // }
 });

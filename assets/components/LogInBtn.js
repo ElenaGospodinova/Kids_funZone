@@ -21,16 +21,17 @@ buttonLogin:{
     paddingLeft:27,
     borderRadius:12,
     backgroundColor:colors.blue,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 1.25,
-    shadowRadius: 3.84,
+    // shadowColor: 'black',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 1.25,
+    // shadowRadius: 5.84,
 },
 titleLogin:{
     color:'white',
     fontWeight:'900',
     fontFamily:Platform.OS === "android" ? "Roboto" : "Avenir",
-    fontSize:14,
+    fontSize:26,
+    
 },
 })
 

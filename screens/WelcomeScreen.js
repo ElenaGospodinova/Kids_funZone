@@ -13,7 +13,7 @@ export default function WelcomeScreen(props) {
   const navigation = useNavigation();
  
   const navigateItems = () => {
-    navigation.navigate('Parents Zone'); 
+    navigation.navigate('Kids Zone'); 
     // navigation.navigate('Parents Zone');
 };
 
@@ -24,7 +24,7 @@ export default function WelcomeScreen(props) {
     
       <LogInBtn style={styles.childBtn}
           title="Start"
-          onPress={() => navigation.navigate('Parents Zone')}
+          onPress={() => navigation.navigate('Kids Zone')}
         />
     </SafeAreaView>
   );

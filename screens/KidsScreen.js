@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  ActivityIndicator,
   View,
   Text,
   FlatList,
@@ -8,11 +9,13 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
-import YouTube from 'react-native-youtube';
-import VideoCard from '../assets/components/VideoCard';
+import { WebView } from 'react-native-webview';  // Import WebView
+import SearchVideo from '../assets/components/SearchVideo';
+import Search from '../assets/components/SearchVideo';
+
 import colors from '../assets/config/colors';
 
-const KidsScreen = () => {
+export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,7 +23,7 @@ const KidsScreen = () => {
 
   const fetchYouTubeData = async () => {
     const apiKey = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
-    const safeSearch = 'kids_videos'; // Replace with your desired search term
+    const safeSearch = 'cocomelon-kids-videos-blippi-bbc-CBeebies'; // Replace with your desired search term
 
     try {
       const response = await fetch(
@@ -64,6 +67,7 @@ const KidsScreen = () => {
     }
 
     return (
+      
       <TouchableOpacity onPress={() => onVideoSelected(item)}>
         <View style={styles.videoItem}>
           <Image
@@ -71,7 +75,7 @@ const KidsScreen = () => {
             style={styles.thumbnail}
             resizeMode="cover"
           />
-          <Text>{item.snippet.title}</Text>
+          <Text style={styles.titles}>{item.snippet.title}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -79,8 +83,9 @@ const KidsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+    <SearchVideo/>
       {loading ? (
-        <Text>Loading...</Text>
+        <ActivityIndicator size="large" color={colors.green} />
       ) : error ? (
         <Text style={styles.errorText}>{error}</Text>
       ) : (
@@ -92,32 +97,23 @@ const KidsScreen = () => {
           />
           {selectedVideo && (
             <View style={styles.videoContainer}>
-              <YouTube
-                apiKey="AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw"
-                videoId={selectedVideo.id.videoId}
-                play={true}
-                fullscreen={true}
-                loop
-                defaultQuality="hd1080" // Set the desired quality here
-                onReady={(e) => console.log('onReady', e)}
-                onChangeState={(e) => console.log('onChangeState', e)}
-                onChangeQuality={(e) => console.log('onChangeQuality', e)}
-                onError={(e) => console.log('onError', e)}
-                style={styles.video}
-              />
+            <WebView
+  javaScriptEnabled={true}
+  domStorageEnabled={true}
+  source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
+  style={styles.video}
+  onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
+/>
             </View>
           )}
-          <View style={styles.videoCardContainer}>
-            <VideoCard
-              title="Vintage bicycle"
-              subTitle="£24.00 each"
-              image={require('../assets/img/d.png')}
-            />
-          </View>
         </>
       )}
     </SafeAreaView>
   );
+};
+
+KidsScreen.propTypes = {
+  // Add your prop types here
 };
 
 const styles = StyleSheet.create({
@@ -125,34 +121,41 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   videoItem: {
-    marginBottom: 16,
+    marginTop: 26,
+    padding:23,
     alignItems: 'center',
+    backgroundColor: 'rgba(173, 216, 230, 0.8)',
+    
+
   },
   thumbnail: {
-    width: 120,
-    height: 90,
+    width: 200,
+    height: 100,
     resizeMode: 'cover',
+    borderRadius:12,
   },
   videoContainer: {
+    padding:32,
     alignSelf: 'stretch',
     height: 300,
-    backgroundColor: colors.green,
+    backgroundColor: 'rgba(173, 216, 230, 0.8)',
     // Add any additional styling for the video container
   },
   video: {
+    borderRadius:12,
     alignSelf: 'stretch',
     flex: 1,
     height: 300,
     // Add any additional styling for the video
-  },
-  videoCardContainer: {
-    padding: 16,
   },
   errorText: {
     color: 'red',
     textAlign: 'center',
     marginTop: 16,
   },
+  titles:{
+    padding:9,
+    color:colors.darkBlue,
+    fontWeight:'bold',
+  }
 });
-
-export default KidsScreen;

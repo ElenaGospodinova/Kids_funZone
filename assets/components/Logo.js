@@ -11,7 +11,7 @@ export default function Logo() {
         <Animatable.Image
           animation="swing"
           iterationCount={12}
-          direction="alternative"
+          direction="alternate"
           source={require('../img/k.png')}
           style={styles.image1}
         />
@@ -33,7 +33,7 @@ export default function Logo() {
         <Animatable.Image
           animation="lightSpeedIn"
           iterationCount={1}
-          direction="alternative"
+          direction="alternate"
           source={require('../img/s.png')}
           style={styles.image4}
         />
@@ -41,7 +41,7 @@ export default function Logo() {
         <Animatable.Image
           animation="pulse"
           iterationCount={12}
-          direction="alternative"
+          direction="alternate"
           source={require('../img/funZone.png')}
           style={styles.funZoneImg}
         />
@@ -50,7 +50,7 @@ export default function Logo() {
         <Animatable.Image
           animation="pulse"
           iterationCount={12}
-          direction="alternative"
+          direction="alternate"
           source={require('../img/elephant.png')}
           style={styles.elephantImg}
         />

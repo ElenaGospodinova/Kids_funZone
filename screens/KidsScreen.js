@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   ActivityIndicator,
   View,
@@ -10,9 +11,9 @@ import {
   Image,
 } from 'react-native';
 import { WebView } from 'react-native-webview';  // Import WebView
-import SearchVideo from '../assets/components/SearchVideo';
-import Search from '../assets/components/SearchVideo';
 
+import SearchVideo from '../assets/components/SearchVideo';
+import List from '../assets/components/ListFilter';
 import colors from '../assets/config/colors';
 
 export default function KidsScreen() {
@@ -20,6 +21,8 @@ export default function KidsScreen() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchPhrase, setSearchPhrase] = useState("");
+  const [clicked, setClicked] = useState(false);
 
   const fetchYouTubeData = async () => {
     const apiKey = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
@@ -31,6 +34,10 @@ export default function KidsScreen() {
       );
 
       if (!response.ok) {
+        // If fetching from YouTube API fails, load data from local JSON file
+        const localData = require('../videoPlayer.json');
+        setVideos(localData);
+        console.log('Loaded data from local JSON:', localData);
         throw new Error(`Failed to fetch data from YouTube API: ${response.status} - ${response.statusText}`);
       }
 
@@ -67,7 +74,6 @@ export default function KidsScreen() {
     }
 
     return (
-      
       <TouchableOpacity onPress={() => onVideoSelected(item)}>
         <View style={styles.videoItem}>
           <Image
@@ -83,7 +89,17 @@ export default function KidsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-    <SearchVideo/>
+      {!clicked && <Text style={styles.titles}></Text>}
+         <SearchVideo
+            searchPhrase={searchPhrase}
+            setSearchPhrase={setSearchPhrase}
+            clicked={clicked}
+            setClicked={setClicked}
+         />
+         {clicked ? (
+          <List searchPhrase={searchPhrase} data={videos} setClicked={setClicked} />
+          ) : null}
+
       {loading ? (
         <ActivityIndicator size="large" color={colors.green} />
       ) : error ? (
@@ -97,20 +113,20 @@ export default function KidsScreen() {
           />
           {selectedVideo && (
             <View style={styles.videoContainer}>
-            <WebView
-  javaScriptEnabled={true}
-  domStorageEnabled={true}
-  source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
-  style={styles.video}
-  onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
-/>
+              <WebView
+                javaScriptEnabled={true}
+                domStorageEnabled={true}
+                source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
+                style={styles.video}
+                onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
+              />
             </View>
           )}
         </>
       )}
     </SafeAreaView>
   );
-};
+}
 
 KidsScreen.propTypes = {
   // Add your prop types here
@@ -121,9 +137,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   videoItem: {
-    marginTop: 26,
+    margin: 20,
+    right:10,
     padding:23,
     alignItems: 'center',
+    borderRadius:8,
+    width:'95%',
     backgroundColor: 'rgba(173, 216, 230, 0.8)',
     
 
@@ -149,7 +168,9 @@ const styles = StyleSheet.create({
     // Add any additional styling for the video
   },
   errorText: {
-    color: 'red',
+    color: colors.red,
+    fontSize:17,
+    fontWeight:'bold',
     textAlign: 'center',
     marginTop: 16,
   },
@@ -157,5 +178,6 @@ const styles = StyleSheet.create({
     padding:9,
     color:colors.darkBlue,
     fontWeight:'bold',
-  }
+  }, 
+  
 });

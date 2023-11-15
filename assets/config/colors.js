@@ -8,6 +8,7 @@ export default{
     orange:'#F39B06',
     pink:'#FF4BB1',
     white:'#FFFFFF',
+    gray:'#EEEEEE',
     grayBlue:'#96B6C5',
     darkBlue:'#001B79',
 }

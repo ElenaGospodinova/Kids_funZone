@@ -23,7 +23,11 @@ export default function WelcomeScreen(props) {
       <Logo />
     
       <LogInBtn style={styles.childBtn}
-          title="Start"
+          title="Videos"
+          onPress={() => navigation.navigate('Kids Zone')}
+        />
+        <LogInBtn style={styles.childBtn}
+          title="Games"
           onPress={() => navigation.navigate('Kids Zone')}
         />
     </SafeAreaView>
@@ -38,13 +42,16 @@ const styles = StyleSheet.create({
     zIndex:12,
   },
   childBtn:{
-    width:120,
+    width:140,
     height:50,
+    flexDirection:'column',
     borderRadius:12,
+    padding:2,
+    margin:9,
     backgroundColor:colors.lightGreen,
     color:'white',
     top:169,
-    left:136,
+    left:133,
   },
   image:{
     flex:1,

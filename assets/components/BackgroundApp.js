@@ -7,7 +7,7 @@ export default function BackgroundApp({children}) {
       <ImageBackground
         source={require('../img/backgroundB.jpeg')}
         style={styles.image}
-        resizeMode='contain cover'  
+        resizeMode='cover'  
       >
 
        {children}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, StyleSheet } from 'react-native';
+import {  Platform, SafeAreaView, View, StyleSheet } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 //import colors from '../config/colors';
 
@@ -84,11 +84,10 @@ const styles = StyleSheet.create({
     bottom:280,
     width: '100%',
     height: '40%',
-    // justifyContent: 'center',
-    // alignContent: 'center',
-    left:43,
+    left:53,
     position: 'absolute',
-    //backgroundColor: colors.orange,
+    bottom:Platform.OS === 'android' ? 230 : 290,
+    
   },
   img:{
     transform: [{rotate: '26deg'}],

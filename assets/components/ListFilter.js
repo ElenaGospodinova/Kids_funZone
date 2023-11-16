@@ -1,5 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View, FlatList, SafeAreaView } from "react-native";
+import { 
+    StyleSheet, 
+    Text, 
+    View, 
+    FlatList, 
+    SafeAreaView } from "react-native";
 
 // definition of the Item, which will be rendered in the FlatList
 const Item = ({ name, details }) => (

@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
-import Video from 'react-native-video';  // Import the Video component
+import Video from 'react-native-video';
 
 import SearchVideo from '../assets/components/SearchVideo';
 import List from '../assets/components/ListFilter';
@@ -19,70 +19,83 @@ import colors from '../assets/config/colors';
 import localData from '.././videoPlayer.json';
 
 export default function KidsScreen() {
-  
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const [filteredVideos, setFilteredVideos] = useState([]);
-  const [searchPhrase, setSearchPhrase] = useState("");
+  const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
 
   const fetchYouTubeData = async () => {
     const apiKey = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
-    const safeSearch = 'cocomelon-kids-videos-blippi-bbc-CBeebies'; // Replace with your desired search term
+    const safeSearch = 'cocomelon-kids-videos-blippi-bbc-CBeebies';
 
     try {
+      setLoading(true);
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${safeSearch}&type=video&key=${apiKey}`
       );
-
+  
       if (!response.ok) {
-        // If fetching from YouTube API fails, load data from local JSON file
-        //localData = require('.././videoPlayer.json');
-        setVideos(localData.albums);
-        setFilteredVideos(localData.albums);
-        console.log('Loaded data from local JSON:', localData);
         throw new Error(`Failed to fetch data from YouTube API: ${response.status} - ${response.statusText}`);
       }
-
+  
       const data = await response.json();
-
+  
       if (data.items) {
-        setVideos(data.items);
-        setFilteredVideos(data.items);
+        updateVideos(data.items);
         console.log(data);
       } else {
         console.warn('No video items found in the response');
       }
     } catch (error) {
       console.error('Error fetching data from YouTube API:', error.message);
-      setError('Failed to fetch videos. Please try again later.');
+      updateVideos(localData.albums);
+      // You might want to handle the 403 error specifically here
     } finally {
       setLoading(false);
     }
   };
 
+  const fetchLocalData = async () => {
+    try {
+      const response = await fetch('.././videoPlayer.json');
+      const data = await response.json();
+  
+      if (data.albums) {
+        updateVideos(data.albums);
+      } else {
+        console.warn('No video items found in the local response');
+      }
+    } catch (error) {
+      console.error('Error fetching local data:', error.message);
+      // You might want to handle the network request failed error specifically here
+    }
+  };
+  
+
   useEffect(() => {
-    fetchYouTubeData();
+    const fetchData = async () => {
+      await fetchYouTubeData();
+      await fetchLocalData();
+    };
+
+    fetchData();
   }, []);
 
   useEffect(() => {
-    if (searchPhrase.trim() === "") {
-      // If the search phrase is empty, show all videos
+    if (searchPhrase.trim() === '') {
       setFilteredVideos(videos);
     } else {
-      // Filter videos based on the search phrase
       const filtered = videos.filter(
-        (item) =>
-          item.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim())
+        (item) => item.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim())
       );
       setFilteredVideos(filtered);
     }
   }, [searchPhrase, videos]);
 
-  // Function to update videos
   const updateVideos = (newVideos) => {
     setVideos(newVideos);
     setFilteredVideos(newVideos);
@@ -93,14 +106,12 @@ export default function KidsScreen() {
   };
 
   const renderVideoItem = ({ item }) => {
-    // Add a null or undefined check for item and item.snippet
     if (!item || !item.snippet || !item.snippet.title) {
       return null;
     }
     const thumbnailUrl = item.snippet?.thumbnails?.medium?.url;
 
     if (!thumbnailUrl) {
-      // Handle the case where the thumbnail is not available
       console.warn('Thumbnail not available for:', item);
       return null;
     }
@@ -130,7 +141,7 @@ export default function KidsScreen() {
         updateVideos={updateVideos}
       />
       {clicked ? (
-        <List  searchPhrase={searchPhrase} data={filteredVideos} setClicked={setClicked} />
+        <List searchPhrase={searchPhrase} data={filteredVideos} setClicked={setClicked} />
       ) : null}
 
       {loading ? (
@@ -183,7 +194,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginTop:Platform.OS === 'android' ? 76 : 10,
+    marginTop: Platform.OS === 'android' ? 76 : 10,
   },
   videoItem: {
     margin: 20,
@@ -199,14 +210,12 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     height: 300,
     backgroundColor: 'rgba(173, 216, 230, 0.8)',
-    // Add any additional styling for the video container
   },
   video: {
     borderRadius: 12,
     alignSelf: 'stretch',
     flex: 1,
     height: 300,
-    // Add any additional styling for the video
   },
   thumbnail: {
     width: 200,
@@ -219,8 +228,8 @@ const styles = StyleSheet.create({
     color: colors.darkBlue,
     fontWeight: 'bold',
   },
-  result:{
-    fontSize:10,
-    color:colors.red
+  result: {
+    fontSize: 10,
+    color: colors.red,
   },
 });

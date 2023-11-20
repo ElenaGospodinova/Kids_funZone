@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TextInput, View, Keyboard, Button, Platform } from "react-native";
+import { ActivityIndicator, StyleSheet, TextInput, View, Keyboard, Button, Platform } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
 import colors from "../config/colors";
 

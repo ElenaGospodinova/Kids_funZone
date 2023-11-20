@@ -16,7 +16,7 @@ import Video from 'react-native-video';
 import SearchVideo from '../assets/components/SearchVideo';
 import List from '../assets/components/ListFilter';
 import colors from '../assets/config/colors';
-import localData from '.././videoPlayer.json';
+import data from '../videoPlayer.json';
 
 export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
@@ -37,32 +37,34 @@ export default function KidsScreen() {
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${safeSearch}&type=video&key=${apiKey}`
       );
-  
+
       if (!response.ok) {
         throw new Error(`Failed to fetch data from YouTube API: ${response.status} - ${response.statusText}`);
       }
-  
+
       const data = await response.json();
-  
+
       if (data.items) {
         updateVideos(data.items);
         console.log(data);
       } else {
         console.warn('No video items found in the response');
+        fetchLocalData();
       }
     } catch (error) {
-      console.error('Error fetching data from YouTube API:', error.message);
-      updateVideos(localData.albums);
-      // You might want to handle the 403 error specifically here
+      console.warn('Error fetching data from YouTube API:', error.message);
+      // Fetch local data when YouTube API call fails
+      fetchLocalData();
     } finally {
       setLoading(false);
     }
   };
 
-  const fetchLocalData = async () => {
+const fetchLocalData = () => {
     try {
-      const response = await fetch('.././videoPlayer.json');
-      const data = await response.json();
+      // Adjust the path to your local JSON file based on your project structure
+       const response =  require('.././videoPlayer.json');
+       const data =  response;
   
       if (data.albums) {
         updateVideos(data.albums);
@@ -71,7 +73,7 @@ export default function KidsScreen() {
       }
     } catch (error) {
       console.error('Error fetching local data:', error.message);
-      // You might want to handle the network request failed error specifically here
+      setError('Failed to fetch data. Please check your network connection.'); // Set a specific error message
     }
   };
   
@@ -79,11 +81,12 @@ export default function KidsScreen() {
   useEffect(() => {
     const fetchData = async () => {
       await fetchYouTubeData();
-      await fetchLocalData();
+      fetchLocalData();
     };
-
+  
     fetchData();
   }, []);
+  
 
   useEffect(() => {
     if (searchPhrase.trim() === '') {
@@ -115,18 +118,39 @@ export default function KidsScreen() {
       console.warn('Thumbnail not available for:', item);
       return null;
     }
+   
+    const handlePress = () => {
+      if (item.albumId && data.albums) {
+        // Find the selected album
+        const selectedAlbum = data.albums.find(album => album.id === item.albumId);
+        console.log(album);
+        if (selectedAlbum) {
+          // Update the videos with the selected album's videos
+          updateVideos(selectedAlbum.videos);
+        }
+      }
+  
+      // Handle other onPress logic if needed
+      onVideoSelected(item);
+    };
 
     return (
-      <TouchableOpacity onPress={() => onVideoSelected(item)}>
-        <View style={styles.videoItem}>
-          <Image
-            source={{ uri: thumbnailUrl }}
-            style={styles.thumbnail}
-            resizeMode="cover"
-          />
-          <Text style={styles.titles}>{item.snippet.title}</Text>
-        </View>
-      </TouchableOpacity>
+      <TouchableOpacity onPress={handlePress}>
+            <View style={styles.videoItem}>
+              <Image
+                source={{ uri: thumbnailUrl }}
+                style={styles.thumbnail}
+                resizeMode="cover"
+              />
+              <Text style={styles.titles}>{item.snippet.title}</Text>
+              {/* Displaying images from local JSON */}
+              <Image
+                source={{ uri: item.url }} // Assuming 'url' contains the path to the local image
+                style={styles.thumbnail}
+                resizeMode="cover"
+              />
+            </View>
+          </TouchableOpacity>
     );
   };
 

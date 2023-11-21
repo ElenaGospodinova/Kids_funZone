@@ -28,7 +28,7 @@ export default function WelcomeScreen(props) {
         />
         <LogInBtn style={styles.childBtn}
           title="Games"
-          onPress={() => navigation.navigate('Kids Zone')}
+          onPress={() => navigation.navigate('Parents Zone')}
         />
     </SafeAreaView>
   );

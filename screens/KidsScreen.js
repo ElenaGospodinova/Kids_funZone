@@ -23,7 +23,6 @@ export default function KidsScreen() {
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
   const [filteredVideos, setFilteredVideos] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
@@ -46,47 +45,44 @@ export default function KidsScreen() {
 
       if (data.items) {
         updateVideos(data.items);
-        console.log(data);
       } else {
         console.warn('No video items found in the response');
+        setError('No video items found');
         fetchLocalData();
       }
     } catch (error) {
       console.warn('Error fetching data from YouTube API:', error.message);
-      // Fetch local data when YouTube API call fails
       fetchLocalData();
+      setError('Failed to fetch data. Please check your network connection.');
     } finally {
       setLoading(false);
     }
   };
 
-const fetchLocalData = () => {
+  const fetchLocalData = () => {
     try {
-      // Adjust the path to your local JSON file based on your project structure
-       const response =  require('.././videoPlayer.json');
-       const data =  response;
-  
-      if (data.albums) {
-        updateVideos(data.albums);
+      const response = require('.././videoPlayer.json');
+      const localData = response;
+
+      if (localData.albums) {
+        updateVideos(localData.albums);
       } else {
         console.warn('No video items found in the local response');
       }
     } catch (error) {
       console.error('Error fetching local data:', error.message);
-      setError('Failed to fetch data. Please check your network connection.'); // Set a specific error message
+      setError('Failed to fetch data. Please check your network connection.');
     }
   };
-  
 
   useEffect(() => {
     const fetchData = async () => {
       await fetchYouTubeData();
       fetchLocalData();
     };
-  
+
     fetchData();
   }, []);
-  
 
   useEffect(() => {
     if (searchPhrase.trim() === '') {
@@ -112,45 +108,41 @@ const fetchLocalData = () => {
     if (!item || !item.snippet || !item.snippet.title) {
       return null;
     }
+
     const thumbnailUrl = item.snippet?.thumbnails?.medium?.url;
 
     if (!thumbnailUrl) {
       console.warn('Thumbnail not available for:', item);
       return null;
     }
-   
+
     const handlePress = () => {
       if (item.albumId && data.albums) {
-        // Find the selected album
-        const selectedAlbum = data.albums.find(album => album.id === item.albumId);
-        console.log(album);
+        const selectedAlbum = data.albums.find((album) => album.id === item.albumId);
         if (selectedAlbum) {
-          // Update the videos with the selected album's videos
           updateVideos(selectedAlbum.videos);
         }
       }
-  
-      // Handle other onPress logic if needed
+
       onVideoSelected(item);
     };
 
     return (
       <TouchableOpacity onPress={handlePress}>
-            <View style={styles.videoItem}>
-              <Image
-                source={{ uri: thumbnailUrl }}
-                style={styles.thumbnail}
-                resizeMode="cover"
-              />
-              <Text style={styles.titles}>{item.snippet.title}</Text>
-              {/* Displaying images from local JSON */}
-              <Image
-                source={{ uri: item.url }} // Assuming 'url' contains the path to the local image
-                style={styles.thumbnail}
-                resizeMode="cover"
-              />
-            </View>
-          </TouchableOpacity>
+      
+        <View style={styles.videoItem}>
+          {thumbnailUrl ? (
+            <Image
+              source={{ uri: thumbnailUrl }}
+              style={styles.thumbnail}
+              resizeMode="cover"
+            />
+          ) : (
+            <ActivityIndicator size="small" color={colors.green} />
+          )}
+          <Text style={styles.titles}>{item.snippet.title}</Text>
+        </View>
+      </TouchableOpacity>
     );
   };
 
@@ -173,6 +165,10 @@ const fetchLocalData = () => {
       ) : error ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
+        </View>
+      ) : videos.length === 0 ? (
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>No videos to display</Text>
         </View>
       ) : (
         <>

@@ -6,12 +6,15 @@ import {
   FlatList,
   SafeAreaView,
   StyleSheet,
+  ScrollView,
   TouchableOpacity,
   Image,
   Platform,
 } from 'react-native';
 import { WebView } from 'react-native-webview';
 import Video from 'react-native-video';
+import AntDesign from 'react-native-vector-icons/AntDesign';
+import { Entypo } from '@expo/vector-icons';
 
 import SearchVideo from '../assets/components/SearchVideo';
 import List from '../assets/components/ListFilter';
@@ -46,6 +49,7 @@ export default function KidsScreen() {
       if (data.items) {
         updateVideos(data.items);
       } else {
+        
         console.warn('No video items found in the response');
         setError('No video items found');
         fetchLocalData();
@@ -71,9 +75,25 @@ export default function KidsScreen() {
       }
     } catch (error) {
       console.error('Error fetching local data:', error.message);
-      setError('Failed to fetch data. Please check your network connection.');
+      setError('Failed to fetch data. Please check your json connection.');
     }
   };
+
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+      await Promise.all([fetchYouTubeData(), fetchLocalData()]);
+    } catch (error) {
+      console.warn('Error fetching data:', error.message);
+      setError('Please check your network connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -148,6 +168,13 @@ export default function KidsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
+     <ScrollView contentContainerStyle={styles.container}>
+       <TouchableOpacity style={styles.next} onPress={() => navigateTo('Perents Zone')}>
+          <Entypo name="game-controller" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.back} onPress={() => navigateTo('Home')}>
+            <AntDesign name="home" size={24} color="black" />
+        </TouchableOpacity>
       {!clicked && <Text style={styles.titles}></Text>}
       <SearchVideo
         searchPhrase={searchPhrase}
@@ -199,6 +226,7 @@ export default function KidsScreen() {
           )}
         </>
       )}
+    </ScrollView>
     </SafeAreaView>
   );
 }
@@ -215,6 +243,18 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     marginTop: Platform.OS === 'android' ? 76 : 10,
+  },
+  next: {
+    position: 'absolute',
+    top: 3,
+    right: 20,
+    zIndex: 12,
+  },
+  back: {
+    position: 'absolute',
+    top: 3,
+    left: 20,
+    zIndex: 12,
   },
   videoItem: {
     margin: 20,
@@ -235,11 +275,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignSelf: 'stretch',
     flex: 1,
-    height: 300,
+    height: 310,
   },
   thumbnail: {
-    width: 200,
-    height: 100,
+    width: 230,
+    height: 130,
     resizeMode: 'cover',
     borderRadius: 12,
   },

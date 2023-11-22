@@ -94,7 +94,7 @@ export default SearchBar;
 
 const styles = StyleSheet.create({
   container: {
-    margin: 19,
+    margin: 23,
     top:Platform.OS === 'android' ? 72 : -11,
     justifyContent: "flex-start",
     alignItems: "center",

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { ScrollView, StyleSheet, TouchableOpacity, ActivityIndicator, Text, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, ActivityIndicator, Text, View } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import { WebView } from 'react-native-webview';
 import { FlatList } from 'react-native';
@@ -16,12 +16,17 @@ const ParentsScreen = () => {
   const [videos, setVideos] = useState([]);
   const [jsonData, setJsonData] = useState(null);
 
+
   //const [selectedVideo, setSelectedVideo] = useState(null);
   const [error, setError] = useState(null);
 
-  const navigateTo = (screenName) => {
-    navigation.navigate(screenName);
+
+
+  const navigate = () => {
+    navigation.navigate('Kids Zone'); 
+    navigation.navigate('Home');
   };
+  
 
   const fetchLocalData = () => {
     try {
@@ -41,6 +46,11 @@ const ParentsScreen = () => {
             "id": "Gecko`s Garage",
             "name": "Gescko Basketball Bedlam",
             "url": "https://www.youtube.com/embed/fvcjuC027NU" 
+          },
+          {
+            "id": "Tracktor Ted",
+            "name": "Big Machines Compilation",
+            "url": "https://www.youtube.com/embed/XQEt3Pfb-DM"
           }
         ]
       };
@@ -68,42 +78,39 @@ const ParentsScreen = () => {
     
   };
 
-    
-
   return (
-<Screen>
-      {loading ? (
-        <ActivityIndicator size='large' color="black" style={styles.loadingIndicator} />
-      ) : (
-        <ScrollView contentContainerStyle={styles.container}>
-        <TouchableOpacity style={styles.next} onPress={() => navigateTo('Kids Zone')}>
-          <Entypo name="video" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.back} onPress={() => navigateTo('Home')}>
-            <AntDesign name="home" size={24} color="black" />
-        </TouchableOpacity>
-
-          {/* Render video cards based on the fetched data */}
-          <FlatList
-            style={styles.item}
-            data={videos}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <View  style={styles.videoContainer} key={index}>
-                {/* <VideoCard title={item.name} subTitle={item.id} url={item.url} /> */}
-                <WebView
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  source={{ uri: item.url }}
-                  style={styles.video}
-                  onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
-                />
-              </View>
-            )}
-          />
-        </ScrollView>
-      )}
-    </Screen>
+    <Screen>
+    {loading ? (
+      <ActivityIndicator size='large' color="black" style={styles.loadingIndicator} />
+    ) : (
+      <FlatList
+        style={styles.container}
+        data={videos}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({ item, index }) => (
+          <View style={styles.videoContainer} key={index}>
+            <WebView
+              javaScriptEnabled={true}
+              domStorageEnabled={true}
+              source={{ uri: item.url }}
+              style={styles.video}
+              onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
+            />
+          </View>
+        )}
+        ListHeaderComponent={
+          <View style={styles.fixedHeader}>
+            <TouchableOpacity style={styles.next} onPress={() => navigate('Kids Zone')}>
+              <Entypo name="video" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.back} onPress={() => navigate('Home')}>
+              <AntDesign name="home" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+        }
+      />
+    )}
+  </Screen>
   );
 };
 
@@ -111,7 +118,8 @@ const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     padding: 17,
-    marginBottom: 10,
+    marginBottom: 50,
+    
   },
   next: {
     position: 'absolute',
@@ -125,6 +133,18 @@ const styles = StyleSheet.create({
     top: 3,
     left: 20,
     zIndex: 12,
+    color:colors.white,
+  },
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    backgroundColor: colors.lightBlue,
   },
   loadingIndicator: {
     bottom: -305,

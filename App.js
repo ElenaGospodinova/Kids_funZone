@@ -42,7 +42,7 @@ export default function App(props) {
     
     <NavigationContainer>
       <Stack.Navigator screenOptions={screenOptions}>
-        <Stack.Screen name='Kids Fun Zone'>
+        <Stack.Screen name='Home'>
           {() => (
             <ScreenWithBackground>
               <WelcomeScreen />

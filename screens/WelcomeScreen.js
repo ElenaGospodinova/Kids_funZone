@@ -14,7 +14,9 @@ export default function WelcomeScreen(props) {
  
   const navigateItems = () => {
     navigation.navigate('Kids Zone'); 
-    // navigation.navigate('Parents Zone');
+    navigation.navigate('Parents Zone');
+    navigation.navigate('Home');
+
 };
 
 

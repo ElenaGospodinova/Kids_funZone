@@ -11,6 +11,7 @@ import {
   Image,
   Platform,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import Video from 'react-native-video';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -29,7 +30,13 @@ export default function KidsScreen() {
   const [filteredVideos, setFilteredVideos] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
+  const navigation = useNavigation();
 
+  const navigate = () => {
+    navigation.navigate('Home'); 
+    navigation.navigate('Parents Zone');
+  };
+  
   const fetchYouTubeData = async () => {
     const apiKey = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
     const safeSearch = 'cocomelon-kids-videos-blippi-bbc-CBeebies';
@@ -168,25 +175,37 @@ export default function KidsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-     <ScrollView contentContainerStyle={styles.container}>
-       <TouchableOpacity style={styles.next} onPress={() => navigateTo('Perents Zone')}>
-          <Entypo name="game-controller" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.back} onPress={() => navigateTo('Home')}>
-            <AntDesign name="home" size={24} color="black" />
-        </TouchableOpacity>
-      {!clicked && <Text style={styles.titles}></Text>}
-      <SearchVideo
-        searchPhrase={searchPhrase}
-        setSearchPhrase={setSearchPhrase}
-        clicked={clicked}
-        setClicked={setClicked}
-        updateVideos={updateVideos}
+      <FlatList
+        data={videos}
+        stickyHeaderIndices={[0]}
+        keyExtractor={(item) => item.id.videoId || item.id}
+        renderItem={renderVideoItem}
+        ListHeaderComponent={
+          <>
+          <View style={styles.fixedHeader}>
+            <TouchableOpacity style={styles.next} onPress={() => navigate('Parents Zone')}>
+              <Entypo name="game-controller" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.back} title="Home"
+                  onPress={() => navigate('Home')}>
+              <AntDesign name="home" size={24} color="black" />
+            </TouchableOpacity>
+            </View>
+            {!clicked && <Text style={styles.titles}></Text>}
+            <SearchVideo
+              searchPhrase={searchPhrase}
+              setSearchPhrase={setSearchPhrase}
+              clicked={clicked}
+              setClicked={setClicked}
+              updateVideos={updateVideos}
+            />
+           
+            {clicked ? (
+              <List searchPhrase={searchPhrase} data={filteredVideos} setClicked={setClicked} />
+            ) : null}
+          </>
+        }
       />
-      {clicked ? (
-        <List searchPhrase={searchPhrase} data={filteredVideos} setClicked={setClicked} />
-      ) : null}
-
       {loading ? (
         <ActivityIndicator size="large" color={colors.green} />
       ) : error ? (
@@ -199,11 +218,6 @@ export default function KidsScreen() {
         </View>
       ) : (
         <>
-          <FlatList
-            data={videos}
-            keyExtractor={(item) => item.id.videoId || item.id}
-            renderItem={renderVideoItem}
-          />
           {selectedVideo && (
             <View style={styles.videoContainer}>
               {selectedVideo.id.videoId ? (
@@ -212,7 +226,9 @@ export default function KidsScreen() {
                   domStorageEnabled={true}
                   source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
                   style={styles.video}
-                  onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
+                  onError={(syntheticEvent) =>
+                    console.error('WebView error:', syntheticEvent.nativeEvent)
+                  }
                 />
               ) : (
                 <Video
@@ -226,8 +242,8 @@ export default function KidsScreen() {
           )}
         </>
       )}
-    </ScrollView>
     </SafeAreaView>
+
   );
 }
 
@@ -249,12 +265,23 @@ const styles = StyleSheet.create({
     top: 3,
     right: 20,
     zIndex: 12,
+    
   },
   back: {
     position: 'absolute',
     top: 3,
     left: 20,
     zIndex: 12,
+  },
+  fixedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 12,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
   },
   videoItem: {
     margin: 20,

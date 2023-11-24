@@ -6,7 +6,6 @@ import {
   FlatList,
   SafeAreaView,
   StyleSheet,
-  ScrollView,
   TouchableOpacity,
   Image,
   Platform,
@@ -30,11 +29,12 @@ export default function KidsScreen() {
   const [filteredVideos, setFilteredVideos] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
+  
   const navigation = useNavigation();
 
   const navigate = () => {
     navigation.navigate('Home'); 
-    navigation.navigate('Parents Zone');
+    navigation.navigate('Games Zone');
   };
   
   const fetchYouTubeData = async () => {
@@ -61,11 +61,7 @@ export default function KidsScreen() {
         setError('No video items found');
         fetchLocalData();
       }
-    } catch (error) {
-      console.warn('Error fetching data from YouTube API:', error.message);
-      fetchLocalData();
-      setError('Failed to fetch data. Please check your network connection.');
-    } finally {
+     } finally {
       setLoading(false);
     }
   };
@@ -183,11 +179,12 @@ export default function KidsScreen() {
         ListHeaderComponent={
           <>
           <View style={styles.fixedHeader}>
-            <TouchableOpacity style={styles.next} onPress={() => navigate('Parents Zone')}>
+            <TouchableOpacity style={styles.next} 
+                  onPress={() => navigation.navigate('Games Zone')}>
               <Entypo name="game-controller" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.back} title="Home"
-                  onPress={() => navigate('Home')}>
+                  onPress={() => navigation.navigate('Home')}>
               <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
             </View>

@@ -5,7 +5,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import KidsScreen from './screens/KidsScreen';
-import ParentsScreen from './screens/ParentsScreen';
+import GamesScreen from './screens/GamesScreen';
 import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
 
@@ -49,10 +49,10 @@ export default function App(props) {
             </ScreenWithBackground>
           )}
         </Stack.Screen>
-        <Stack.Screen name="Parents Zone">
+        <Stack.Screen name="Games Zone">
           {() => (
             <ScreenWithBackground>
-              <ParentsScreen />
+              <GamesScreen />
             </ScreenWithBackground>
           )}
         </Stack.Screen>

@@ -13,8 +13,7 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import Video from 'react-native-video';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import { Entypo } from '@expo/vector-icons';
+import { AntDesign, Entypo } from '@expo/vector-icons';
 
 import SearchVideo from '../assets/components/SearchVideo';
 import List from '../assets/components/ListFilter';

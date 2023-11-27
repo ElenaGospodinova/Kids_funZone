@@ -38,33 +38,43 @@ const tabBarOptions = {
 };
 
 export default function App(props) {
+  
   return (
     
     <NavigationContainer>
-      <Stack.Navigator screenOptions={screenOptions}>
-        <Stack.Screen name='Home'>
-          {() => (
-            <ScreenWithBackground>
-              <WelcomeScreen />
-            </ScreenWithBackground>
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="Games Zone">
-          {() => (
-            <ScreenWithBackground>
-              <GamesScreen />
-            </ScreenWithBackground>
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="Kids Zone">
-          {() => (
-            <ScreenWithBackground>
-              <KidsScreen />
-            </ScreenWithBackground>
-          )}
-        </Stack.Screen>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <Stack.Navigator screenOptions={screenOptions}>
+      <Stack.Screen
+        name="Home"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <WelcomeScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Kids Zone"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <KidsScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Games Zone"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <GamesScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+    </Stack.Navigator>
+  </NavigationContainer>
   
   );
 }

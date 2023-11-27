@@ -7,26 +7,35 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 
 import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
+import KidsScreen from './KidsScreen';
+import WelcomeScreen from './WelcomeScreen';
 
 
-const GamesScreen = () => {
+export default function GamesScreen () {
   
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]);
   const [jsonData, setJsonData] = useState(null);
   const [error, setError] = useState(null);
-
-  //const [selectedVideo, setSelectedVideo] = useState(null);
   
-
   const navigation = useNavigation();
 
-  const navigate = () => {
-    navigation.navigate('Home'); 
-    navigation.navigate('Games Zone');
+  const navigateToWelcomeScreen = () => {
+    navigation.navigate({WelcomeScreen});
   };
- 
 
+  const navigateToKidsZone = () => {
+    navigation.navigate({KidsScreen});
+  };
+
+
+  // const navigate = () => {
+  //   navigation.navigate('Home'); 
+  //   navigation.navigate('Kids Zone');
+  // };
+  
+  
+  
   const fetchLocalData = () => {
     try {
       const localData = {
@@ -99,12 +108,12 @@ const GamesScreen = () => {
         )}
         ListHeaderComponent={
           <View style={styles.fixedHeader}>
-              <TouchableOpacity style={styles.back} title="Home"
-                  onPress={() => navigation.navigate('Home')}>
+            <TouchableOpacity style={styles.back}
+                  onPress={navigateToWelcomeScreen}>
               <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
-             <TouchableOpacity style={styles.next} 
-                  onPress={() => navigation.navigate('Kids Zone')}>
+             <TouchableOpacity style={styles.next}
+                  onPress={navigateToKidsZone}>
               <Entypo name="video" size={24} color="black" />
             </TouchableOpacity>
           
@@ -129,20 +138,20 @@ const styles = StyleSheet.create({
   back: {
     marginLeft: 10,
   },
-  // next: {
-  //   position: 'absolute',
-  //   top: Platform.OS === 'android' ? -1 : 3,
-  //   right: 20,
-  //   zIndex: 12,
-  //   color:colors.white,
-  // },
-  // back: {
-  //   position: 'absolute',
-  //   top: Platform.OS === 'android' ? -1 : 3,
-  //   left: 20,
-  //   zIndex: 12,
-  //   color:colors.white,
-  // },
+  next: {
+    position: 'absolute',
+    top: Platform.OS === 'android' ? -1 : 3,
+    right: 20,
+    zIndex: 12,
+    color:colors.white,
+  },
+  back: {
+    position: 'absolute',
+    top: Platform.OS === 'android' ? -1 : 3,
+    left: 20,
+    zIndex: 12,
+    color:colors.white,
+  },
   fixedHeader: {
     position: 'absolute',
     top: 0,
@@ -174,4 +183,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default GamesScreen;
+

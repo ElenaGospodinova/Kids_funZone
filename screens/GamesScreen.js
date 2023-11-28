@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Platform } from 'react-native';
+import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Platform, SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { FlatList } from 'react-native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
@@ -18,22 +18,17 @@ export default function GamesScreen () {
   const [jsonData, setJsonData] = useState(null);
   const [error, setError] = useState(null);
   
-  const navigation = useNavigation();
+    const navigation = useNavigation();
 
-  const navigateToWelcomeScreen = () => {
-    navigation.navigate({WelcomeScreen});
+    const navigate = () => {
+    navigation.navigate('Home'); 
+    navigation.navigate('Kids Zone');
   };
-
-  const navigateToKidsZone = () => {
-    navigation.navigate({KidsScreen});
-  };
-
-
-  // const navigate = () => {
-  //   navigation.navigate('Home'); 
-  //   navigation.navigate('Kids Zone');
-  // };
   
+  // const navigateTo = (screenName) => {
+  //   navigation.navigate(screenName);
+  //   console.log(`Navigating to ${screenName}`);
+  // };
   
   
   const fetchLocalData = () => {
@@ -87,10 +82,22 @@ export default function GamesScreen () {
   };
 
   return (
+  
     <Screen>
     {loading ? (
       <ActivityIndicator size='large' color="black" style={styles.loadingIndicator} />
     ) : (
+      <View style={styles.container}>
+      <View style={styles.fixedHeader}>
+            <TouchableOpacity style={styles.next} title='Video'
+                  onPress ={() => navigation.navigate('Kids Zone')}>
+              <Entypo name="video" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.back} title='Home'
+                  onPress ={() => navigation.navigate('Home')}>
+              <AntDesign name="home" size={24} color="black" />
+            </TouchableOpacity>
+      </View>
       <FlatList
         style={styles.container}
         data={videos}
@@ -106,22 +113,12 @@ export default function GamesScreen () {
             />
           </View>
         )}
-        ListHeaderComponent={
-          <View style={styles.fixedHeader}>
-            <TouchableOpacity style={styles.back}
-                  onPress={navigateToWelcomeScreen}>
-              <AntDesign name="home" size={24} color="black" />
-            </TouchableOpacity>
-             <TouchableOpacity style={styles.next}
-                  onPress={navigateToKidsZone}>
-              <Entypo name="video" size={24} color="black" />
-            </TouchableOpacity>
-          
-          </View>
-        }
+       
       />
+      </View>
     )}
   </Screen>
+ 
   );
 };
 
@@ -139,11 +136,12 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   next: {
+    marginRight: 10,
     position: 'absolute',
     top: Platform.OS === 'android' ? -1 : 3,
     right: 20,
     zIndex: 12,
-    color:colors.white,
+    color: colors.white,
   },
   back: {
     position: 'absolute',

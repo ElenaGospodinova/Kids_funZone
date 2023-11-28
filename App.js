@@ -8,6 +8,7 @@ import KidsScreen from './screens/KidsScreen';
 import GamesScreen from './screens/GamesScreen';
 import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
+import Testing from './screens/Testing';
 
 const Stack = createNativeStackNavigator();
 
@@ -70,6 +71,16 @@ export default function App(props) {
         {() => (
           <ScreenWithBackground>
             <GamesScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Testing"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <Testing />
           </ScreenWithBackground>
         )}
       </Stack.Screen>

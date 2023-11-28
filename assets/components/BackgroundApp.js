@@ -22,7 +22,7 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 1,
-    top: 2,
+    top: 0,
     height: '100%',
     width: '100%',
     justifyContent: 'flex-end',

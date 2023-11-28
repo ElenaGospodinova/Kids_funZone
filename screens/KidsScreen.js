@@ -178,7 +178,7 @@ export default function KidsScreen() {
         ListHeaderComponent={
           <>
           <View style={styles.fixedHeader}>
-            <TouchableOpacity style={styles.next} 
+            <TouchableOpacity style={styles.next} title='Games Zone'
                   onPress={() => navigation.navigate('Games Zone')}>
               <Entypo name="game-controller" size={24} color="black" />
             </TouchableOpacity>

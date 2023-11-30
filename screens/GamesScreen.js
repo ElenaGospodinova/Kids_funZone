@@ -7,8 +7,7 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 
 import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
-import KidsScreen from './KidsScreen';
-import WelcomeScreen from './WelcomeScreen';
+
 
 
 export default function GamesScreen () {

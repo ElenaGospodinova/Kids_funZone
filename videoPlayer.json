@@ -3,20 +3,42 @@
     {
       "id": "Cocomelon",
       "name": "Baby Shark",
-      "url": "https://www.youtube.com/watch?v=020g-0hhCAU&list=RDEMqoGUgNWsf_NaVYG4SU5N8g&start_radio=1"
-      
+      "videos":[
+        {
+          "id":"Cocomelon",
+          "url": "https://www.youtube.com/watch?v=020g-0hhCAU&list=RDEMqoGUgNWsf_NaVYG4SU5N8g&start_radio=1",
+          "snippet":{
+            "title": "Cocomelon"
+          }
+        }
+      ]
     },
+
     {
       "id": "Marvel",
       "name": "Spidey and Friends",
-      "url": "https://www.youtube.com/watch?v=Vk36-GV81Yg"
-      
+      "videos": [
+        {
+          "id": "video2",
+          "url": "https://www.youtube.com/watch?v=Vk36-GV81Yg",
+          "snippet": {
+            "title": "Video 2 Title"
+          }
+        }
+      ]
     },
     {
-      "id": "Gecko`s Garage",
-      "name": "Gescko Basketball Bedlam",
-      "url": "https://www.youtube.com/watch?v=fvcjuC027NU"
-      
-    }
-  ]
+          "id": "Gecko`s Garage",
+          "name": "Gescko Basketball Bedlam",
+          "videos": [
+            {
+              "id": "video3",
+              "url": "https://www.youtube.com/watch?v=fvcjuC027NU",
+              "snippet": {
+                "title": "Video 3 Title"
+              }
+            }
+         ]
+        }
+      ]
 }

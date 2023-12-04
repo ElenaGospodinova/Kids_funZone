@@ -18,9 +18,9 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 import SearchVideo from '../assets/components/SearchVideo';
 import List from '../assets/components/ListFilter';
 import colors from '../assets/config/colors';
-import data from '../videoPlayer.json';
+//import localData from '../videoPlayer.json';
 
-const API_KEY = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw'; // Load your API key from an environment variable
+ 
 
 export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
@@ -34,6 +34,7 @@ export default function KidsScreen() {
 
   const navigation = useNavigation();
 
+  
   const fetchYouTubeData = async () => {
     try {
       setLoading(true);
@@ -65,19 +66,22 @@ export default function KidsScreen() {
 
   const fetchLocalData = async () => {
     try {
-      const response = require('../videoPlayer.json');
-
-      if (response.albums) {
-        updateVideos(response.albums);
+      const response = require('.././videoPlayer.json');
+  
+      if (Array.isArray(response)) {
+        // Assuming the JSON file is an array of albums
+        const videos = response.flatMap((album) => album.videos);
+        updateVideos(videos);
       } else {
-        console.warn('No video items found in the local response');
+        console.warn('Invalid local data structure');
+        setError('Invalid local data structure');
       }
     } catch (error) {
       console.error('Error fetching local data:', error.message);
       setError('Failed to fetch data. Please check your JSON connection.');
     }
   };
-
+  
   const fetchData = async () => {
     try {
       setLoading(true);
@@ -94,8 +98,8 @@ export default function KidsScreen() {
         setError('No video items found');
       }
 
-      if (localData && localData.albums) {
-        updateVideos(localData.albums);
+      if (localData && localData.albums && localData.albums.length > 0) {
+        updateVideos(localData.albums.flatMap((album) => album.videos));
       } else {
         console.warn('No video items found in the local response');
       }
@@ -133,6 +137,11 @@ export default function KidsScreen() {
     setFilteredVideos(newVideos);
   };
 
+
+const onVideoSelected=(selectedVideo) => {
+  setSelectedVideo(selectedVideo);
+}
+
   const renderVideoItem = ({ item }) => {
     if (!item || !item.snippet || !item.snippet.title) {
       return null;
@@ -144,17 +153,32 @@ export default function KidsScreen() {
       console.warn('Thumbnail not available for:', item);
       return null;
     }
+      
+  
+  // const renderVideoItem = ({ item }) => {
+  //   if (!item || !item.snippet || !item.snippet.title || !item.snippet.thumbnails || !item.snippet.thumbnails.medium) {
+  //     console.warn('Invalid video item:', item);
+  //     return null;
+  //   }
+  
+  //   const thumbnailUrl = item.snippet.thumbnails.medium.url;
+  
+  //   const handlePress = () => {
+  //     onVideoSelected(item);
+  //   };
+  
 
-    const handlePress = () => {
-      if (item.albumId && data.albums) {
-        const selectedAlbum = data.albums.find((album) => album.id === item.albumId);
-        if (selectedAlbum) {
-          updateVideos(selectedAlbum.videos);
-        }
+  const handlePress = () => {
+    if (item.albumId && localData && localData.albums) {
+      const selectedAlbum = localData.albums.find((album) => album.id === item.albumId);
+      if (selectedAlbum) {
+        updateVideos(selectedAlbum.videos);
       }
-
-      onVideoSelected(item);
-    };
+    }
+  
+    onVideoSelected(item);
+  };
+  
 
     return (
       <TouchableOpacity onPress={handlePress}>

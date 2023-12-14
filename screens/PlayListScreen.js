@@ -10,7 +10,7 @@ import colors from '../assets/config/colors';
 
 
 
-export default function GamesScreen () {
+export default function PlayListScreen () {
   
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]);

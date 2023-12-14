@@ -16,11 +16,9 @@ import Video from 'react-native-video';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 
 import SearchVideo from '../assets/components/SearchVideo';
-import List from '../assets/components/ListFilter';
 import colors from '../assets/config/colors';
-//import localData from '../videoPlayer.json';
-
- 
+import VideoCard from '../assets/components/VideoCard';
+import pic from '../assets/img/photo.jpeg';
 
 export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
@@ -34,11 +32,11 @@ export default function KidsScreen() {
 
   const navigation = useNavigation();
 
-  
   const fetchYouTubeData = async () => {
     try {
       setLoading(true);
-      const searchTerm = 'cocomelon-kids-videos-blippi-bbc-CBeebies'; 
+      const API_KEY = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
+      const searchTerm = 'cocomelon-kids-videos-blippi-bbc-CBeebies';
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchTerm}&type=video&key=${API_KEY}`
       );
@@ -48,13 +46,13 @@ export default function KidsScreen() {
       }
 
       const data = await response.json();
+      console.log('YouTube API Response:', data);
 
       if (data.items && data.items.length > 0) {
         updateVideos(data.items);
       } else {
         console.warn('No video items found in the response');
         setError('No video items found');
-        await fetchLocalData();
       }
     } catch (error) {
       console.error('Error fetching YouTube data:', error.message);
@@ -64,54 +62,23 @@ export default function KidsScreen() {
     }
   };
 
-  const fetchLocalData = async () => {
-    try {
-      const response = require('.././videoPlayer.json');
-  
-      if (Array.isArray(response)) {
-        // Assuming the JSON file is an array of albums
-        const videos = response.flatMap((album) => album.videos);
-        updateVideos(videos);
-      } else {
-        console.warn('Invalid local data structure');
-        setError('Invalid local data structure');
-      }
-    } catch (error) {
-      console.error('Error fetching local data:', error.message);
-      setError('Failed to fetch data. Please check your JSON connection.');
-    }
-  };
-  
-  const fetchData = async () => {
-    try {
-      setLoading(true);
+  const [showVideoCard, setShowVideoCard] = useState(false);
 
-      const [youtubeData, localData] = await Promise.all([
-        fetchYouTubeData(),
-        fetchLocalData(),
-      ]);
-
-      if (youtubeData && !youtubeData.error) {
-        updateVideos(youtubeData.items);
-      } else {
-        console.warn('No video items found in the YouTube response');
-        setError('No video items found');
-      }
-
-      if (localData && localData.albums && localData.albums.length > 0) {
-        updateVideos(localData.albums.flatMap((album) => album.videos));
-      } else {
-        console.warn('No video items found in the local response');
-      }
-    } catch (error) {
-      console.warn('Error fetching data:', error.message);
-      setError('Please check your network connection.');
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await fetchYouTubeData();
+        setShowVideoCard(true);
+      } catch (error) {
+        console.warn('Error fetching data:', error.message);
+        setError('Please check your network connection.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, []);
 
@@ -120,13 +87,7 @@ export default function KidsScreen() {
       setFilteredVideos(videos);
     } else {
       const filtered = videos.filter((item) =>
-        item.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim()) ||
-        (item.albums &&
-          item.albums.some((album) =>
-            album.videos.some((video) =>
-              video.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim())
-            )
-          ))
+        item.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim())
       );
       setFilteredVideos(filtered);
     }
@@ -137,48 +98,21 @@ export default function KidsScreen() {
     setFilteredVideos(newVideos);
   };
 
-
-const onVideoSelected=(selectedVideo) => {
-  setSelectedVideo(selectedVideo);
-}
+  const onVideoSelected = (selectedVideo) => {
+    setSelectedVideo(selectedVideo);
+  };
 
   const renderVideoItem = ({ item }) => {
-    if (!item || !item.snippet || !item.snippet.title) {
-      return null;
-    }
-
-    const thumbnailUrl = item.snippet?.thumbnails?.medium?.url;
+    const thumbnailUrl = item.snippet.thumbnails.medium.url;
 
     if (!thumbnailUrl) {
       console.warn('Thumbnail not available for:', item);
       return null;
     }
-      
-  
-  // const renderVideoItem = ({ item }) => {
-  //   if (!item || !item.snippet || !item.snippet.title || !item.snippet.thumbnails || !item.snippet.thumbnails.medium) {
-  //     console.warn('Invalid video item:', item);
-  //     return null;
-  //   }
-  
-  //   const thumbnailUrl = item.snippet.thumbnails.medium.url;
-  
-  //   const handlePress = () => {
-  //     onVideoSelected(item);
-  //   };
-  
 
-  const handlePress = () => {
-    if (item.albumId && localData && localData.albums) {
-      const selectedAlbum = localData.albums.find((album) => album.id === item.albumId);
-      if (selectedAlbum) {
-        updateVideos(selectedAlbum.videos);
-      }
-    }
-  
-    onVideoSelected(item);
-  };
-  
+    const handlePress = () => {
+      onVideoSelected(item);
+    };
 
     return (
       <TouchableOpacity onPress={handlePress}>
@@ -199,20 +133,17 @@ const onVideoSelected=(selectedVideo) => {
       <View style={styles.fixedHeader}>
         <TouchableOpacity
           style={styles.next}
-          title="Games Zone"
           onPress={() => navigation.navigate('Games Zone')}
         >
           <Entypo name="game-controller" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.back}
-          title="Home"
           onPress={() => navigation.navigate('Home')}
         >
           <AntDesign name="home" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
       {!clicked && <Text style={styles.titles}></Text>}
 
       <SearchVideo
@@ -222,17 +153,21 @@ const onVideoSelected=(selectedVideo) => {
         setClicked={setClicked}
         updateVideos={updateVideos}
       />
+       {showVideoCard && (
+            <View style={styles.listVideo}>
+              <VideoCard style={styles.playlist} title="Video Title" subTitle="Video Subtitle" image={pic} />
+            </View>
+          )}
 
-      {clicked ? <List searchPhrase={searchPhrase} data={filteredVideos} setClicked={setClicked} /> : null}
-
-      <FlatList
-        data={videos}
-        keyExtractor={(item) => item.id.videoId || item.id}
-        renderItem={renderVideoItem}
-      />
-
+      {filteredVideos.length > 0 && (
+        <FlatList
+          data={filteredVideos}
+          keyExtractor={(item) => item.id.videoId.toString()}
+          renderItem={renderVideoItem}
+        />
+      )}
+      {!clicked && null}
       {loading ? (
-        
         <ActivityIndicator size="large" color={colors.green} />
       ) : error ? (
         <View style={styles.errorContainer}>
@@ -246,35 +181,33 @@ const onVideoSelected=(selectedVideo) => {
         <>
           {selectedVideo && (
             <View style={styles.videoContainer}>
-              {selectedVideo.id.videoId ? (
+              {selectedVideo && selectedVideo.id && selectedVideo.id.videoId ? (
                 <WebView
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  source={{
-                    uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}`,
-                  }}
+                  source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
                   style={styles.video}
-                  onError={(syntheticEvent) =>
-                    console.error('WebView error:', syntheticEvent.nativeEvent)
-                  }
                 />
               ) : (
                 <Video
-                  source={{ uri: selectedVideo.url }} // assuming url is an array
+                  source={{ uri: selectedVideo.url }}
                   style={styles.video}
                   controls={true}
                   resizeMode="cover"
                 />
               )}
+              
             </View>
           )}
+          {/* {showVideoCard && (
+            <View style={styles.listVideo}>
+              <VideoCard style={styles.playlist} title="Video Title" subTitle="Video Subtitle" image={pic} />
+            </View>
+          )} */}
         </>
       )}
+   
     </SafeAreaView>
   );
 }
-
-KidsScreen.propTypes = {};
 
 const styles = StyleSheet.create({
   container: {
@@ -326,7 +259,7 @@ const styles = StyleSheet.create({
     height: 310,
   },
   thumbnail: {
-    width: 230,
+    width: 250,
     height: 130,
     resizeMode: 'cover',
     borderRadius: 12,
@@ -335,9 +268,5 @@ const styles = StyleSheet.create({
     padding: 9,
     color: colors.darkBlue,
     fontWeight: 'bold',
-  },
-  result: {
-    fontSize: 10,
-    color: colors.red,
   },
 });

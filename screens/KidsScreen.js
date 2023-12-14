@@ -17,11 +17,8 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 
 import SearchVideo from '../assets/components/SearchVideo';
 import colors from '../assets/config/colors';
-//import localData from '../assets/config/playlist';
-import videoPlayerData from '../videoPlayer.json';
-
- 
-const API_KEY = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
+import VideoCard from '../assets/components/VideoCard';
+import pic from '../assets/img/photo.jpeg';
 
 export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
@@ -35,10 +32,10 @@ export default function KidsScreen() {
 
   const navigation = useNavigation();
 
-  
   const fetchYouTubeData = async () => {
     try {
       setLoading(true);
+      const API_KEY = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
       const searchTerm = 'cocomelon-kids-videos-blippi-bbc-CBeebies';
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchTerm}&type=video&key=${API_KEY}`
@@ -49,13 +46,13 @@ export default function KidsScreen() {
       }
 
       const data = await response.json();
+      console.log('YouTube API Response:', data);
 
       if (data.items && data.items.length > 0) {
         updateVideos(data.items);
       } else {
         console.warn('No video items found in the response');
         setError('No video items found');
-        await fetchLocalData();
       }
     } catch (error) {
       console.error('Error fetching YouTube data:', error.message);
@@ -65,42 +62,23 @@ export default function KidsScreen() {
     }
   };
 
-  const fetchLocalData = async () => {
-    try {
-      // Replace 'require' with 'import' for better module handling
-      // const response = require('../videoPlayer.json');
-      console.log('Local Data:', videoPlayerData);
+  const [showVideoCard, setShowVideoCard] = useState(false);
 
-      if (videoPlayerData && videoPlayerData.albums && Array.isArray(videoPlayerData.albums)) {
-        const videos = videoPlayerData.albums.flatMap((album) => album.videos);
-        updateVideos(videos);
-        setLocalData(videoPlayerData);
-      } else {
-        console.warn('Invalid local data structure');
-        setError('Invalid local data structure');
-      }
-    } catch (error) {
-      console.error('Error fetching local data:', error.message);
-      setError('Failed to fetch data. Please check your JSON connection.');
-    }
-  };
-
-  const fetchData = async () => {
-    try {
-      setLoading(true);
-
-      await Promise.all([fetchLocalData(), fetchLocalData()]);
-      //await fetchYouTubeData();
-    } catch (error) {
-      console.warn('Error fetching data:', error.message);
-      setError('Please check your network connection.');
-      await fetchLocalData();
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        await fetchYouTubeData();
+        setShowVideoCard(true);
+      } catch (error) {
+        console.warn('Error fetching data:', error.message);
+        setError('Please check your network connection.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchData();
   }, []);
 
@@ -110,23 +88,6 @@ export default function KidsScreen() {
     } else {
       const filtered = videos.filter((item) =>
         item.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim())
-      );
-      setFilteredVideos(filtered);
-    }
-  }, [searchPhrase, videos]);
-
-  useEffect(() => {
-    if (searchPhrase.trim() === '') {
-      setFilteredVideos(videos);
-    } else {
-      const filtered = videos.filter((item) =>
-        item.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim()) ||
-        (item.albums &&
-          item.albums.some((album) =>
-            album.videos.some((video) =>
-              video.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim())
-            )
-          ))
       );
       setFilteredVideos(filtered);
     }
@@ -142,10 +103,6 @@ export default function KidsScreen() {
   };
 
   const renderVideoItem = ({ item }) => {
-    if (!item || !item.snippet || !item.snippet.title) {
-      return null;
-    }
-
     const thumbnailUrl = item.snippet.thumbnails.medium.url;
 
     if (!thumbnailUrl) {
@@ -187,7 +144,6 @@ export default function KidsScreen() {
           <AntDesign name="home" size={24} color="black" />
         </TouchableOpacity>
       </View>
-
       {!clicked && <Text style={styles.titles}></Text>}
 
       <SearchVideo
@@ -197,11 +153,16 @@ export default function KidsScreen() {
         setClicked={setClicked}
         updateVideos={updateVideos}
       />
+       {showVideoCard && (
+            <View style={styles.listVideo}>
+              <VideoCard style={styles.playlist} title="Video Title" subTitle="Video Subtitle" image={pic} />
+            </View>
+          )}
 
-      {localData && localData.albums && localData.albums.length > 0 && (
+      {filteredVideos.length > 0 && (
         <FlatList
-          data={localData.albums}
-          keyExtractor={(item) => item.id}
+          data={filteredVideos}
+          keyExtractor={(item) => item.id.videoId.toString()}
           renderItem={renderVideoItem}
         />
       )}
@@ -209,18 +170,9 @@ export default function KidsScreen() {
       {loading ? (
         <ActivityIndicator size="large" color={colors.green} />
       ) : error ? (
-        <>
-          <View style={styles.errorContainer}>
-            <Text style={styles.errorText}>{error}</Text>
-          </View>
-          {localData && localData.length > 0 && (
-            <FlatList
-              data={localData && localData.albums ? localData.albums : []}
-              keyExtractor={(item) => item.id}
-              renderItem={renderVideoItem}
-            />
-          )}
-        </>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+        </View>
       ) : videos.length === 0 ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>No videos to display</Text>
@@ -231,15 +183,8 @@ export default function KidsScreen() {
             <View style={styles.videoContainer}>
               {selectedVideo && selectedVideo.id && selectedVideo.id.videoId ? (
                 <WebView
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  source={{
-                    uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}`,
-                  }}
+                  source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
                   style={styles.video}
-                  onError={(syntheticEvent) =>
-                    console.error('WebView error:', syntheticEvent.nativeEvent)
-                  }
                 />
               ) : (
                 <Video
@@ -249,14 +194,20 @@ export default function KidsScreen() {
                   resizeMode="cover"
                 />
               )}
+              
             </View>
           )}
+          {/* {showVideoCard && (
+            <View style={styles.listVideo}>
+              <VideoCard style={styles.playlist} title="Video Title" subTitle="Video Subtitle" image={pic} />
+            </View>
+          )} */}
         </>
       )}
+   
     </SafeAreaView>
   );
 }
-KidsScreen.propTypes = {};
 
 const styles = StyleSheet.create({
   container: {
@@ -308,7 +259,7 @@ const styles = StyleSheet.create({
     height: 310,
   },
   thumbnail: {
-    width: 230,
+    width: 250,
     height: 130,
     resizeMode: 'cover',
     borderRadius: 12,
@@ -317,9 +268,5 @@ const styles = StyleSheet.create({
     padding: 9,
     color: colors.darkBlue,
     fontWeight: 'bold',
-  },
-  result: {
-    fontSize: 10,
-    color: colors.red,
   },
 });

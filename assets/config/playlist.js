@@ -1,5 +1,5 @@
-{
-    'albums' [
+const playlist = {
+    albums: [
         {
           "id": "Cocomelon",
           "name": "Baby Shark",
@@ -42,3 +42,5 @@
             }
           ]
 }
+
+export default playlist;

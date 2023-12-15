@@ -6,6 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from './screens/WelcomeScreen';
 import KidsScreen from './screens/KidsScreen';
 import PlayListScreen from './screens/PlayListScreen';
+import GamesScreen from './screens/GamesScreen';
 import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
 import Testing from './screens/Testing';
@@ -71,6 +72,16 @@ export default function App(props) {
         {() => (
           <ScreenWithBackground>
             <PlayListScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Games Zone"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <GamesScreen />
           </ScreenWithBackground>
         )}
       </Stack.Screen>

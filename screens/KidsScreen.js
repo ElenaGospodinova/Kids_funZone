@@ -133,7 +133,7 @@ export default function KidsScreen() {
       <View style={styles.fixedHeader}>
         <TouchableOpacity
           style={styles.next}
-          onPress={() => navigation.navigate('PlayList Zone')}
+          onPress={() => navigation.navigate('Games Zone')}
         >
           <Entypo name="game-controller" size={24} color="black" />
         </TouchableOpacity>
@@ -155,7 +155,7 @@ export default function KidsScreen() {
       />
        {showVideoCard && (
             <View style={styles.listVideo}>
-              <VideoCard style={styles.playlist} title="More Videos"  image={pic} />
+              <VideoCard style={styles.playlist} title="More Videos" image={pic} />
             </View>
           )}
 

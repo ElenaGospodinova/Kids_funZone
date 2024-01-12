@@ -8,22 +8,27 @@ const GamesScreen = () => {
   
   useEffect(() => {
     const fetchAccessories = async () => {
-      const url = 'https://cheapshark-game-deals.p.rapidapi.com/games?title=batman&exact=0&limit=60';
+      const url = 'https://trivia-by-api-ninjas.p.rapidapi.com/v1/trivia';
       const options = {
         method: 'GET',
         headers: {
           'X-RapidAPI-Key': '847b72ca63mshef857b9ae558dc0p1f3e08jsn3e246b4af59a',
-          'X-RapidAPI-Host': 'gamerpower.p.rapidapi.com',
+          'X-RapidAPI-Host': 'trivia-by-api-ninjas.p.rapidapi.com',
         },
       };
 
       try {
         const response = await fetch(url, options);
-        const result = await response.json(); // Assuming the API returns JSON data
+        const result = await response.json(); 
         
+        const accessoriesWithIds = result.map((item, index) => ({
+          ...item,
+          id: index.toString(), 
+        }))
+
         console.log('API Response:', result);
 
-        setAccessories(result); // Update the state with the fetched accessories
+        setAccessories(accessoriesWithIds); 
       } catch (error) {
         console.error('API Request Error:',error);
       }
@@ -70,7 +75,7 @@ const GamesScreen = () => {
         <FlatList
           data={accessories}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={renderAccessoryItem}
+          // renderItem={renderAccessoryItem}
         />
       )}
     </View>

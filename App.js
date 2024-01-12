@@ -1,7 +1,8 @@
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
+import { useDeviceOrientation } from '@react-native-community/hooks';
+import { Dimensions } from 'react-native';
 
 import WelcomeScreen from './screens/WelcomeScreen';
 import KidsScreen from './screens/KidsScreen';
@@ -13,7 +14,8 @@ import Testing from './screens/Testing';
 
 const Stack = createNativeStackNavigator();
 
-const ScreenWithBackground = ({ children }) => (
+const ScreenWithBackground = ({ children }) => (  
+
   <BackgroundApp>{children}</BackgroundApp>
 );
 
@@ -41,6 +43,14 @@ const tabBarOptions = {
 
 export default function App(props) {
   
+  console.log(useDeviceOrientation());
+  
+   // Get device window dimensions
+   const { width, height } = Dimensions.get('window');
+
+   console.log('Device window dimensions:', width, height);
+ 
+
   return (
     
     <NavigationContainer>

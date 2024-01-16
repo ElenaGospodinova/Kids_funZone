@@ -1,81 +1,85 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from 'react-native';
-import { WebView } from 'react-native-webview';
+import { StyleSheet, Text, View, FlatList, TouchableOpacity, Image } from 'react-native';
+
+const API_KEY = '7b40ccf4a7e0409db82869c16777e458';
+
+const getPlatformStr = (platforms) => {
+  const platformStr = platforms.map((pl) => pl.platform.name).join(", ");
+  if (platformStr.length > 30) {
+    return platformStr.substring(0, 30) + "...";
+  }
+  return platformStr;
+};
 
 const GamesScreen = () => {
-  const [accessories, setAccessories] = useState([]);
-  const [selectedAccessoryUrl, setSelectedAccessoryUrl] = useState(null);
-  
+  const [games, setGames] = useState([]);
+  const [selectedGameUrl, setSelectedGameUrl] = useState(null);
+  const [nextGameListUrl, setNextGameListUrl] = useState(null);
+
   useEffect(() => {
-    const fetchAccessories = async () => {
-      const url = 'https://trivia-by-api-ninjas.p.rapidapi.com/v1/trivia';
-      const options = {
-        method: 'GET',
-        headers: {
-          'X-RapidAPI-Key': '847b72ca63mshef857b9ae558dc0p1f3e08jsn3e246b4af59a',
-          'X-RapidAPI-Host': 'trivia-by-api-ninjas.p.rapidapi.com',
-        },
-      };
+    const initialUrl = `https://api.rawg.io/api/games?key=${API_KEY}&dates=2022-01-01,2023-12-31&ordering=-added`;
 
-      try {
-        const response = await fetch(url, options);
-        const result = await response.json(); 
-        
-        const accessoriesWithIds = result.map((item, index) => ({
-          ...item,
-          id: index.toString(), 
-        }))
+    // Load games without any filtering
+    loadGames(initialUrl);
+  }, []);
 
-        console.log('API Response:', result);
-
-        setAccessories(accessoriesWithIds); 
-      } catch (error) {
-        console.error('API Request Error:',error);
+  const loadGames = async (url) => {
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`API Request Error: ${response.status} - ${response.statusText}`);
       }
-    };
+      const data = await response.json();
+      const newGames = data.results;
+      const newNextGameListUrl = data.next;
 
-    fetchAccessories(); // Call the fetchAccessories function when the component mounts
-  }, []); // Empty dependency array ensures that this effect runs once
+      setNextGameListUrl(newNextGameListUrl);
+      setGames((prevGames) => [...prevGames, ...newGames]);
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };
 
-  const viewAccessory = (url) => {
-    setSelectedAccessoryUrl(url);
+  const viewGame = (url) => {
+    setSelectedGameUrl(url);
   };
 
   const closeWebView = () => {
-    setSelectedAccessoryUrl(null);
+    setSelectedGameUrl(null);
   };
 
-  const renderAccessoryItem = ({ item }) => (
-    <TouchableOpacity style={styles.accessoryItem} onPress={() => viewAccessory(item.url)}>
-      <Text style={styles.accessoryName}>{item.name}</Text>
-      <Text>{`Platform: ${item.platforms}`}</Text>
-      <Text>{`Type: ${item.type}`}</Text>
-      <Text>{`Price: ${item.salePrice}`}</Text>
-      <Text>{`Release Date: ${item.releaseDate}`}</Text>
-      <Text>{`Metacritic Score: ${item.metacriticScore || 'N/A'}`}</Text>
-      <Text>{`Deal Rating: ${item.dealRating || 'N/A'}`}</Text>
-      {/* Add more details or styling as needed */}
-    </TouchableOpacity>
-  );
-  
-  
+  const renderGameItem = ({ item }) => {
+    return (
+      <TouchableOpacity style={styles.gameItem} onPress={() => viewGame(item.website)}>
+        <Image source={{ uri: item.background_image }} style={styles.gameImage} />
+        <Text style={styles.gameName}>{item.name}</Text>
+        <Text style={styles.platforms}>{getPlatformStr(item.parent_platforms)}</Text>
+        <Text style={styles.rating}>Rating: {item.rating}</Text>
+        <Text style={styles.released}>Released: {item.released}</Text>
+      </TouchableOpacity>
+    );
+  };
 
   return (
-      
     <View style={styles.container}>
-      <Text style={styles.header}>GamesScreen</Text>
-      {selectedAccessoryUrl ? (
+      <Text style={styles.header}>Games</Text>
+      {selectedGameUrl ? (
         <View style={styles.webViewContainer}>
           <TouchableOpacity style={styles.closeButton} onPress={closeWebView}>
             <Text style={styles.closeButtonText}>Close</Text>
           </TouchableOpacity>
-          <WebView source={{ uri: selectedAccessoryUrl }} />
+          <WebView source={{ uri: selectedGameUrl }} />
         </View>
       ) : (
         <FlatList
-          data={accessories}
+          data={games}
           keyExtractor={(item) => item.id.toString()}
-          // renderItem={renderAccessoryItem}
+          renderItem={renderGameItem}
+          onEndReached={() => {
+            if (nextGameListUrl) {
+              loadGames(nextGameListUrl);
+            }
+          }}
         />
       )}
     </View>
@@ -85,26 +89,44 @@ const GamesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 26,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
   },
-  accessoryItem: {
+  gameItem: {
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: '#ccc',
-    backgroundColor: '#fff', // Background color for each item
-    borderRadius: 8, // Add some border radius for a rounded look
-    marginVertical: 8, // Adjust vertical margin between items
+    backgroundColor: 'rgba(173, 216, 230, 0.8)',
+    borderRadius: 18,
+    marginVertical: 8,
   },
-  accessoryName: {
+  gameImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'cover',
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  gameName: {
     fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
-    color: '#333', 
+    color: '#333',
+  },
+  platforms: {
+    color: '#666',
+    marginBottom: 8,
+  },
+  rating: {
+    color: '#666',
+    marginBottom: 8,
+  },
+  released: {
+    color: '#666',
+    marginBottom: 8,
   },
   webViewContainer: {
     flex: 1,

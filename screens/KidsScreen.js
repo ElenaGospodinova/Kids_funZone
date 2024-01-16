@@ -46,7 +46,7 @@ export default function KidsScreen() {
       }
 
       const data = await response.json();
-      console.log('YouTube API Response:', data);
+      // console.log('YouTube API Response:', data);
 
       if (data.items && data.items.length > 0) {
         updateVideos(data.items);

@@ -15,6 +15,7 @@ export default function WelcomeScreen(props) {
   const navigateItems = () => {
     navigation.navigate('Kids Zone'); 
     navigation.navigate('Games Zone');
+    navigation.navigate('Music Zone');
     navigation.navigate('Home');
 
 };
@@ -31,6 +32,10 @@ export default function WelcomeScreen(props) {
         <LogInBtn style={styles.childBtn}
           title="Games"
           onPress={() => navigation.navigate('Games Zone')}
+        />
+         <LogInBtn style={styles.childBtn}
+          title="Music"
+          onPress={() => navigation.navigate('Music Zone')}
         />
     </SafeAreaView>
   );

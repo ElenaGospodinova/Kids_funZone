@@ -2,7 +2,7 @@ export default{
     background:'#D8F8CD',
     red:'#C60809',
     green:'#2D9B07',
-    // lightGreen:'#A2C579',
+    greenL:'#A2C579',
     lightGreen:'#95CD41',
     blue:'#5F87ED',
     backgroundBlue:'#1A82CD',

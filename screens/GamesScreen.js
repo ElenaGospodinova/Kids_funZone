@@ -1,227 +1,245 @@
-import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  FlatList,
-  TouchableOpacity,
-  Image,
-  ActivityIndicator,
-  WebView,
-} from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, 
+          Text, 
+          View, 
+          FlatList, 
+          Image, 
+          TouchableOpacity, 
+          SafeAreaView } from 'react-native';
+import { WebView } from 'react-native-webview';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import * as Animatable from 'react-native-animatable';
 
 import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
+import Adventure_Academy from '../assets/img/gamesImg/Adventure_Academy.png';
+import ABCmouse from '../assets/img/gamesImg/ABCmouse.png';
+import Poki_Kids from '../assets/img/gamesImg/Poki_Kids.png';
+import KiZi from '../assets/img/gamesImg/KiZi.png';
+import Adapted_Mind from '../assets/img/gamesImg/Adapted_Mind.png';
+import Safe_Kids_Games from '../assets/img/gamesImg/Safe_Kids_Games.png';
 
-const API_KEY = '7b40ccf4a7e0409db82869c16777e458';
-const KID_KEYWORDS = ['kids', 'children', 'family'];
 
 const GamesScreen = () => {
-  const [games, setGames] = useState([]);
-  const [selectedGameUrl, setSelectedGameUrl] = useState(null);
-  const [nextGameListUrl, setNextGameListUrl] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [selectedGame, setSelectedGame] = useState(null);
 
   const navigation = useNavigation();
 
-  useEffect(() => {
-    const initialUrl = `https://api.rawg.io/api/games?key=${API_KEY}&ordering=-added&genres=${KID_KEYWORDS.join()}`;
+  const playGame = async (url) => {
+    if (url && typeof url === 'string' && url.trim() !== '') {
+      setSelectedGame(url);
+    } else {
+      console.error('Invalid URL:', url);
+    }
+  };  
 
-    const fetchGames = async (url) => {
-      try {
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error(`API Request Error: ${response.status} - ${response.statusText}`);
-        }
-        const data = await response.json();
-        const newGames = data.results;
-        const newNextGameListUrl = data.next;
+  const games = [
+    {
+      id: 'Poki Kids',
+      image: Poki_Kids,
+      gameUrl: 'https://kids.poki.com/',
+    },
+    {
+      id: 'KiZi',
+      image: KiZi,
+      gameUrl: 'https://kizi.com/kids',
+    },
+    {
+      id: 'Adapted Mind',
+      image: Adapted_Mind,
+      gameUrl: 'https://www.adaptedmind.com/Math-Worksheets.html?utm_medium=cpc&utm_source=microsoft&campaignid=603360158&campaign_type=search&placement=o&utm_content=responsivesearchad&adid=72293220966648&adset_id=1156688071131394&utm_term=online%20education%20games&device=c&msclkid=7e16184812031e24e1f27de7d686c926&utm_campaign=Search_Bing_NB_CAN_AUS_UK_Phrase',
+    },
+    {
+      id: 'Adventure Academy',
+      image: Adventure_Academy ,
+      gameUrl:
+        'https://www.adventureacademy.com/?src_tag=nonbrand::bing&utm_campaignid=272496824&utm_adgroupid=1227055165508530&utm_adextensionid=&utm_targetid=kwd-76691275688118:loc-188&utm_matchtype=p&utm_network=o&utm_device=c&utm_devicemodel=&utm_creativeid=&utm_placement=&utm_adposition=&utm_geo=US&msclkid=161ff60b039b15649cdf93a4832f1b89',
+    },
+    {
+      id: 'ABC mouse',
+      image: ABCmouse,
+      gameUrl:
+        'https://www.abcmouse.com/abc/?msclkid=c8499d3bc2001fac404af89441c4c295&utm_campaignid=470330525&utm_adgroupid=1235852068068298&utm_adextensionid=&utm_targetid=kwd-77241011563294&utm_matchtype=b&utm_network=o&utm_device=c&utm_devicemodel=&utm_creativeid=&utm_placement=&utm_adposition=&utm_geo=Canada&msclkid=c8499d3bc2001fac404af89441c4c295',
+    },
+    {
+      id: 'Safe Kids Games',
+      image: Safe_Kids_Games,
+      gameUrl:'https://www.safekidgames.com/popular-games/',
+    }
+  ];
 
-        setNextGameListUrl(newNextGameListUrl);
-        setGames((prevGames) => [...prevGames, ...newGames]);
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGames(initialUrl);
-  }, []);
-
-  const viewGame = (url) => {
-    setSelectedGameUrl(url);
+  const selectGame = (gameUrl) => {
+    if (isValidURL(gameUrl)) {
+      setSelectedGame(gameUrl);
+    } else {
+      console.error('Invalid URL:', gameUrl);
+    }
   };
+  
+  const isValidURL = (url) => {
+    // Regular expression for a valid URL pattern
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    return urlPattern.test(url);
+  };
+  
 
-  const closeWebView = () => {
-    setSelectedGameUrl(null);
+  const closeGame = () => {
+    setSelectedGame(null);
   };
 
   const renderGameItem = ({ item }) => {
     return (
-      <TouchableOpacity style={styles.gameItem} onPress={() => viewGame(item.website)}>
-        <Image source={{ uri: item.background_image }} style={styles.gameImage} />
-        <Text style={styles.gameName}>{item.name}</Text>
-        <Text style={styles.rating}>Rating: {item.rating}</Text>
+      <Animatable.View 
+       animation="pulse" // Choose your animation here
+       iterationCount={2}
+       style={styles.gameItem}>
+        <Text style={styles.gameName}>{item.id}</Text>
 
-        <LogInBtn
-          onPress={() => viewGame(item.website)}
-          title="Play"
-          style={styles.childBtn}
-        />
-      </TouchableOpacity>
+        <Image 
+            source={item.image}
+            style ={styles.gameImg}
+            resizeMode= 'contain'
+             />
+        <Animatable.View
+        animation="pulse" // Choose your animation here
+        iterationCount={8}
+       
+      >
+            <LogInBtn 
+                animation="pulse"
+                iterationCount={18}
+                style={styles.childBtn}
+                onPress={() => selectGame(item.gameUrl)}
+                title = 'Play'
+            />
+        </Animatable.View>
+      </Animatable.View>
+     
     );
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.fixedHeader}>
-        <TouchableOpacity style={styles.next} title='Video' onPress={() => navigation.navigate('Kids Zone')}>
-          <Entypo name="video" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.back} title='Home' onPress={() => navigation.navigate('Home')}>
-          <AntDesign name="home" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      <Text style={styles.header}>Games</Text>
+    <SafeAreaView style={styles.container}>
+    
+        <View style={styles.container}>
+          <Text style={styles.fixedHeader}>Games</Text>
+          <TouchableOpacity
+              style={styles.next}
+              onPress={() => navigation.navigate('Kids Zone')}
+            >
+              <Entypo name="video" size={24} color="black" />
 
-      {loading && <ActivityIndicator size="large" color={colors.primary} />}
-      {error && <Text style={styles.errorText}>Error: {error}</Text>}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.music}
+              onPress={() => navigation.navigate('Music Zone')}
+            >
+              <Entypo name="music" size={24} color="black" />
 
-      {!loading && !error && (
-        <FlatList
-          data={games}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderGameItem}
-          // Pagination handling here
-        />
-      )}
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.back}
+              onPress={() => navigation.navigate('Home')}
+            >
+              <AntDesign name="home" size={24} color="black" />
+            </TouchableOpacity>
 
-      {selectedGameUrl ? (
-        <View style={styles.webViewContainer}>
-          <TouchableOpacity style={styles.closeButton} onPress={closeWebView}>
-            <Text style={styles.closeButtonText}>Close</Text>
-          </TouchableOpacity>
-          <WebView source={{ uri: selectedGameUrl }} />
+          <FlatList
+            data={games}
+            keyExtractor={(item) => item.id}
+            renderItem={renderGameItem}
+          />
+
+          {selectedGame && (
+            <View style={styles.webViewContainer}>
+            {/* //make the component - clode btn  */}
+              <Text style={styles.closeButton} onPress={closeGame}>
+                Close
+              </Text>
+              <WebView source={{ uri: selectedGame }} />
+            </View>
+          )}
         </View>
-      ) : null}
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 26,
+    padding: 16,
   },
   fixedHeader: {
-    position: 'absolute',
-    top: 60,
-    left: 2,
-    right: 0,
-    zIndex: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-    backgroundColor: colors.lightBlue,
-  },
-  header: {
     fontSize: 24,
     fontWeight: 'bold',
-    top: 83,
-    left: 120,
+    marginBottom: 16,
+    marginTop:33,
+    left:154,
   },
   next: {
-    marginRight: 10,
     position: 'absolute',
-    top: Platform.OS === 'android' ? -1 : 4,
-    right: 18,
+    top: 3,
+    right: 20,
     zIndex: 12,
-    color: colors.white,
+  },
+  music:{
+    position: 'absolute',
+    top: 3,
+    right:60,
   },
   back: {
     position: 'absolute',
-    top: Platform.OS === 'android' ? -1 : 3,
+    top: 3,
     left: 20,
     zIndex: 12,
-    color:colors.white,
+  },
+  gameImg:{
+    height: 160,
+    width: 320,
+   
   },
   gameItem: {
-    padding: 16,
-    top: 120,
+    margin: 20,
+    right: 10,
+    padding: 23,
+    alignItems: 'center',
+    borderRadius: 42,
+    width: '90%',
     backgroundColor: 'rgba(173, 216, 230, 0.8)',
-    borderRadius: 18,
-    marginVertical: 8,
-  },
-  gameImage: {
-    width: 250,
-    height: 180,
-    resizeMode: 'cover',
-    marginBottom: 8,
-    borderRadius: 8,
-    left: 22,
   },
   gameName: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
-    marginBottom: 8,
-    left: 57, 
-    color: '#333',
+    flex: 1,
+    color: colors.darkBlue,
   },
-  childBtn:{
-    width:100,
-    height:50,
-    flexDirection:'column',
-    borderRadius:12,
-    padding:2,
-    margin:9,
-    backgroundColor: '#65B741',
-    zIndex:32,
-    color:'white',
-    left:50,
-    
-  },
-  platforms: {
-    color: '#666',
-    marginBottom: 8,
-  },
-  rating: {
-    color: '#666',
-    marginBottom: 8,
-    left:57,
-  },
-  released: {
-    color: '#666',
-    marginBottom: 8,
+  childBtn: {
+    margin:12,
+    backgroundColor:colors.green,
+    top:12,
+    paddingRight:20,
+    width:110,
   },
   webViewContainer: {
-    flex: 1,
-  },
-  closeButton: {
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    padding: 10,
     position: 'absolute',
     top: 0,
+    left: 0,
     right: 0,
-    zIndex: 1,
+    bottom: 0,
+    zIndex: 999,
   },
-  closeButtonText: {
-    color: 'white',
-  },
-  next: {
+  closeButton: {
     position: 'absolute',
-    top: 10,
-    right: 10,
-    zIndex: 1,
-  },
-  back: {
-    position: 'absolute',
-    top: 10,
-    left: 10,
-    zIndex: 1,
+    top: 66,
+    right: 16,
+    zIndex: 1000,
+    width:70,
+    height:30,
+    padding:7,
+    color: 'blue',
+    fontWeight:'bold',
+    backgroundColor:'white',
   },
 });
 

@@ -1,0 +1,19 @@
+{
+    "games": [
+      {
+        "id": "Adventure Academy",
+        "name": "Adventure Academy",
+        "gameUrl": "https://www.adventureacademy.com/?src_tag=nonbrand::bing&utm_campaignid=272496824&utm_adgroupid=1227055165508530&utm_adextensionid=&utm_targetid=kwd-76691275688118:loc-188&utm_matchtype=p&utm_network=o&utm_device=c&utm_devicemodel=&utm_creativeid=&utm_placement=&utm_adposition=&utm_geo=US&msclkid=161ff60b039b15649cdf93a4832f1b89"
+      },
+      {
+        "id": "ABC mouse",
+        "name": "ABC mouse",
+        "gameUrl": "https://www.abcmouse.com/abc/?msclkid=c8499d3bc2001fac404af89441c4c295&utm_campaignid=470330525&utm_adgroupid=1235852068068298&utm_adextensionid=&utm_targetid=kwd-77241011563294&utm_matchtype=b&utm_network=o&utm_device=c&utm_devicemodel=&utm_creativeid=&utm_placement=&utm_adposition=&utm_geo=Canada&msclkid=c8499d3bc2001fac404af89441c4c295"
+      },
+      {
+        "id": "CBeebies Games",
+        "name": "CBeebies Games",
+        "gameUrl": "https://www.bbc.co.uk/cbeebies/games"
+      }
+    ]
+}

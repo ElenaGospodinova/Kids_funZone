@@ -36,7 +36,7 @@ export default function KidsScreen() {
     try {
       setLoading(true);
       const API_KEY = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
-      const searchTerm = 'cocomelon-kids-videos-blippi-bbc-CBeebies';
+      const searchTerm = 'cocomelon-kids-videos-blippi-bbc-CBeebies-marvel';
       const response = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchTerm}&type=video&key=${API_KEY}`
       );

@@ -8,6 +8,7 @@ import WelcomeScreen from './screens/WelcomeScreen';
 import KidsScreen from './screens/KidsScreen';
 import PlayListScreen from './screens/PlayListScreen';
 import GamesScreen from './screens/GamesScreen';
+import MusicScreen from './screens/MusicScreen';
 import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
 import Testing from './screens/Testing';
@@ -92,6 +93,16 @@ export default function App(props) {
         {() => (
           <ScreenWithBackground>
             <GamesScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Music Zone"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <MusicScreen />
           </ScreenWithBackground>
         )}
       </Stack.Screen>

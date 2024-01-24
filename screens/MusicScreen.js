@@ -169,4 +169,3 @@ const styles = StyleSheet.create({
 
 export default MusicScreen;
 
-//Access Token: {"access_token":"BQBb-QQy3uy4s00O2SF5SY-Vd8_08AG6DjZBRoWnV5kXHGWHQq1KHs38kM70MK8ECqMiN_7Z4PUYskyfKnL0FsF0RTj1BEKfBSwsi1mbrCN-EnEZcN8","token_type":"Bearer","expires_in":3600}

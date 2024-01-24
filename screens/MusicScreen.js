@@ -11,9 +11,12 @@ import axios from 'axios';
 import { WebView } from 'react-native-webview';
 
 
-const token = 'a829cad6b64344c88a2b7425a94e9f06';
+const CLIENT_ID = 'a829cad6b64344c88a2b7425a94e9f06';
+const CLIENT_SECRET = '25ab471a807e411c82a140cfa83461ba';
 
 const MusicScreen = () => {
+  const [searchInput, setSearchInput] = useState('');
+  const [access_token, setAcccessToken] = useState('');
   const [tracks, setTracks] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -23,46 +26,68 @@ const MusicScreen = () => {
   const playlist_id = 'kids_playlist_id';
   const market = 'ES';
 
-  const initialUrl = `https://api.spotify.com/v1/playlists/${playlist_id}?market=${market}&fields=items(added_by.id,track(name,href,album(name,href)))`;
+  //const initialUrl = `https://api.spotify.com/v1/playlists/${playlist_id}?market=${market}&fields=items(added_by.id,track(name,href,album(name,href)))`;
 
+  // useEffect(() => {
+  //   const initialUrl = `https://accounts.spotify.com/api/token`;
+
+  //   async function getTopKidsTracks() {
+  //     return await fetchWebApi(initialUrl, 'GET');
+  //   }
+
+  //   const loadTracks = (url) => {
+  //     setLoading(true);
+  //     setError(null);
+
+  //     axios
+  //       .get(url, {
+  //         headers: {
+  //           Authorization: `Bearer ${CLIENT_ID}`,
+  //         },
+  //       })
+  //       .then((response) => {
+  //         const data = response.data;
+  //         setNextTrackListUrl(null); // Since playlists don't have a "next" endpoint
+
+  //         const newTracks = data.items.map(({ track }) => ({
+  //           id: track.href, // You can use track.href as the unique ID
+  //           name: track.name,
+  //           album: track.album.name,
+  //           albumHref: track.album.href,
+  //         }));
+
+  //         setTracks(newTracks);
+  //       })
+  //       .catch((error) => {
+  //         setError(error.message);
+  //       })
+  //       .finally(() => {
+  //         setLoading(false);
+  //       });
+  //   };
+
+  //   getTopKidsTracks(initialUrl);
+  // }, []);
+   
   useEffect(() => {
-    async function getTopKidsTracks() {
-      return await fetchWebApi(initialUrl, 'GET');
+    const authParameters ={
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
     }
-
-    const loadTracks = (url) => {
-      setLoading(true);
-      setError(null);
-
-      axios
-        .get(url, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        })
-        .then((response) => {
-          const data = response.data;
-          setNextTrackListUrl(null); // Since playlists don't have a "next" endpoint
-
-          const newTracks = data.items.map(({ track }) => ({
-            id: track.href, // You can use track.href as the unique ID
-            name: track.name,
-            album: track.album.name,
-            albumHref: track.album.href,
-          }));
-
-          setTracks(newTracks);
-        })
-        .catch((error) => {
-          setError(error.message);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    };
-
-    loadTracks(initialUrl);
+    fetch('https://accounts.spotify.com/api/token', authParameters)
+      .then(result => result.json())
+      .then(data => setAcccessToken(data.access_token))
+      .catch(error => console.error('Error fetching access token:', error));
   }, []);
+  
+  //search
+  async function search(){
+    console.log('Search for ' + searchInput)
+  }
+
 
   const renderTrackItem = ({ item }) => {
     if (!item) {
@@ -143,3 +168,5 @@ const styles = StyleSheet.create({
 });
 
 export default MusicScreen;
+
+//Access Token: {"access_token":"BQBb-QQy3uy4s00O2SF5SY-Vd8_08AG6DjZBRoWnV5kXHGWHQq1KHs38kM70MK8ECqMiN_7Z4PUYskyfKnL0FsF0RTj1BEKfBSwsi1mbrCN-EnEZcN8","token_type":"Bearer","expires_in":3600}

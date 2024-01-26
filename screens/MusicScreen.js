@@ -5,136 +5,160 @@ import {
   View,
   FlatList,
   ActivityIndicator,
-  
 } from 'react-native';
-import axios from 'axios';
-import { WebView } from 'react-native-webview';
 
+import SearchBar from '../assets/components/SearchBar';
+import LogInBtn from '../assets/components/LogInBtn';
+import MusicCard from '../assets/components/MusicCard';
 
 const CLIENT_ID = 'a829cad6b64344c88a2b7425a94e9f06';
 const CLIENT_SECRET = '25ab471a807e411c82a140cfa83461ba';
 
 const MusicScreen = () => {
   const [searchInput, setSearchInput] = useState('');
-  const [access_token, setAcccessToken] = useState('');
-  const [tracks, setTracks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [searchPhrase, setSearchPhrase] = useState('');
+  const [access_token, setAccessToken] = useState('');
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [nextTrackListUrl, setNextTrackListUrl] = useState(null);
+  const [clicked, setClicked] = useState(false);
 
-  // Replace 'your_playlist_id' with the actual playlist ID you want to display
-  const playlist_id = 'kids_playlist_id';
-  const market = 'ES';
-
-  //const initialUrl = `https://api.spotify.com/v1/playlists/${playlist_id}?market=${market}&fields=items(added_by.id,track(name,href,album(name,href)))`;
-
-  // useEffect(() => {
-  //   const initialUrl = `https://accounts.spotify.com/api/token`;
-
-  //   async function getTopKidsTracks() {
-  //     return await fetchWebApi(initialUrl, 'GET');
-  //   }
-
-  //   const loadTracks = (url) => {
-  //     setLoading(true);
-  //     setError(null);
-
-  //     axios
-  //       .get(url, {
-  //         headers: {
-  //           Authorization: `Bearer ${CLIENT_ID}`,
-  //         },
-  //       })
-  //       .then((response) => {
-  //         const data = response.data;
-  //         setNextTrackListUrl(null); // Since playlists don't have a "next" endpoint
-
-  //         const newTracks = data.items.map(({ track }) => ({
-  //           id: track.href, // You can use track.href as the unique ID
-  //           name: track.name,
-  //           album: track.album.name,
-  //           albumHref: track.album.href,
-  //         }));
-
-  //         setTracks(newTracks);
-  //       })
-  //       .catch((error) => {
-  //         setError(error.message);
-  //       })
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   };
-
-  //   getTopKidsTracks(initialUrl);
-  // }, []);
-   
   useEffect(() => {
     const authParameters ={
       method: "POST",
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
-      body: 'grant_type=client_credentials&client_id=' + CLIENT_ID + '&client_secret=' + CLIENT_SECRET
+      body: `grant_type=client_credentials&client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}`,
     }
     fetch('https://accounts.spotify.com/api/token', authParameters)
-      .then(result => result.json())
-      .then(data => setAcccessToken(data.access_token))
+      .then((response) => response.json())
+      .then((data) => {
+        setAccessToken(data.access_token);
+      })
       .catch(error => console.error('Error fetching access token:', error));
   }, []);
   
-  //search
-  async function search(){
-    console.log('Search for ' + searchInput)
+  const search = async (input) => {
+    console.log("Search for " + searchInput);
+
+  
+  //Get request using search to get Artist ID
+  const searchParameters = {
+    method: "GET",
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + access_token
+    }
+  };
+
+  try {
+    const artistIDResponse = await fetch(`https://api.spotify.com/v1/search?q=${searchInput}&type=artist`, searchParameters);
+
+    if (artistIDResponse.ok) {
+      const artistData = await artistIDResponse.json();
+      const artistID = artistData.artists?.items[0]?.id;
+
+      if (artistID) {
+        console.log("Artist ID is: " + artistID);
+
+        // Now that you have the artist ID, fetch all albums for that artist
+        const albumsResponse = await fetch(`https://api.spotify.com/v1/artists/${artistID}/albums`, searchParameters);
+
+        if (albumsResponse.ok) {
+          const albumsData = await albumsResponse.json();
+          const albums = albumsData.items;
+          console.log("Artist Albums:", albums);
+        } else {
+          console.error('Failed to fetch artist albums');
+        }
+      } else {
+        console.warn('No artist found for the search query.');
+      }
+    } else {
+      console.error(
+        'Failed to fetch artist',
+        artistIDResponse.status,
+        artistIDResponse.statusText
+      );
+    }
+  } catch (error) {
+    setError('Error occurred while fetching data');
+    console.error('Error:', error);
   }
+};
+  // Get request with Artst ID grab all the albums from that artist
 
+  const albumsResponse= async (artistID) => {
 
-  const renderTrackItem = ({ item }) => {
-    if (!item) {
-      return null;
+  try {
+    const albumsResponse = await fetch(`https://api.spotify.com/v1/artists/${artistID}/albums`, searchParameters);
+
+    if (albumsResponse.ok) {
+      const albumsData = await albumsResponse.json();
+      // Handle the albumsData as needed
+    } else {
+      console.error('Failed to fetch artist albums', albumsResponse.status, albumsResponse.statusText);
     }
-    return (
-      <View style={styles.trackItem}>
-        <Text style={styles.trackName}>{item.name}</Text>
-        <Text style={styles.albumName}>Album: {item.album}</Text>
-        {/* Add a play button or action to play the track */}
-      </View>
-    );
-  };
+  } catch (error) {
+    console.error('Error fetching albums:', error);
+  }
+};
 
-  const loadMoreTracks = () => {
-    if (nextTrackListUrl) {
-      loadTracks(nextTrackListUrl);
-    }
-  };
+albumsResponse();
+
+
+  //Display those albums to the user 
+
+
+
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Kids' Music Playlist</Text>
-
-      {loading && <ActivityIndicator size="large" />}
-      {error && <Text style={styles.errorText}>Error: {error}</Text>}
-
-      {!loading && (
-        <FlatList
-          data={tracks}
-          keyExtractor={(item) => item.id.toString()}
-          renderItem={renderTrackItem}
-          onEndReached={loadMoreTracks}
-          onEndReachedThreshold={0.1}
-        />
-      )}
-
-      {/* Add a WebView component to display the Spotify playlist */}
-      <WebView
-            source={{
-                uri: `https://open.spotify.com/embed/playlist/${playlist_id}?utm_source=generator&theme=0`,
+      <Text style={styles.header}>Music Playlist</Text>
+      <SearchBar
+          searchPhrase={searchInput}
+          setSearchPhrase={setSearchInput}
+          setClicked={setClicked}
+          clicked={clicked}
+          onKeyPress={(event) => {
+            if (event.key == "Enter") {
+              search(searchInput);
+              setSearchInput('');
+              setSearchPhrase('');
+              console.log("Enter clicked");
+            }
+          }}
+          onPress={(text) => {
+           console.log('User Searched for: ',text);
+           setSearchInput(text);
+           //search;
+           }}
+      />        
+          <LogInBtn 
+            onPress={() => {
+              console.log("Search Btn Clicked");
+              setSearchPhrase('');
+              search(searchInput);
             }}
-            style={{ minHeight: 360 }} // Set the height as needed
+            title="Search"
+            style={styles.search}
+          />
+           
+         
+        {loading && <ActivityIndicator size="large" />}
+        {error && <Text style={styles.errorText}>Error: {error}</Text>}
+
+        <MusicCard
+          source={{ uri: "https://source.unsplash.com/random" }}
+          style={{ minHeight: 360 }}
+        />
+           <MusicCard
+          source={{ uri: "https://source.unsplash.com/random" }}
+          style={{ minHeight: 360 }}
         />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -145,6 +169,16 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 16,
+  },
+  search:{
+    width:'22%',
+    height:"5%",
+    fontSize: 25,
+    color:'red',
+    backgroundColor:'green',
+    left:323,
+    bottom: 58,
+    paddingLeft:1,
   },
   trackItem: {
     marginVertical: 8,
@@ -168,4 +202,3 @@ const styles = StyleSheet.create({
 });
 
 export default MusicScreen;
-

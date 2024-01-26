@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, TextInput, View, Keyboard, Button } from "react-native";
 import { Feather, Entypo } from "@expo/vector-icons";
 
-const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
+const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
   return (
     <View style={styles.container}>
       <View
@@ -24,16 +24,24 @@ const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
           style={styles.input}
           placeholder="Search"
           value={searchPhrase}
-          onChangeText={setSearchPhrase}
+          onChangeText={(text) => {
+            setSearchPhrase(text);
+          }}
           onFocus={() => {
             setClicked(true);
           }}
         />
         {/* cross Icon, depending on whether the search bar is clicked or not */}
         {clicked && (
-          <Entypo name="cross" size={20} color="black" style={{ padding: 1 }} onPress={() => {
-              setSearchPhrase("")
-          }}/>
+          <Entypo
+            name="cross"
+            size={20}
+            color="black"
+            style={{ padding: 1 }}
+            onPress={() => {
+              setSearchPhrase('');
+            }}
+          />
         )}
       </View>
       {/* cancel button, depending on whether the search bar is clicked or not */}
@@ -51,6 +59,7 @@ const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setCLicked}) => {
     </View>
   );
 };
+
 export default SearchBar;
 
 // styles
@@ -61,12 +70,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     flexDirection: "row",
     width: "90%",
-
   },
   searchBar__unclicked: {
     padding: 10,
     flexDirection: "row",
-    width: "95%",
+    width: "84%",
     backgroundColor: "#d9dbda",
     borderRadius: 15,
     alignItems: "center",
@@ -74,7 +82,7 @@ const styles = StyleSheet.create({
   searchBar__clicked: {
     padding: 10,
     flexDirection: "row",
-    width: "80%",
+    width: "84%",
     backgroundColor: "#d9dbda",
     borderRadius: 15,
     alignItems: "center",

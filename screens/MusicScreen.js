@@ -7,7 +7,7 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
-  Pressable,
+  
 } from 'react-native';
 import { Audio } from 'expo-av'; 
 
@@ -21,7 +21,7 @@ const CLIENT_SECRET = '25ab471a807e411c82a140cfa83461ba';
 
 const MusicScreen = () => {
   const [searchInput, setSearchInput] = useState('');
-  //const [searchPhrase, setSearchPhrase] = useState('');
+  const [searchPhrase, setSearchPhrase] = useState('');
   const [access_token, setAccessToken] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -157,7 +157,7 @@ const MusicScreen = () => {
 
   return (
     <View style={styles.container}>
-      <SearchBar
+        <SearchBar
         style={styles.searchBar}
         searchPhrase={searchInput}
         setSearchPhrase={setSearchInput}
@@ -190,7 +190,7 @@ const MusicScreen = () => {
       {loading && <ActivityIndicator size="large" />}
       {error && <Text style={styles.errorText}>Error: {error}</Text>}
       {renderTracks()}
-      <Text style={styles.header}>Music Playlist</Text>
+      <Text style={styles.header}>Your Music</Text>
       
     </View>
     
@@ -205,7 +205,9 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    bottom: 716,
+    bottom: 726,
+    color:'white',
+    left:125,
   },
   search: {
     width: '22%',
@@ -213,7 +215,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     backgroundColor: 'green',
     left: 323,
-    bottom: 2,
+    bottom: 13,
     paddingLeft: 1,
   },
   trackItem: {

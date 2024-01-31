@@ -1,6 +1,8 @@
 import React from 'react';
 import { SafeAreaView,
          StyleSheet, 
+         Text,
+         View
         } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
@@ -20,11 +22,37 @@ export default function WelcomeScreen(props) {
 
 };
 
+const greetingMessage = () => {
+  const currentTime = new Date().getHours();
+  if (currentTime < 12) {
+    return "Good Morning";
+  } else if (currentTime < 16) {
+    return "Good Afternoon";
+  } else {
+    return "Good Evening";
+  }
+};
+const message = greetingMessage();
 
   return (
     <SafeAreaView style={styles.background}>
       <Logo />
-    
+      <View style={{
+        justifyContent:'center',
+        alignItems:'center',
+        top:93,
+        left:124,
+      }}>
+      <Text
+        style={{
+          fontSize: 20,
+          fontWeight: "bold",
+            color: "white",
+        }}
+      >
+      {message}
+      </Text>
+      </View>
       <LogInBtn style={styles.childBtn}
           title="Videos"
           onPress={() => navigation.navigate('Kids Zone')}

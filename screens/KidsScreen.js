@@ -245,6 +245,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '95%',
     backgroundColor: 'rgba(173, 216, 230, 0.8)',
+    
   },
   videoContainer: {
     padding: 32,
@@ -257,6 +258,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1,
     height: 310,
+   
   },
   thumbnail: {
     width: 250,
@@ -268,5 +270,6 @@ const styles = StyleSheet.create({
     padding: 9,
     color: colors.darkBlue,
     fontWeight: 'bold',
+    
   },
 });

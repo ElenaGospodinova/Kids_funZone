@@ -47,14 +47,14 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
       {/* cancel button, depending on whether the search bar is clicked or not */}
       {clicked && (
         <View style={styles.btnClose}>
-          <Button
+          {/* <Button
             
             title="Close"
             onPress={() => {
               Keyboard.dismiss();
               setClicked(false);
             }}
-          ></Button>
+          ></Button> */}
         </View>
       )}
     </View>
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#d9dbda",
     borderRadius: 15,
     alignItems: "center",
+    right:12,
   },
   searchBar__clicked: {
     padding: 10,
@@ -90,10 +91,11 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "space-evenly",
+    right:12,
   },
   input: {
     fontSize: 20,
-    marginLeft: 10,
+    marginLeft: 7,
     width: "90%",
     bottom:3,
   },

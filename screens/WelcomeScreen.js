@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     color:'white',
     top:169,
     left:133,
+    
   },
   image:{
     flex:1,

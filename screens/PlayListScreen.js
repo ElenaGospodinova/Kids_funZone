@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Platform, SafeAreaView } from 'react-native';
+import { StyleSheet,
+          TouchableOpacity, 
+          ActivityIndicator, 
+          View, 
+          Text,
+          Platform, 
+          SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { FlatList } from 'react-native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
@@ -22,6 +28,7 @@ export default function PlayListScreen () {
     const navigate = () => {
     navigation.navigate('Home'); 
     navigation.navigate('Kids Zone');
+    navigation.navigate('Music Z0ne');
   };
   
   // const navigateTo = (screenName) => {
@@ -80,6 +87,10 @@ export default function PlayListScreen () {
     
   };
 
+  //movies IMDb fetch
+ 
+
+
   return (
   
     <Screen>
@@ -92,11 +103,21 @@ export default function PlayListScreen () {
                   onPress ={() => navigation.navigate('Kids Zone')}>
               <Entypo name="video" size={24} color="black" />
             </TouchableOpacity>
+            <TouchableOpacity
+          style={styles.music}
+          onPress={() => navigation.navigate('Music Zone')}
+        >
+          <Entypo name="music" size={24} color="black" />
+        </TouchableOpacity>
             <TouchableOpacity style={styles.back} title='Home'
                   onPress ={() => navigation.navigate('Home')}>
               <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
+            
       </View>
+      <View style={styles.movies}>
+                  <Text>Movies</Text>
+              </View>
       <FlatList
         style={styles.container}
         data={videos}
@@ -128,9 +149,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     
   },
-  next: {
-    marginRight: 10,
-  },
   back: {
     marginLeft: 10,
   },
@@ -148,6 +166,15 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 12,
     color:colors.white,
+  },
+  movies:{
+    top:42,
+    color:colors.white,
+  },
+  music: {
+    position: 'absolute',
+    top: 3,
+    right: 60,
   },
   fixedHeader: {
     position: 'absolute',
@@ -171,10 +198,10 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignSelf: 'stretch',
     flex: 1,
-    height: 230,
-    padding:20,
-    top:5,
-    marginTop:55,
+    height: 220,
+    padding:2,
+    top:1,
+    marginTop:95,
     
   },
 

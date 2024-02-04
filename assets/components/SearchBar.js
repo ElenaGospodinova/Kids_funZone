@@ -30,6 +30,9 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }) => {
           onFocus={() => {
             setClicked(true);
           }}
+          onBlur={() => {
+            setClicked(false);
+          }}
         />
         {/* cross Icon, depending on whether the search bar is clicked or not */}
         {clicked && (
@@ -74,7 +77,7 @@ const styles = StyleSheet.create({
   },
   searchBar__unclicked: {
     padding: 10,
-    top:46,
+    top:92,
     flexDirection: "row",
     width: "84%",
     backgroundColor: "#d9dbda",
@@ -84,7 +87,7 @@ const styles = StyleSheet.create({
   },
   searchBar__clicked: {
     padding: 10,
-    top:46,
+    top:92,
     flexDirection: "row",
     width: "84%",
     backgroundColor: "#d9dbda",

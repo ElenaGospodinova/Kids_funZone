@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
 import {
   ActivityIndicator,
   View,
@@ -15,10 +17,11 @@ import { WebView } from 'react-native-webview';
 import Video from 'react-native-video';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 
-import SearchVideo from '../assets/components/SearchVideo';
+//import SearchVideo from '../assets/components/SearchVideo';
 import colors from '../assets/config/colors';
 import VideoCard from '../assets/components/VideoCard';
 import pic from '../assets/img/photo.jpeg';
+import SearchBar from '../assets/components/SearchVideo';
 
 export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
@@ -28,48 +31,46 @@ export default function KidsScreen() {
   const [filteredVideos, setFilteredVideos] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
-  const [localData, setLocalData] = useState(null);
+  const [showVideoCard, setShowVideoCard] = useState(false); 
+  // const [localData, setLocalData] = useState(null);
 
   const navigation = useNavigation();
 
-  const fetchYouTubeData = async () => {
+  const API_KEY = 'AIzaSyAc-mBPxmogOpFk26KPtFUp-vFKHfD_dDE'; 
+  const API_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
+
+  async function fetchYouTubeData(searchTerm) {
     try {
-      setLoading(true);
-      const API_KEY = 'AIzaSyCAgL3lpdSaICRlc9d3PWrCpjgeZV31qWw';
-      const searchTerm = 'cocomelon-kids-videos-blippi-bbc-CBeebies-marvel';
-      const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults=10&q=${searchTerm}&type=video&key=${API_KEY}`
-      );
+      const response = await axios.get(API_ENDPOINT, {
+        params: {
+          part: 'snippet',
+          maxResults: 10,
+          q: searchTerm,
+          type: 'video',
+          key: API_KEY,
+        },
+      });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch data from YouTube API: ${response.status} - ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      // console.log('YouTube API Response:', data);
-
-      if (data.items && data.items.length > 0) {
-        updateVideos(data.items);
-      } else {
+      if (!response.data || !response.data.items) {
         console.warn('No video items found in the response');
-        setError('No video items found');
+        return [];
       }
+
+      return response.data.items;
     } catch (error) {
       console.error('Error fetching YouTube data:', error.message);
-      setError('Failed to fetch YouTube data. Please check your connection.');
-    } finally {
-      setLoading(false);
+      return [];
     }
-  };
-
-  const [showVideoCard, setShowVideoCard] = useState(false);
-
+  }
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        await fetchYouTubeData();
+        const searchTerm = 'cocomelon-kids-videos-blippi-CBeebies-marvel'; // Provide a search term here
+        const fetchedVideos = await fetchYouTubeData(searchTerm);
+        setVideos(fetchedVideos); // Set the videos
+        setFilteredVideos(fetchedVideos); // Set filtered videos
         setShowVideoCard(true);
       } catch (error) {
         console.warn('Error fetching data:', error.message);
@@ -92,11 +93,6 @@ export default function KidsScreen() {
       setFilteredVideos(filtered);
     }
   }, [searchPhrase, videos]);
-
-  const updateVideos = (newVideos) => {
-    setVideos(newVideos);
-    setFilteredVideos(newVideos);
-  };
 
   const onVideoSelected = (selectedVideo) => {
     setSelectedVideo(selectedVideo);
@@ -138,6 +134,12 @@ export default function KidsScreen() {
           <Entypo name="game-controller" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity
+          style={styles.music}
+          onPress={() => navigation.navigate('Music Zone')}
+        >
+          <Entypo name="music" size={24} color="black" />
+        </TouchableOpacity>
+        <TouchableOpacity
           style={styles.back}
           onPress={() => navigation.navigate('Home')}
         >
@@ -146,18 +148,17 @@ export default function KidsScreen() {
       </View>
       {!clicked && <Text style={styles.titles}></Text>}
 
-      <SearchVideo
+      <SearchBar
         searchPhrase={searchPhrase}
         setSearchPhrase={setSearchPhrase}
         clicked={clicked}
         setClicked={setClicked}
-        updateVideos={updateVideos}
       />
-       {showVideoCard && (
-            <View style={styles.listVideo}>
-              <VideoCard style={styles.playlist} title="More Videos" image={pic} />
-            </View>
-          )}
+      {showVideoCard && (
+        <View style={styles.listVideo}>
+          <VideoCard style={styles.playlist} title="More Videos" image={pic} />
+        </View>
+      )}
 
       {filteredVideos.length > 0 && (
         <FlatList
@@ -170,11 +171,17 @@ export default function KidsScreen() {
       {loading ? (
         <ActivityIndicator size="large" color={colors.green} />
       ) : error ? (
+        <PlayListScreen /> 
+       
+      ) : videos.length === 0 ? (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
         </View>
       ) : videos.length === 0 ? (
         <View style={styles.errorContainer}>
+
+        {/* {* to add link to diferent screen when there are no video! *} */}
+
           <Text style={styles.errorText}>No videos to display</Text>
         </View>
       ) : (
@@ -196,15 +203,10 @@ export default function KidsScreen() {
               )}
               
             </View>
+            
           )}
-          {/* {showVideoCard && (
-            <View style={styles.listVideo}>
-              <VideoCard style={styles.playlist} title="Video Title" subTitle="Video Subtitle" image={pic} />
-            </View>
-          )} */}
         </>
       )}
-   
     </SafeAreaView>
   );
 }
@@ -232,6 +234,11 @@ const styles = StyleSheet.create({
     left: 20,
     zIndex: 12,
   },
+  music: {
+    position: 'absolute',
+    top: 3,
+    right: 60,
+  },
   fixedHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -245,7 +252,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     width: '95%',
     backgroundColor: 'rgba(173, 216, 230, 0.8)',
-    
   },
   videoContainer: {
     padding: 32,
@@ -258,7 +264,6 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1,
     height: 310,
-   
   },
   thumbnail: {
     width: 250,
@@ -270,6 +275,9 @@ const styles = StyleSheet.create({
     padding: 9,
     color: colors.darkBlue,
     fontWeight: 'bold',
-    
+  },
+  movies:{
+    color:'white',
+    bottom:123,
   },
 });

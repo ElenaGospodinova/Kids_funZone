@@ -9,6 +9,9 @@ import {
   Image,
 } from 'react-native';
 import { Audio } from 'expo-av';
+import { useNavigation } from '@react-navigation/native';
+import { AntDesign, Entypo } from '@expo/vector-icons';
+
 import colors from '../assets/config/colors';
 import SearchBar from '../assets/components/SearchBar';
 import LogInBtn from '../assets/components/LogInBtn';
@@ -17,6 +20,8 @@ const CLIENT_ID = 'a829cad6b64344c88a2b7425a94e9f06';
 const CLIENT_SECRET = '25ab471a807e411c82a140cfa83461ba';
 
 const MusicScreen = () => {
+  const navigation = useNavigation();
+
   const [searchInput, setSearchInput] = useState('');
   const [access_token, setAccessToken] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,7 +30,7 @@ const MusicScreen = () => {
   const [searchInitiated, setSearchInitiated] = useState(false);
   const [kidsSongs, setKidsSongs] = useState([]);
   const [audio, setAudio] = useState(null);
-  const [clicked, setClicked] = useState();
+  const [clicked, setClicked] = useState(false);
 
   const searchParameters = {
     method: 'GET',
@@ -59,11 +64,12 @@ const MusicScreen = () => {
   }, []);
 
   const search = async () => {
+    setLoading(true);
     try {
       const artistIDResponse = await fetch(
         `https://api.spotify.com/v1/search?q=${searchInput}&type=artist`,
         searchParameters,
-        setSearchInitiated(true),
+       // setSearchInitiated(true),
       );
 
       if (artistIDResponse.ok) {
@@ -83,7 +89,9 @@ const MusicScreen = () => {
             const albums = albumsData.items;
             console.log('Artist Albums:', albums);
 
-//And fetching images
+          
+  
+          //And fetching images
 
             const tracksWithImages = await Promise.all(
               albums.map(async (album) => {
@@ -97,11 +105,14 @@ const MusicScreen = () => {
             );
 
             setTracks(tracksWithImages);
+           setLoading(false); 
           } else {
             console.error('Failed to fetch artist albums');
+           
           }
         } else {
           console.warn('No artist found for the search query.');
+       
         }
       } else {
         console.error(
@@ -149,84 +160,53 @@ const MusicScreen = () => {
     }
   };
 
-  const renderKidsSongs = () => {
-    return (
-      <FlatList
-        data={kidsSongs}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.trackItem}
-            onPress={() => playMusic(item.album.preview_url)}
-          >
-            <Image source={{ uri: item.albums.images.url }} style={styles.trackImage} />
-            <View>
-              <Text style={styles.trackName}>{item.name}</Text>
-              <Text style={styles.trackArtists}>
-                {item.artists.map((artist) => artist.name).join(', ')}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-    );
-  };
-  
-  useEffect(() => {
-    fetchSongsList(); 
-  }, []);
-
-  const renderTracks = () => {
-    return (
-      <FlatList
-        data={tracks}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TouchableOpacity
-            style={styles.trackItem}
-            onPress={() => playMusic(item.preview_url)}
-          >
-            <Image source={{ uri: item.image }} style={styles.trackImage} />
-            <View>
-              <Text style={styles.trackName}>{item.name}</Text>
-              <Text style={styles.trackArtists}>
-                {item.artists.map((artist) => artist.name).join(', ')}
-              </Text>
-            </View>
-          </TouchableOpacity>
-        )}
-      />
-    );
-  };
 
   return (
         <View style={styles.container}>
-          <SearchBar
-              style={styles.searchBar}
-              searchPhrase={searchInput}
-              setSearchPhrase={setSearchInput}
-              setClicked={setClicked}
-              clicked={clicked}
-              onKeyPress={(event) => {
-                if (event.key == 'Enter') {
-                  search(searchInput);
-                  setSearchInput('');
-                  setSearchPhrase('');
-                  console.log('Enter clicked');
-                }
-              }}
-              onPress={(text) => {
-                console.log('User Searched for: ', text);
-                setSearchInput(text);
-                search(searchInput);
-              }}
-          />
+          <TouchableOpacity
+              style={styles.next}
+              onPress={() => navigation.navigate('Kids Zone')}
+            >
+              <Entypo name="video" size={24} color="black" />
+
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.music}
+              onPress={() => navigation.navigate('Games Zone')}
+            >
+              <Entypo name="game-controller" size={24} color="black" />
+
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.back}
+              onPress={() => navigation.navigate('Home')}
+            >
+              <AntDesign name="home" size={24} color="black" />
+            </TouchableOpacity>
+            <SearchBar
+                style={styles.searchBar}
+                searchPhrase={searchInput}
+                setSearchPhrase={setSearchInput}
+                setClicked={setClicked}
+                clicked={clicked}
+                onKeyPress={(event) => {
+                  if (event.key == 'Enter') {
+                    search(searchInput); 
+                    console.log('Enter clicked');
+                  }
+                }}
+                onPress={(text) => {
+                  console.log('User Searched for: ', text);
+                  setSearchInput(text); 
+                }}
+            />
+
           <LogInBtn
             title="Search"
             style={styles.search}
             onPress={() => {
               console.log('Search Btn Clicked');
-              setSearchInput('');
+              setSearchInitiated(true);
               search(searchInput);
             }}
           />
@@ -234,6 +214,7 @@ const MusicScreen = () => {
           {error && <Text style={styles.errorText}>Error: {error}</Text>}
           {searchInitiated && (
             <FlatList
+                style={styles.searchResult}
                 data={tracks}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
@@ -258,7 +239,7 @@ const MusicScreen = () => {
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
                   <View style={styles.songs}>
-                    <Image source={{ uri: item.image }} style={styles.trackImage} />
+                    <Image source={{ uri: item.album.images[0].url }} style={styles.trackImage} />
                     <View>
                       <Text style={styles.trackName}>{item.name}</Text>
                       <Text style={styles.trackArtists}>
@@ -281,13 +262,30 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    top: 12,
+    bottom: 44,
     color: 'white',
     left: 125,
   },
+  next: {
+    position: 'absolute',
+    top: 83,
+    right: 20,
+    zIndex: 12,
+  },
+  music:{
+    position: 'absolute',
+    top: 83,
+    right:60,
+  },
+  back: {
+    position: 'absolute',
+    top: 83,
+    left: 20,
+    zIndex: 12,
+  },
   songs:{
-    top:24,
-    padding:22,
+    top: 94,
+    padding:2,
     paddingBottom:2,
    
   },
@@ -297,10 +295,17 @@ const styles = StyleSheet.create({
     fontSize: 15,
     backgroundColor: colors.lightGreen,
     left: 313,
-    bottom: 9,
+    top: 40,
     paddingLeft: 2,
   },
+  searchResult:{
+    
+      top:12,
+      height:'100%',
+      width:'90%'
+  },
   trackItem: {
+    top:62,
     flexDirection: 'row',
     alignItems: 'center',
     marginVertical: 8,
@@ -312,14 +317,12 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 10,
-    height:23,
-    width:50,
     
   },
   kidsSongsContainer: {
     backgroundColor:colors.green,
     height:"100%",
-    top:23,
+    top:33,
   },
   trackName: {
     fontSize: 18,

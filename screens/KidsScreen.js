@@ -23,6 +23,7 @@ import VideoCard from '../assets/components/VideoCard';
 import pic from '../assets/img/photo.jpeg';
 import SearchBar from '../assets/components/SearchVideo';
 
+
 export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -67,7 +68,7 @@ export default function KidsScreen() {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const searchTerm = 'cocomelon-kids-videos-blippi-CBeebies-marvel'; // Provide a search term here
+        const searchTerm = 'cocomelon-kids-videos-blippi-CBeebies-marvel'; 
         const fetchedVideos = await fetchYouTubeData(searchTerm);
         setVideos(fetchedVideos); // Set the videos
         setFilteredVideos(fetchedVideos); // Set filtered videos
@@ -171,7 +172,10 @@ export default function KidsScreen() {
       {loading ? (
         <ActivityIndicator size="large" color={colors.green} />
       ) : error ? (
-        <PlayListScreen /> 
+        <>
+          <PlayListScreen /> 
+          {/* <MoviesScreen /> */}
+        </>
        
       ) : videos.length === 0 ? (
         <View style={styles.errorContainer}>

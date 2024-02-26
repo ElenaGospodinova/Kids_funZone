@@ -69,7 +69,7 @@ const MusicScreen = () => {
       const artistIDResponse = await fetch(
         `https://api.spotify.com/v1/search?q=${searchInput}&type=artist`,
         searchParameters,
-       // setSearchInitiated(true),
+       setSearchInitiated(true),
       );
 
       if (artistIDResponse.ok) {
@@ -137,7 +137,7 @@ const MusicScreen = () => {
   };
 
   const kidsList =
-    'https://api.spotify.com/v1/search?q=kids%20songs&type=track&limit=15';
+    'https://api.spotify.com/v1/search?q=kids%20songs&type=track&limit=25';
 
   const fetchSongsList = async () => {
     try {
@@ -197,7 +197,7 @@ const MusicScreen = () => {
                 }}
                 onPress={(text) => {
                   console.log('User Searched for: ', text);
-                  setSearchInput(text); 
+                 setSearchInput(text); 
                 }}
             />
 
@@ -262,7 +262,7 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    bottom: 44,
+    bottom:255,
     color: 'white',
     left: 125,
   },
@@ -284,7 +284,7 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   songs:{
-    top: 94,
+    bottom: 1,
     padding:2,
     paddingBottom:2,
    
@@ -322,7 +322,7 @@ const styles = StyleSheet.create({
   kidsSongsContainer: {
     backgroundColor:colors.green,
     height:"100%",
-    top:33,
+    bottom:13,
   },
   trackName: {
     fontSize: 18,

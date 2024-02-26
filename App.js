@@ -7,11 +7,13 @@ import { Dimensions } from 'react-native';
 import WelcomeScreen from './screens/WelcomeScreen';
 import KidsScreen from './screens/KidsScreen';
 import PlayListScreen from './screens/PlayListScreen';
+//import MoviesScreen from './screens/MoviesScreen';
 import GamesScreen from './screens/GamesScreen';
 import MusicScreen from './screens/MusicScreen';
 import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
 import Testing from './screens/Testing';
+import OpenScreen from './screens/OpenScreen.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -53,9 +55,21 @@ export default function App(props) {
  
 
   return (
+    <>
     
     <NavigationContainer>
+   
     <Stack.Navigator screenOptions={screenOptions}>
+    <Stack.Screen
+        name="Start"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+          <OpenScreen/>
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
       <Stack.Screen
         name="Home"
         options={{ headerShown: false }} // Optional: To hide the header
@@ -86,6 +100,16 @@ export default function App(props) {
           </ScreenWithBackground>
         )}
       </Stack.Screen>
+      {/* <Stack.Screen
+        name="Movies Zone"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <MoviesScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen> */}
       <Stack.Screen
         name="Games Zone"
         options={{ headerShown: false }} // Optional: To hide the header
@@ -118,6 +142,7 @@ export default function App(props) {
       </Stack.Screen>
     </Stack.Navigator>
   </NavigationContainer>
+  </>
   
   );
 }

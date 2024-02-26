@@ -3,9 +3,9 @@ import {  Platform, SafeAreaView, View, StyleSheet } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 //import colors from '../config/colors';
 
-export default function Logo() {
+export default function Logo({style}) {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, style]}>
       
       <View style={styles.images}>
         <Animatable.Image

@@ -11,6 +11,7 @@ import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
 
+
 export default function WelcomeScreen(props) {
   const navigation = useNavigation();
  
@@ -19,6 +20,7 @@ export default function WelcomeScreen(props) {
     navigation.navigate('Games Zone');
     navigation.navigate('Music Zone');
     navigation.navigate('Home');
+    navigation.navigate('Start');
 
 };
 

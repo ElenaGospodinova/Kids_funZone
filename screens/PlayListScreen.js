@@ -5,6 +5,7 @@ import { StyleSheet,
           ActivityIndicator, 
           View, 
           Text,
+          Image,
           Platform, 
           SafeAreaView } from 'react-native';
 import { WebView } from 'react-native-webview';
@@ -13,6 +14,7 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 
 import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
+
 
 
 
@@ -25,17 +27,14 @@ export default function PlayListScreen () {
   
     const navigation = useNavigation();
 
-    const navigate = () => {
-    navigation.navigate('Home'); 
-    navigation.navigate('Kids Zone');
-    navigation.navigate('Music Z0ne');
-  };
-  
-  // const navigateTo = (screenName) => {
-  //   navigation.navigate(screenName);
-  //   console.log(`Navigating to ${screenName}`);
+  //   const navigate = () => {
+  //   navigation.navigate('Home'); 
+  //   navigation.navigate('Kids Zone');
+  //   navigation.navigate('Music Z0ne');
+  //   navigation.navigate('Movies Zone');
   // };
   
+
   
   const fetchLocalData = () => {
     try {
@@ -85,10 +84,7 @@ export default function PlayListScreen () {
     setVideos(newVideos);
     setLoading(false);
     
-  };
-
-  //movies IMDb fetch
- 
+  }; 
 
 
   return (
@@ -115,9 +111,14 @@ export default function PlayListScreen () {
             </TouchableOpacity>
             
       </View>
-      <View style={styles.movies}>
-                  <Text>Movies</Text>
-              </View>
+      {/* <View style={styles.movies}>
+        <TouchableOpacity onPress={() => navigation.navigate('Movies Zone')}>
+           <Text>Movies</Text>
+           <Image 
+              style={styles.moviesImg}
+              source={require('../assets/img/pxfuel.jpg')} />
+        </TouchableOpacity>
+      </View> */}
       <FlatList
         style={styles.container}
         data={videos}
@@ -145,8 +146,9 @@ export default function PlayListScreen () {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    padding: 17,
-    marginBottom: 20,
+    padding: 7,
+    marginTop: 40,
+    gap:142,
     
   },
   back: {
@@ -168,7 +170,7 @@ const styles = StyleSheet.create({
     color:colors.white,
   },
   movies:{
-    top:42,
+    top:92,
     color:colors.white,
   },
   music: {
@@ -200,9 +202,14 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 220,
     padding:2,
-    top:1,
-    marginTop:95,
+    marginTop:25,
     
+  },
+  moviesImg:{
+    height:252,
+    width:'89%',
+    left:17,
+    borderRadius:12,
   },
 
 });

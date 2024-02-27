@@ -1,123 +1,55 @@
+import 'react-native-url-polyfill/auto';
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
-import { Button, Input } from 'react-native-elements';
-import { supabase } from '../assets/utils/supabase';
+import { StyleSheet, View } from 'react-native';
+import { supabase } from '../assets/utils/supabaseClient';
+import Auth from '../assets/components/Auth';
+import Account from '../assets/components/Account';
 import { Session } from '@supabase/supabase-js';
 
-import LogInBtn from '../assets/components/LogInBtn';
+import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 
-export default function Account({ session }) {
-  const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('');
-  const [website, setWebsite] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
+
+const OpenScreen = () => {
+
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
-    if (session) getProfile();
-  }, [session]);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
 
-  async function getProfile() {
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error('No user on the session!');
-
-      const { data, error, status } = await supabase
-        .from('profiles')
-        .select(`username, website, avatar_url`)
-        .eq('id', session?.user.id)
-        .single();
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        setUsername(data.username);
-        setWebsite(data.website);
-        setAvatarUrl(data.avatar_url);
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  async function updateProfile({ username, website, avatar_url }) {
-    try {
-      setLoading(true);
-      if (!session?.user) throw new Error('No user on the session!');
-
-      const updates = {
-        id: session?.user.id,
-        username,
-        website,
-        avatar_url,
-        updated_at: new Date(),
-      };
-
-      const { error } = await supabase.from('profiles').upsert(updates);
-
-      if (error) {
-        throw error;
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }
+    supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+  }, []);
 
   return (
     <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <Input  label="Email" value={session?.user?.email} disabled />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input label="Username" value={username || ''} onChangeText={(text) => setUsername(text)} />
-      </View>
-      <View style={styles.verticallySpaced}>
-        <Input style={styles.input} label="Website" value={website || ''} onChangeText={(text) => setWebsite(text)} />
-      </View>
-
-      <View style={[styles.verticallySpaced, styles.mt20]}>
-        <LogInBtn
-          title={loading ? 'Loading ...' : 'Update'}
-          onPress={() => updateProfile({ username, website, avatar_url: avatarUrl })}
-          disabled={loading}
-        />
-      </View>
-
-      <View style={styles.verticallySpaced}>
-        <LogInBtn title="Sign Out" onPress={() => supabase.auth.signOut()} />
-      </View>
+    <View >
+      <Logo style={styles.logoS}/>
     </View>
-  );
+    <View style={styles.logIn}>
+      {session && session.user ? <Account key={session.user.id} session={session} /> : <Auth />}
+    </View>
+  </View>
+  )
 }
 
+export default OpenScreen
+
 const styles = StyleSheet.create({
-  container: {
-    marginTop: 40,
-    padding: 12,
-    
+  container:{
+    flex:1,
   },
-  verticallySpaced: {
-    bottom:152,
-    left:112,
-    paddingTop: 2,
-    paddingBottom: 4,
-    alignSelf: 'stretch',
+  logoS:{
+    top:283,
+    width:373,
+  },
+  logIn:{
+    top:333,
+    left:134,
+    width:233,
     color:colors.darkBlue,
   },
-  input:{
-    color:colors.darkBlue,
-  },
-  mt20: {
-    marginTop: 20,
-    
-  },
-});
+})

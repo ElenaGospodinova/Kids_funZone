@@ -1,11 +1,10 @@
 import { TouchableOpacity , Text, StyleSheet} from 'react-native'
 import React from 'react'
-
 import colors from '../config/colors'
 
-export default function LogInBtn({title, onPress, style }) {
+export default function LogInBtn({title, onPress, style}) {
   return (
-    <TouchableOpacity style={[styles.buttonLogin, style]} onPress={onPress}>
+    <TouchableOpacity style={[styles.buttonLogin, style]} onPress={onPress}  disabled={false}>
         <Text style={styles.titleLogin}>{title}</Text>
     </TouchableOpacity>
   )

@@ -5,6 +5,8 @@ import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../utils/supabaseClient';
 import { Session } from '@supabase/supabase-js';
 
+import Avatar from './Avatar';
+
 export default function Account({ session }: { session: Session }) {
   const [loading, setLoading] = useState(true);
   const [username, setUsername] = useState('');
@@ -21,16 +23,18 @@ export default function Account({ session }: { session: Session }) {
     try {
       setLoading(true);
       if (!session?.user) throw new Error('No user on the session!');
-
-      const { data, error, status } = await supabase
+  
+      const response = await supabase
         .from('profiles')
         .select(`username, website, avatar_url`)
         .eq('id', session?.user.id)
         .single();
-      if (error && status !== 406) {
-        throw error;
+      
+      if (response.error) {
+        throw response.error;
       }
-
+  
+      const { data } = response;
       if (data) {
         setUsername(data.username);
         setWebsite(data.website);
@@ -66,7 +70,7 @@ export default function Account({ session }: { session: Session }) {
         updated_at: new Date(),
       };
 
-      const { error } = await supabase.from('profiles').upsert(updates);
+      let { error } = await supabase.from('profiles').upsert(updates);
 
       if (error) {
         throw error;
@@ -83,7 +87,11 @@ export default function Account({ session }: { session: Session }) {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+      <Avatar size={100} url={avatarUrl} onUpload={(url: string) => {
+        setAvatarUrl(url);
+        updateProfile({ username, website, avatar_url: url });
+      }} />
+      <View style={styles.verticallySpaced}>
         <Input label="Email" value={session?.user?.email} disabled />
       </View>
       <View style={styles.verticallySpaced}>
@@ -92,18 +100,16 @@ export default function Account({ session }: { session: Session }) {
       <View style={styles.verticallySpaced}>
         <Input label="Website" value={website || ''} onChangeText={(text) => setWebsite(text)} />
       </View>
-
-      <View style={[styles.verticallySpaced, styles.mt20]}>
+      <View style={styles.verticallySpaced}>
         <Button
           title={loading ? 'Loading ...' : 'Update'}
           onPress={() => {
             navigation.navigate('Home' as never);
-            updateProfile({ username, website, avatar_url: avatarUrl })
+            updateProfile({ username, website, avatar_url: avatarUrl });
           }}
-            disabled={loading}
+          disabled={loading}
         />
       </View>
-
       <View style={styles.verticallySpaced}>
         <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
       </View>
@@ -115,13 +121,11 @@ const styles = StyleSheet.create({
   container: {
     marginTop: 40,
     padding: 12,
+    height: 230,
   },
   verticallySpaced: {
     paddingTop: 4,
     paddingBottom: 4,
     alignSelf: 'stretch',
-  },
-  mt20: {
-    marginTop: 20,
   },
 });

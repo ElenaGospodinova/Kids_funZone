@@ -197,7 +197,7 @@ const MusicScreen = () => {
                 }}
                 onPress={(text) => {
                   console.log('User Searched for: ', text);
-                 setSearchInput(text); 
+                 //setSearchInput(text); 
                 }}
             />
 

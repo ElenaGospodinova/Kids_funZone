@@ -13,6 +13,8 @@ import colors from '../assets/config/colors';
 const OpenScreen = () => {
 
   const [session, setSession] = useState(null);
+  const [userName, setUserName] = useState('');
+  
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -23,6 +25,12 @@ const OpenScreen = () => {
       setSession(session);
     });
   }, []);
+
+  useEffect(() => {
+    if (session && session.user) {
+      setUserName(session.user.user_metadata.full_name); // Assuming full name is stored in user_metadata
+    }
+  }, [session]);
 
   return (
     <View style={styles.container}>

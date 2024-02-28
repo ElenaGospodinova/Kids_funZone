@@ -14,6 +14,7 @@ import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
 import Testing from './screens/Testing';
 import OpenScreen from './screens/OpenScreen.js';
+import Auth from './assets/components/Auth';
 
 const Stack = createNativeStackNavigator();
 
@@ -52,13 +53,12 @@ export default function App(props) {
    const { width, height } = Dimensions.get('window');
 
    console.log('Device window dimensions:', width, height);
- 
+
 
   return (
     <>
     
     <NavigationContainer>
-   
     <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen
         name="Start"

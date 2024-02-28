@@ -1,72 +1,84 @@
-import React from 'react';
-import { SafeAreaView,
-         StyleSheet, 
-         Text,
-         View
-        } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { SafeAreaView, StyleSheet, Text, View, Image, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import { supabase } from '../assets/utils/supabaseClient';
 
 import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
 
-
-export default function WelcomeScreen(props) {
+export default function WelcomeScreen({session}) {
   const navigation = useNavigation();
- 
-  const navigateItems = () => {
-    navigation.navigate('Kids Zone'); 
-    navigation.navigate('Games Zone');
-    navigation.navigate('Music Zone');
-    navigation.navigate('Home');
-    navigation.navigate('Start');
+  const [userName, setUserName] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
 
-};
+  useEffect(() => {
+    if (session){
+    getProfile();
+    }
+  }, [session]);
 
-const greetingMessage = () => {
-  const currentTime = new Date().getHours();
-  if (currentTime < 12) {
-    return "Good Morning";
-  } else if (currentTime < 16) {
-    return "Good Afternoon";
-  } else {
-    return "Good Evening";
+  async function getProfile() {
+    try {
+      if (!session || !session.user) throw new Error('No user on the session!');
+
+      const { data, error, status } = await supabase
+        .from('profiles')
+        .select(`username, website, avatar_url`)
+        .eq('id', session?.user.id)
+        .single();
+      if (error && status !== 406) {
+        throw error;
+      }
+
+      if (data) {
+        setUserName(data.username);
+       // setUserAvatar(data.avatar_url);
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message);
+      }
+    }
   }
-};
-const message = greetingMessage();
+
+  const greetingMessage = () => {
+    const currentTime = new Date().getHours();
+    let greeting = '';
+    if (currentTime < 12) {
+      greeting = 'Good Morning';
+    } else if (currentTime < 16) {
+      greeting = 'Good Afternoon';
+    } else {
+      greeting = 'Good Evening';
+    }
+    return `${greeting}, ${userName || ''}`;
+  };
+
+  const message = greetingMessage();
 
   return (
     <SafeAreaView style={styles.background}>
       <Logo />
-      <View style={{
-        justifyContent:'center',
-        alignItems:'center',
-        top:93,
-        left:124,
-      }}>
-      <Text
-        style={{
-          fontSize: 20,
-          fontWeight: "bold",
-            color: "white",
-        }}
-      >
-      {message}
-      </Text>
+      <View style={{ justifyContent: 'center', alignItems: 'center', top: 93, left: 124 }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
+          {message}
+        </Text>
+        <Text>
+          {userName}
+        </Text>
+        {userAvatar && (
+  <Image
+    source={{ uri: userAvatar }}
+    style={{ width: 50, height: 50, borderRadius: 25 }}
+  />
+)}
+
       </View>
-      <LogInBtn style={styles.childBtn}
-          title="Videos"
-          onPress={() => navigation.navigate('Kids Zone')}
-        />
-        <LogInBtn style={styles.childBtn}
-          title="Games"
-          onPress={() => navigation.navigate('Games Zone')}
-        />
-         <LogInBtn style={styles.childBtn}
-          title="Music"
-          onPress={() => navigation.navigate('Music Zone')}
-        />
+
+      <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
+      <LogInBtn style={styles.childBtn} title="Games" onPress={() => navigation.navigate('Games Zone')} />
+      <LogInBtn style={styles.childBtn} title="Music" onPress={() => navigation.navigate('Music Zone')} />
     </SafeAreaView>
   );
 }
@@ -76,38 +88,18 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    zIndex:12,
+    zIndex: 12,
   },
-  childBtn:{
-    width:140,
-    height:50,
-    flexDirection:'column',
-    borderRadius:12,
-    padding:2,
-    margin:9,
-    backgroundColor:colors.lightGreen,
-    color:'white',
-    top:169,
-    left:133,
-    
+  childBtn: {
+    width: 140,
+    height: 50,
+    flexDirection: 'column',
+    borderRadius: 12,
+    padding: 2,
+    margin: 9,
+    backgroundColor: colors.lightGreen,
+    color: 'white',
+    top: 169,
+    left: 133,
   },
-  image:{
-    flex:1,
-    top:2,
-    height:'100%',
-    width:'100%',
-    justifyContent:'flex-end',
-    flexWrap: 'wrap',
-    zIndex: -1,
-    position: 'absolute',
-  },
-  // parentBtn:{
-  //     margin:12,
-  //     width:150,
-  //     height:40,
-  //     borderRadius:12,
-  //     backgroundColor:colors.green,
-  //     color:'white',
-
-  // }
 });

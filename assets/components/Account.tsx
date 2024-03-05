@@ -1,51 +1,50 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
-import { Button, Input } from 'react-native-elements';
+import { useState, useEffect } from 'react'
 import { useNavigation } from '@react-navigation/native';
-import { supabase } from '../utils/supabaseClient';
-import { Session } from '@supabase/supabase-js';
+import { supabase } from '../utils/supabaseClient'
+import { StyleSheet, View, Alert } from 'react-native'
+import { Button, Input } from 'react-native-elements'
+import { Session } from '@supabase/supabase-js'
+import Avatar from './Avatar'
 
-import Avatar from './Avatar';
+import colors from '../config/colors';
 
 export default function Account({ session }: { session: Session }) {
-  const [loading, setLoading] = useState(true);
-  const [username, setUsername] = useState('');
-  const [website, setWebsite] = useState('');
-  const [avatarUrl, setAvatarUrl] = useState('');
+  const [loading, setLoading] = useState(true)
+  const [username, setUsername] = useState('')
+  const [website, setWebsite] = useState('')
+  const [avatarUrl, setAvatarUrl] = useState('')
 
   const navigation = useNavigation();
 
   useEffect(() => {
-    if (session) getProfile();
-  }, [session]);
+    if (session) getProfile()
+  }, [session])
 
   async function getProfile() {
     try {
-      setLoading(true);
-      if (!session?.user) throw new Error('No user on the session!');
-  
-      const response = await supabase
+      setLoading(true)
+      if (!session?.user) throw new Error('No user on the session!')
+
+      let { data, error, status } = await supabase
         .from('profiles')
         .select(`username, website, avatar_url`)
         .eq('id', session?.user.id)
-        .single();
-      
-      if (response.error) {
-        throw response.error;
+        .single()
+      if (error && status !== 406) {
+        throw error
       }
-  
-      const { data } = response;
+
       if (data) {
-        setUsername(data.username);
-        setWebsite(data.website);
-        setAvatarUrl(data.avatar_url);
+        setUsername(data.username)
+        setWebsite(data.website)
+        setAvatarUrl(data.avatar_url)
       }
     } catch (error) {
       if (error instanceof Error) {
-        Alert.alert(error.message);
+        Alert.alert(error.message)
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
@@ -54,13 +53,13 @@ export default function Account({ session }: { session: Session }) {
     website,
     avatar_url,
   }: {
-    username: string;
-    website: string;
-    avatar_url: string;
+    username: string
+    website: string
+    avatar_url: string
   }) {
     try {
-      setLoading(true);
-      if (!session?.user) throw new Error('No user on the session!');
+      setLoading(true)
+      if (!session?.user) throw new Error('No user on the session!')
 
       const updates = {
         id: session?.user.id,
@@ -68,64 +67,98 @@ export default function Account({ session }: { session: Session }) {
         website,
         avatar_url,
         updated_at: new Date(),
-      };
+      }
 
-      let { error } = await supabase.from('profiles').upsert(updates);
+      let { error } = await supabase.from('profiles').upsert(updates)
 
       if (error) {
-        throw error;
+        throw error
       }
-      
     } catch (error) {
       if (error instanceof Error) {
-        Alert.alert(error.message);
+        Alert.alert(error.message)
       }
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
   }
 
   return (
-    <View style={styles.container}>
-      <Avatar size={100} url={avatarUrl} onUpload={(url: string) => {
-        setAvatarUrl(url);
-        updateProfile({ username, website, avatar_url: url });
-      }} />
-      <View style={styles.verticallySpaced}>
-        <Input label="Email" value={session?.user?.email} disabled />
+    <View>
+      <View>
+        <Avatar 
+          size={200}
+          url={avatarUrl} 
+          onUpload={(url: string) => {
+            setAvatarUrl(url)
+            updateProfile({ username, website, avatar_url: url })
+          }} 
+        />
+      </View>
+      <View style={[styles.verticallySpaced, styles.mt20]}>
+        <Input 
+        labelStyle={{ color: 'white' }}
+        label="Email" 
+        value={session?.user?.email} disabled />
       </View>
       <View style={styles.verticallySpaced}>
-        <Input label="Username" value={username || ''} onChangeText={(text) => setUsername(text)} />
+        <Input 
+        labelStyle={{ color: 'white' }}
+        label="Username" 
+        value={username || ''} 
+        onChangeText={(text) => setUsername(text)} />
       </View>
       <View style={styles.verticallySpaced}>
-        <Input label="Website" value={website || ''} onChangeText={(text) => setWebsite(text)} />
+        <Input 
+        labelStyle={{ color: 'white' }}
+        label="Website" 
+        value={website || ''} 
+        onChangeText={(text) => setWebsite(text)} />
       </View>
-      <View style={styles.verticallySpaced}>
+
+      <View style={[styles.verticallySpaced, styles.mt20]}>
         <Button
+          buttonStyle={styles.button}
           title={loading ? 'Loading ...' : 'Update'}
+          titleStyle={{ fontWeight: 'bold' }}
           onPress={() => {
             navigation.navigate('Home' as never);
             updateProfile({ username, website, avatar_url: avatarUrl });
           }}
           disabled={loading}
+          
+
         />
       </View>
+
       <View style={styles.verticallySpaced}>
-        <Button title="Sign Out" onPress={() => supabase.auth.signOut()} />
+        <Button
+        buttonStyle={styles.button}
+        titleStyle={{ fontWeight: 'bold' }}
+        title="Sign Out" onPress={() => supabase.auth.signOut()} />
       </View>
     </View>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     marginTop: 40,
     padding: 12,
-    height: 230,
   },
   verticallySpaced: {
     paddingTop: 4,
     paddingBottom: 4,
     alignSelf: 'stretch',
+    color:colors.white,
+    
   },
-});
+  mt20: {
+    marginTop: 20,
+    
+  },
+  button: {
+    backgroundColor: colors.lightGreen,
+    borderRadius:12,
+  }
+})

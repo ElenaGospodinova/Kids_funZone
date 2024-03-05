@@ -7,14 +7,14 @@ import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
 
-export default function WelcomeScreen({session}) {
+export default function WelcomeScreen({ session }) {
   const navigation = useNavigation();
   const [userName, setUserName] = useState('');
   const [userAvatar, setUserAvatar] = useState('');
 
   useEffect(() => {
-    if (session){
-    getProfile();
+    if (session) {
+      getProfile();
     }
   }, [session]);
 
@@ -30,12 +30,14 @@ export default function WelcomeScreen({session}) {
       if (error && status !== 406) {
         throw error;
       }
+      console.log('Profile data:', data);
 
       if (data) {
         setUserName(data.username);
-       // setUserAvatar(data.avatar_url);
+        setUserAvatar(data.avatar_url);
       }
     } catch (error) {
+      console.error('Error fetching profile:', error);
       if (error instanceof Error) {
         Alert.alert(error.message);
       }
@@ -52,7 +54,8 @@ export default function WelcomeScreen({session}) {
     } else {
       greeting = 'Good Evening';
     }
-    return `${greeting}, ${userName || ''}`;
+
+    return `${greeting}, ${userName ? userName : ' Let the fun start'}`; 
   };
 
   const message = greetingMessage();
@@ -61,19 +64,18 @@ export default function WelcomeScreen({session}) {
     <SafeAreaView style={styles.background}>
       <Logo />
       <View style={{ justifyContent: 'center', alignItems: 'center', top: 93, left: 124 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>
+        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', right:33 }}>
           {message}
         </Text>
         <Text>
           {userName}
         </Text>
         {userAvatar && (
-  <Image
-    source={{ uri: userAvatar }}
-    style={{ width: 50, height: 50, borderRadius: 25 }}
-  />
-)}
-
+          <Image
+            source={{ uri: userAvatar }}
+            style={{ width: 50, height: 50, borderRadius: 25 }}
+          />
+        )}
       </View>
 
       <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
@@ -100,6 +102,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.lightGreen,
     color: 'white',
     top: 169,
-    left: 133,
+    left: 93,
   },
 });

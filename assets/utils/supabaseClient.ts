@@ -1,11 +1,12 @@
 import 'react-native-url-polyfill/auto'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { createClient } from '@supabase/supabase-js'
+// import { AppState } from 'react-native'
 
-const supabaseUrl = 'https://tgorvivmcpbbmmlzvaeg.supabase.co'
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnb3J2aXZtY3BiYm1tbHp2YWVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg5NTY1NTksImV4cCI6MjAyNDUzMjU1OX0.Rg7vOClsKYZeWxHN3NX_ohtlzRfp3EsRRC-G4fikgKg'
+const supabaseUrl = 'https://pqqatelwsycnhcldolki.supabase.co'
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBxcWF0ZWx3c3ljbmhjbGRvbGtpIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDk2NDI3NjIsImV4cCI6MjAyNTIxODc2Mn0.PcbJRePCrVMpLLMJANH46zab8RdQmTo8DQ1nWsTGKIQ'
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     storage: AsyncStorage,
     persistSession: true, // Enable persistent authentication
@@ -13,3 +14,4 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     detectSessionInUrl: false,
   },
 })
+

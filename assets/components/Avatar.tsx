@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '../utils/supabaseClient'
-import { StyleSheet, View, Alert, Image, Button } from 'react-native'
+import { StyleSheet, View, Alert, Image } from 'react-native'
+import { Button } from 'react-native-elements'
 import * as ImagePicker from 'expo-image-picker'
+import colors from '../config/colors'
 
 interface Props {
   size: number
@@ -56,7 +58,6 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       }
 
       const image = result.assets[0]
-      console.log('Got image', image)
 
       if (!image.uri) {
         throw new Error('No image uri!') // Realistically, this should never happen, but just in case...
@@ -101,6 +102,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       )}
       <View>
         <Button
+          buttonStyle={styles.uploadButton} // Apply custom style to the button
           title={uploading ? 'Uploading ...' : 'Upload'}
           onPress={uploadAvatar}
           disabled={uploading}
@@ -114,7 +116,10 @@ const styles = StyleSheet.create({
   avatar: {
     borderRadius: 5,
     overflow: 'hidden',
-    maxWidth: '100%',
+    width: 70,
+    height: 70,
+    right: 53,
+    top: 43,
   },
   image: {
     objectFit: 'cover',
@@ -126,7 +131,14 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderColor: 'rgb(200, 200, 200)',
     borderRadius: 25,
-    height:50,
-    width:50,
+    height: 50,
+    width: 50,
+  },
+  uploadButton: {
+    backgroundColor: colors.lightGreen,
+    color: colors.white, 
+    width:100,
+    left:23,
+    borderRadius:12,
   },
 })

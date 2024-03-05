@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useDeviceOrientation } from '@react-native-community/hooks';
@@ -14,7 +15,7 @@ import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
 import Testing from './screens/Testing';
 import OpenScreen from './screens/OpenScreen.js';
-import Auth from './assets/components/Auth';
+//import Auth from './assets/components/Auth';
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +45,7 @@ const tabBarOptions = {
   },
   activeTintColor: colors.white,
 };
+
 
 export default function App(props) {
   

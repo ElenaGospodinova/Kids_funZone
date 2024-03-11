@@ -15,6 +15,7 @@ import BackgroundApp from './assets/components/BackgroundApp';
 import colors from './assets/config/colors';
 import Testing from './screens/Testing';
 import OpenScreen from './screens/OpenScreen.js';
+import RecoveryScreen from './screens/RecoveryScreen';
 //import Auth from './assets/components/Auth';
 
 const Stack = createNativeStackNavigator();
@@ -69,6 +70,16 @@ export default function App(props) {
         {() => (
           <ScreenWithBackground>
           <OpenScreen/>
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Recovery Screen"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+          <RecoveryScreen/>
           </ScreenWithBackground>
         )}
       </Stack.Screen>

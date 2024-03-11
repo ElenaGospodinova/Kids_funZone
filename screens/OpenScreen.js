@@ -1,6 +1,7 @@
 import 'react-native-url-polyfill/auto';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../assets/utils/supabaseClient';
 import Auth from '../assets/components/Auth';
 import Account from '../assets/components/Account';
@@ -11,7 +12,7 @@ import colors from '../assets/config/colors';
 
 
 const OpenScreen = () => {
-
+  const navigation = useNavigation();
   const [session, setSession] = useState(null);
   const [userName, setUserName] = useState('');
   
@@ -43,6 +44,11 @@ const OpenScreen = () => {
     <View style={styles.logIn}>
       {session && session.user ? <Account key={session.user.id} session={session} /> : <Auth />}
     </View>
+    <View style={styles.forgottenP}>
+        <Text style={styles.text}onPress={() => navigation.navigate('Recovery Screen')}>
+          Forgotten Password
+        </Text>
+      </View>
   </View>
 )
 }
@@ -52,6 +58,15 @@ export default OpenScreen
 const styles = StyleSheet.create({
   container:{
     flex:1,
+  },
+  forgottenP:{
+    top:208,
+    left:153,
+    
+  },
+  text: {
+    color:colors.darkBlue,
+    textDecorationLine:'underline',
   },
   logoS:{
     top:283,

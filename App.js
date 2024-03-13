@@ -4,7 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useDeviceOrientation } from '@react-native-community/hooks';
 import { Dimensions } from 'react-native';
+import { Provider } from 'react-redux';
 
+import store from './store/store'
 import WelcomeScreen from './screens/WelcomeScreen';
 import KidsScreen from './screens/KidsScreen';
 import PlayListScreen from './screens/PlayListScreen';
@@ -16,6 +18,7 @@ import colors from './assets/config/colors';
 import Testing from './screens/Testing';
 import OpenScreen from './screens/OpenScreen.js';
 import RecoveryScreen from './screens/RecoveryScreen';
+import UserScreen from './screens/UserScreen';
 //import Auth from './assets/components/Auth';
 
 const Stack = createNativeStackNavigator();
@@ -60,7 +63,7 @@ export default function App(props) {
 
   return (
     <>
-    
+    <Provider store={store}>
     <NavigationContainer>
     <Stack.Navigator screenOptions={screenOptions}>
     <Stack.Screen
@@ -100,6 +103,16 @@ export default function App(props) {
         {() => (
           <ScreenWithBackground>
             <KidsScreen />
+          </ScreenWithBackground>
+        )}
+      </Stack.Screen>
+      <Stack.Screen
+        name="Your List"
+        options={{ headerShown: false }} // Optional: To hide the header
+      >
+        {() => (
+          <ScreenWithBackground>
+            <UserScreen />
           </ScreenWithBackground>
         )}
       </Stack.Screen>
@@ -155,6 +168,7 @@ export default function App(props) {
       </Stack.Screen>
     </Stack.Navigator>
   </NavigationContainer>
+  </Provider>
   </>
   
   );

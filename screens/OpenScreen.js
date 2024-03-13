@@ -33,7 +33,7 @@ const OpenScreen = () => {
     }
   }, [session]);
 
-  
+
 
   return (
     <View style={styles.container}>

@@ -6,43 +6,39 @@ import { supabase } from '../assets/utils/supabaseClient';
 import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
+import Avatar from '../assets/components/Avatar';
 
 export default function WelcomeScreen({ session }) {
   const navigation = useNavigation();
   const [userName, setUserName] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
+  //const [userAvatar, setUserAvatar] = useState('');
 
-  useEffect(() => {
-    if (session) {
-      getProfile();
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session?.user) {
+  //     getProfile();
+  //   }
+  // }, [session]);
 
-  async function getProfile() {
-    try {
-      if (!session || !session.user) throw new Error('No user on the session!');
+  // async function getProfile() {
+  //   try {
+  //     const { data, error } = await supabase
+  //       .from('profiles')
+  //       .select('avatar_url, username')
+  //       .eq('id', session.user.id)
+  //       .single();
 
-      const { data, error, status } = await supabase
-        .from('profiles')
-        .select(`username, website, avatar_url`)
-        .eq('id', session?.user.id)
-        .single();
-      if (error && status !== 406) {
-        throw error;
-      }
-      console.log('Profile data:', data);
+  //     if (error) {
+  //       throw error;
+  //     }
 
-      if (data) {
-        setUserName(data.username);
-        setUserAvatar(data.avatar_url);
-      }
-    } catch (error) {
-      console.error('Error fetching profile:', error);
-      if (error instanceof Error) {
-        Alert.alert(error.message);
-      }
-    }
-  }
+  //     if (data) {
+  //       setUserAvatar(data.avatar_url);
+  //       setUserName(data.username);
+  //     }
+  //   } catch (error) {
+  //     Alert.alert(error.message);
+  //   }
+  // }
 
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
@@ -55,33 +51,34 @@ export default function WelcomeScreen({ session }) {
       greeting = 'Good Evening';
     }
 
-    return `${greeting}, ${userName ? userName : ' Let the fun start'}`; 
+    //const userNameDisplay = userName ? `, ${userName}` : '';
+    return `${greeting}${Avatar}`;
   };
 
   const message = greetingMessage();
 
   return (
     <SafeAreaView style={styles.background}>
-      <Logo />
-      <View style={{ justifyContent: 'center', alignItems: 'center', top: 93, left: 124 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', right:33 }}>
-          {message}
-        </Text>
-        <Text>
-          {userName}
-        </Text>
-        {userAvatar && (
-          <Image
-            source={{ uri: userAvatar }}
-            style={{ width: 50, height: 50, borderRadius: 25 }}
+    <Logo />
+    <View style={{ justifyContent: 'center', alignItems: 'center', top: 93, left: 124 }}>
+      <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', right: 33 }}>
+        {message}
+      </Text>
+      {/* {userAvatar && (
+        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+          <Avatar
+            url={userAvatar} // Pass user avatar URL to the Avatar component
+            style={styles.avatarStyle}
           />
-        )}
-      </View>
+          <Text style={{ fontSize: 16, color: 'white', marginLeft: 10 }}>{userName}</Text>
+        </View>
+      )} */}
+    </View>
 
-      <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
-      <LogInBtn style={styles.childBtn} title="Games" onPress={() => navigation.navigate('Games Zone')} />
-      <LogInBtn style={styles.childBtn} title="Music" onPress={() => navigation.navigate('Music Zone')} />
-    </SafeAreaView>
+    <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
+    <LogInBtn style={styles.childBtn} title="Games" onPress={() => navigation.navigate('Games Zone')} />
+    <LogInBtn style={styles.childBtn} title="Music" onPress={() => navigation.navigate('Music Zone')} />
+  </SafeAreaView>
   );
 }
 
@@ -103,5 +100,11 @@ const styles = StyleSheet.create({
     color: 'white',
     top: 169,
     left: 93,
+  },
+  avatarStyle: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    marginBottom: 10,
   },
 });

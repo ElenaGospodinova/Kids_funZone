@@ -146,6 +146,11 @@ export default function KidsScreen() {
         >
           <AntDesign name="home" size={24} color="black" />
         </TouchableOpacity>
+        <TouchableOpacity 
+         style={styles.user}
+          onPress={() => navigation.navigate('Your List')}>
+        <AntDesign name="user" size={24} color="black" />
+        </TouchableOpacity>
       </View>
       {!clicked && <Text style={styles.titles}></Text>}
 
@@ -283,5 +288,9 @@ const styles = StyleSheet.create({
   movies:{
     color:'white',
     bottom:123,
+  },
+  user:{
+    left:53,
+    bottom:8,
   },
 });

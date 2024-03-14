@@ -27,13 +27,6 @@ export default function PlayListScreen () {
   
     const navigation = useNavigation();
 
-  //   const navigate = () => {
-  //   navigation.navigate('Home'); 
-  //   navigation.navigate('Kids Zone');
-  //   navigation.navigate('Music Z0ne');
-  //   navigation.navigate('Movies Zone');
-  // };
-  
 
   
   const fetchLocalData = () => {
@@ -41,9 +34,9 @@ export default function PlayListScreen () {
       const localData = {
         "albums": [
           {
-            "id": "Cocomelon",
-            "name": "Baby Shark",
-            "url": "https://www.youtube.com/embed/020g-0hhCAU?list=RDEMqoGUgNWsf_NaVYG4SU5N8g"
+            "id": "Hudson's Playground",
+            "name": "Play with the real tractors",
+            "url": "https://www.youtube.com/embed/New-H4AFVE4"
           },
           {
             "id": "Marvel",

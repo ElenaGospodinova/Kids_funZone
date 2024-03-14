@@ -21,8 +21,8 @@ import { AntDesign, Entypo } from '@expo/vector-icons';
 import colors from '../assets/config/colors';
 import VideoCard from '../assets/components/VideoCard';
 import pic from '../assets/img/photo.jpeg';
-import SearchBar from '../assets/components/SearchVideo';
-
+import SearchBar from '../assets/components/SearchBar';
+import LogInBtn from '../assets/components/LogInBtn';
 
 export default function KidsScreen() {
   const [videos, setVideos] = useState([]);
@@ -56,6 +56,11 @@ export default function KidsScreen() {
         console.warn('No video items found in the response');
         return [];
       }
+
+      setVideos(response.data.items); // Update videos state directly
+      setFilteredVideos(response.data.items); // Set filtered videos
+      setShowVideoCard(true);
+
 
       return response.data.items;
     } catch (error) {
@@ -125,6 +130,22 @@ export default function KidsScreen() {
     );
   };
 
+
+  const searchVideos = async () => {
+    try {
+      setLoading(true);
+      const fetchedVideos = await fetchYouTubeData(searchPhrase);
+      setVideos(fetchedVideos); // Set the videos
+      setFilteredVideos(fetchedVideos); // Set filtered videos
+      setShowVideoCard(true);
+    } catch (error) {
+      console.warn('Error fetching data:', error.message);
+      setError('Please check your network connection.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.fixedHeader}>
@@ -153,13 +174,22 @@ export default function KidsScreen() {
         </TouchableOpacity>
       </View>
       {!clicked && <Text style={styles.titles}></Text>}
-
+      <View style={styles.searchBar}>
       <SearchBar
         searchPhrase={searchPhrase}
         setSearchPhrase={setSearchPhrase}
         clicked={clicked}
         setClicked={setClicked}
+       
       />
+      </View>
+       <TouchableOpacity
+        style={styles.searchBar}
+        onPress={searchVideos}
+      >
+        <LogInBtn style={styles.searchText} title="Search"/>
+      </TouchableOpacity>
+
       {showVideoCard && (
         <View style={styles.listVideo}>
           <VideoCard style={styles.playlist} title="More Videos" image={pic} />
@@ -284,6 +314,18 @@ const styles = StyleSheet.create({
     padding: 9,
     color: colors.darkBlue,
     fontWeight: 'bold',
+  },
+  searchBar:{
+    width:"90%",
+    padding:4,
+  },
+  searchText:{
+    width: 100,
+    height: '22%',
+    backgroundColor: colors.lightGreen,
+    left: 303,
+    bottom: 53,
+    paddingLeft: 10,
   },
   movies:{
     color:'white',

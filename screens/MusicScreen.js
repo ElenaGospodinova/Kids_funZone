@@ -183,8 +183,9 @@ const MusicScreen = () => {
             >
               <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
+            <View style={styles.searchBar}>
             <SearchBar
-                style={styles.searchBar}
+                
                 searchPhrase={searchInput}
                 setSearchPhrase={setSearchInput}
                 setClicked={setClicked}
@@ -200,6 +201,7 @@ const MusicScreen = () => {
                  //setSearchInput(text); 
                 }}
             />
+            </View>
 
           <LogInBtn
             title="Search"
@@ -284,25 +286,28 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   songs:{
-    bottom: 1,
+    top: 41,
     padding:2,
     paddingBottom:2,
    
   },
+  searchBar:{
+    top:82,
+    width:"94%",
+  },
   search: {
-    width: '22%',
-    height: '4%',
+    width: 100,
+    height: '5%',
     fontSize: 15,
     backgroundColor: colors.lightGreen,
-    left: 313,
-    top: 40,
-    paddingLeft: 2,
+    left: 303,
+    top:34,
+    paddingLeft: 10,
   },
   searchResult:{
-    
-      top:12,
-      height:'100%',
-      width:'90%'
+    marginTop:22,
+    height:'100%',
+    width:'90%'
   },
   trackItem: {
     top:62,

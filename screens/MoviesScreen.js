@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native';
 import { StyleSheet, TouchableOpacity, View, Text, Image, Platform, ActivityIndicator, SafeAreaView } from 'react-native';
 import { FlatList } from 'react-native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
+import { useQuery } from '@tanstack/react-query';
 
 import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
@@ -14,95 +15,101 @@ const MoviesScreen = () => {
     const navigation = useNavigation();
   
     
-    const fetchMovies = async () => {
-      const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
-      const options = {
-        method: 'GET',
-        headers: {
-          accept: 'application/json',
-          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzZhNjU2MTg2ZTUwMmVmNTJiNWNiNWI5YjhjMGYyZiIsInN1YiI6IjY1Zjk4YmI2NGI5YmFlMDE4MzdmMDU3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JaFUhFgqzQ_yOKWKtIk14GkzVi6zuaSN06SkILilSS0'
-        }
-      };
-      try {
-        const response = await fetch(url, options);
-
-        if (response.ok) {
-            const result = await response.json();
-            const movieResults = result.results || [];
-
-            const movieData = movieResults.map(movie => ({
-                id: movie.id.toString(),
-                title: movie.title,
-                image: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://example.com/fallback-image.jpg',
-                streamingUrl: null, // can set streaming URL if available in the response
-            }));
-            
-            setMovies(movieData);
-            setLoading(false);
-        } else {
-            console.error('Failed to fetch data:', response.status, response.statusText);
-        }
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
-const filterMovies = (movies, targetAudience) => {
-  // Filter movies based on target audience
-  return movies.filter(movie => {
-      // Example: Assuming movies tagged with 'kids' are kids movies
-      return movie.genre_ids.includes('KIDS_GENRE_ID'); // Replace 'KIDS_GENRE_ID' with the actual genre ID for kids movies
-  });
+   const filterMovies = (movies) => {
+  // Assuming movies tagged with genre ID 16 are kids movies
+  return movies.filter(movie => movie.genre_ids.includes(16));
 };
-    useEffect(() => {
-      fetchMovies();
-    }, []);
-  
-    const handlePlayMovie = (streamingUrl) => {
-      console.log('Playing movie with streaming URL:', streamingUrl);
-      // Logic to play the movie using the streaming URL
-    };
-  
-  
-    const renderMovies = ({ item }) => (
-      <View style={styles.movieContainer}>
-          <TouchableOpacity onPress={() => handlePlayMovie(item.streamingUrl)}>
-              <Image
-                  source={{ uri: item.image }}
-                  resizeMode="cover"
-                  style={styles.movieImage}
-              />
-          </TouchableOpacity>
-          <Text style={styles.movieTitle}>{item.title}</Text>
-      </View>
-  );
 
-  return (
-    <SafeAreaView style={styles.background}>
-      <View style={styles.container}>
-          <View style={styles.fixedHeader}>
-              <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Kids Zone')}>
-                  <Entypo name="video" size={24} color="black" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
-                  <Entypo name="music" size={24} color="black" />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.back} onPress={() => navigation.navigate('Home')}>
-                  <AntDesign name="home" size={24} color="black" />
-              </TouchableOpacity>
-          </View>
-          {loading ? (
-              <ActivityIndicator size="large" color={colors.primary} style={styles.loadingIndicator} />
-          ) : (
-              <FlatList
-                  data={movies}
-                  keyExtractor={item => item.id}
-                  renderItem={renderMovies}
-                  contentContainerStyle={styles.moviesList}
-              />
-          )}
-      </View>
-    </SafeAreaView>
-  );
+  const fetchMovies = async () => {
+    const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
+    const options = {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzZhNjU2MTg2ZTUwMmVmNTJiNWNiNWI5YjhjMGYyZiIsInN1YiI6IjY1Zjk4YmI2NGI5YmFlMDE4MzdmMDU3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JaFUhFgqzQ_yOKWKtIk14GkzVi6zuaSN06SkILilSS0'
+      }
+    };
+    try {
+      const response = await fetch(url, options);
+
+      if (response.ok) {
+          const result = await response.json();
+          const movieResults = result.results || [];
+
+          const movieData = movieResults.map(movie => ({
+              id: movie.id.toString(),
+              title: movie.title,
+              image: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://example.com/fallback-image.jpg',
+              streamingUrl: null, // can set streaming URL if available in the response
+              genre_ids: movie.genre_ids // assuming genre_ids are available in the response
+          }));
+          
+          setMovies(movieData);
+          setLoading(false);
+      } else {
+          console.error('Failed to fetch data:', response.status, response.statusText);
+      }
+  } catch (error) {
+      console.error('Error fetching data:', error);
+  }
+};
+
+useEffect(() => {
+  fetchMovies();
+}, []);
+
+const handlePlayMovie = (streamingUrl) => {
+  console.log('Playing movie with streaming URL:', streamingUrl);
+  // Logic to play the movie using the streaming URL
+};
+
+const renderMovies = ({ item }) => (
+  <View style={styles.movieContainer}>
+      <TouchableOpacity onPress={() => handlePlayMovie(item.streamingUrl)}>
+          <Image
+              source={{ uri: item.image }}
+              resizeMode="cover"
+              style={styles.movieImage}
+          />
+      </TouchableOpacity>
+      <Text style={styles.movieTitle}>{item.title}</Text>
+  </View>
+);
+
+return (
+  <SafeAreaView style={styles.background}>
+    <View style={styles.container}>
+        <View style={styles.fixedHeader}>
+            <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Kids Zone')}>
+                <Entypo name="video" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.music}
+              onPress={() => navigation.navigate('Games Zone')}
+            >
+              <Entypo name="game-controller" size={24} color="black" />
+
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
+                <Entypo name="music" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.back} onPress={() => navigation.navigate('Home')}>
+                <AntDesign name="home" size={24} color="black" />
+            </TouchableOpacity>
+        </View>
+        {loading ? (
+            <ActivityIndicator size="large" color={colors.primary} style={styles.loadingIndicator} />
+        ) : (
+            <FlatList
+                data={filterMovies(movies)}
+                keyExtractor={item => item.id}
+                renderItem={renderMovies}
+                contentContainerStyle={styles.moviesList}
+            />
+        )}
+    </View>
+  </SafeAreaView>
+);
 };
 
 const styles = StyleSheet.create({

@@ -11,6 +11,7 @@ import {
 import { Audio } from 'expo-av';
 import { useNavigation } from '@react-navigation/native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import colors from '../assets/config/colors';
 import SearchBar from '../assets/components/SearchBar';
@@ -200,6 +201,10 @@ fetch(kidsList, searchParameters)
             >
               <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.movie}
+              onPress={() => navigation.navigate('Movies Zone')}>
+              <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
+            </TouchableOpacity>
             <View style={styles.searchBar}>
             <SearchBar
                 
@@ -295,6 +300,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 83,
     right:60,
+  },
+  movie:{
+    left:283,
+    top:67,
   },
   back: {
     position: 'absolute',

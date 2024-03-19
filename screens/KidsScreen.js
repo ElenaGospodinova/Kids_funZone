@@ -16,6 +16,7 @@ import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import Video from 'react-native-video';
 import { AntDesign, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 //import SearchVideo from '../assets/components/SearchVideo';
 import colors from '../assets/config/colors';
@@ -172,6 +173,10 @@ export default function KidsScreen() {
           onPress={() => navigation.navigate('Your List')}>
         <AntDesign name="user" size={24} color="black" />
         </TouchableOpacity>
+        <TouchableOpacity style={styles.movie}
+        onPress={() => navigation.navigate('Movies Zone')}>
+        <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
+        </TouchableOpacity>
       </View>
       {!clicked && <Text style={styles.titles}></Text>}
       <View style={styles.searchBar}>
@@ -277,6 +282,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 3,
     right: 60,
+  },
+  movie:{
+    right:83,
+    bottom:4,
   },
   fixedHeader: {
     flexDirection: 'row',

@@ -11,6 +11,7 @@ import { StyleSheet,
 import { WebView } from 'react-native-webview';
 import { FlatList } from 'react-native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
@@ -102,6 +103,10 @@ export default function PlayListScreen () {
                   onPress ={() => navigation.navigate('Home')}>
               <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.movie}
+              onPress={() => navigation.navigate('Movies Zone')}>
+              <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
+            </TouchableOpacity>
             
       </View>
       {/* <View style={styles.movies}>
@@ -165,6 +170,10 @@ const styles = StyleSheet.create({
   movies:{
     top:92,
     color:colors.white,
+  },
+  movie:{
+    left:303,
+    bottom:6,
   },
   music: {
     position: 'absolute',

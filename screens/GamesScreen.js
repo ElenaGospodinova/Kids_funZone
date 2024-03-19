@@ -10,6 +10,7 @@ import { WebView } from 'react-native-webview';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import * as Animatable from 'react-native-animatable';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
@@ -144,6 +145,10 @@ const GamesScreen = () => {
             >
               <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.movie}
+              onPress={() => navigation.navigate('Movies Zone')}>
+              <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
+            </TouchableOpacity>
 
           <FlatList
             data={games}
@@ -187,6 +192,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 3,
     right:60,
+  },
+  movie:{
+    left:283,
+    bottom:87,
   },
   back: {
     position: 'absolute',

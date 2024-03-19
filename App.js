@@ -10,7 +10,7 @@ import store from './store/store'
 import WelcomeScreen from './screens/WelcomeScreen';
 import KidsScreen from './screens/KidsScreen';
 import PlayListScreen from './screens/PlayListScreen';
-//import MoviesScreen from './screens/MoviesScreen';
+import MoviesScreen from './screens/MoviesScreen';
 import GamesScreen from './screens/GamesScreen';
 import MusicScreen from './screens/MusicScreen';
 import BackgroundApp from './assets/components/BackgroundApp';
@@ -126,7 +126,7 @@ export default function App(props) {
           </ScreenWithBackground>
         )}
       </Stack.Screen>
-      {/* <Stack.Screen
+       <Stack.Screen
         name="Movies Zone"
         options={{ headerShown: false }} // Optional: To hide the header
       >
@@ -135,7 +135,7 @@ export default function App(props) {
             <MoviesScreen />
           </ScreenWithBackground>
         )}
-      </Stack.Screen> */}
+      </Stack.Screen> 
       <Stack.Screen
         name="Games Zone"
         options={{ headerShown: false }} // Optional: To hide the header

@@ -8,37 +8,47 @@ import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
 import Avatar from '../assets/components/Avatar';
 
+
 export default function WelcomeScreen({ session }) {
   const navigation = useNavigation();
   const [userName, setUserName] = useState('');
-  //const [userAvatar, setUserAvatar] = useState('');
+  const [userAvatar, setUserAvatar] = useState('');
+  const [loading, setLoading] = useState(false);
+  //const [error, setError] = useState('');
 
-  // useEffect(() => {
-  //   if (session?.user) {
-  //     getProfile();
-  //   }
-  // }, [session]);
 
-  // async function getProfile() {
-  //   try {
-  //     const { data, error } = await supabase
-  //       .from('profiles')
-  //       .select('avatar_url, username')
-  //       .eq('id', session.user.id)
-  //       .single();
+  useEffect(() => {
+    if (session) {
+      getProfile();
+    }
+  }, [session]);
 
-  //     if (error) {
-  //       throw error;
-  //     }
+  async function getProfile() {
+    try {
+      setLoading(true)
+      if (!session?.user) throw new Error('No user on the session!')
 
-  //     if (data) {
-  //       setUserAvatar(data.avatar_url);
-  //       setUserName(data.username);
-  //     }
-  //   } catch (error) {
-  //     Alert.alert(error.message);
-  //   }
-  // }
+      let { data, error, status } = await supabase
+        .from('profiles')
+        .select(`username, website, avatar_url`)
+        .eq('id', session?.user.id)
+        .single()
+      if (error && status !== 406) {
+        throw error
+      }
+
+      if (data) {
+        setUserName(data.username)
+        setUserAvatar(data.avatar_url)
+      }
+    } catch (error) {
+      if (error instanceof Error) {
+        Alert.alert(error.message)
+      }
+    } finally {
+      setLoading(false)
+    }
+  }
 
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
@@ -51,8 +61,7 @@ export default function WelcomeScreen({ session }) {
       greeting = 'Good Evening';
     }
 
-    //const userNameDisplay = userName ? `, ${userName}` : '';
-    return `${greeting}${Avatar}`;
+    return `${greeting}, ${userName || ''}`; 
   };
 
   const message = greetingMessage();
@@ -64,20 +73,22 @@ export default function WelcomeScreen({ session }) {
       <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', right: 33 }}>
         {message}
       </Text>
-      {/* {userAvatar && (
-        <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-          <Avatar
-            url={userAvatar} // Pass user avatar URL to the Avatar component
-            style={styles.avatarStyle}
-          />
-          <Text style={{ fontSize: 16, color: 'white', marginLeft: 10 }}>{userName}</Text>
-        </View>
-      )} */}
-    </View>
+      {loading ? (
+          <ActivityIndicator size="large" color={colors.lightGreen} />
+        ) : (
+          userAvatar && (
+            <View style={styles.userInfo}>
+              <Avatar url={userAvatar} style={styles.avatarStyle} />
+              <Text style={styles.userName}>{userName}</Text>
+            </View>
+          )
+        )}
+      </View>
 
     <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
     <LogInBtn style={styles.childBtn} title="Games" onPress={() => navigation.navigate('Games Zone')} />
     <LogInBtn style={styles.childBtn} title="Music" onPress={() => navigation.navigate('Music Zone')} />
+    <LogInBtn style={styles.childBtn} title="Movies" onPress={() => navigation.navigate('Movies Zone')} />
   </SafeAreaView>
   );
 }
@@ -107,4 +118,5 @@ const styles = StyleSheet.create({
     borderRadius: 50,
     marginBottom: 10,
   },
+ 
 });

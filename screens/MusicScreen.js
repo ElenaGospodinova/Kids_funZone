@@ -137,28 +137,45 @@ const MusicScreen = () => {
   };
 
   const kidsList =
-    'https://api.spotify.com/v1/search?q=kids%20songs&type=track&limit=25';
+  'https://api.spotify.com/v1/search?q=kids%20songs&type=track&limit=24';
 
-  const fetchSongsList = async () => {
-    try {
-      const kidsSongsResponse = await fetch(kidsList, searchParameters);
+const fetchSongsList = async () => {
+  try {
+    const kidsSongsResponse = await fetch(kidsList, searchParameters);
 
-      if (kidsSongsResponse.ok) {
-        const kidsData = await kidsSongsResponse.json();
-        const kidsTracks = kidsData.tracks?.items || [];
-        setKidsSongs(kidsTracks);
-        console.log(kidsData);
-      } else {
-        console.error(
-          'Failed to fetch kids songs',
-          kidsSongsResponse.status,
-          kidsSongsResponse.statusText
-        );
-      }
-    } catch (error) {
-      console.error('Error:', error);
+    if (kidsSongsResponse.ok) {
+      const kidsData = await kidsSongsResponse.json();
+      const kidsTracks = kidsData.tracks?.items || [];
+      setKidsSongs(kidsTracks);
+      console.log(kidsData);
+    } else {
+      console.error(
+        'Failed to fetch kids songs',
+        kidsSongsResponse.status,
+        kidsSongsResponse.statusText
+      );
     }
-  };
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+
+
+  // Perform a manual request to verify the endpoint and headers
+fetch(kidsList, searchParameters)
+.then(response => {
+  if (!response.ok) {
+    throw new Error('Failed to fetch kids songs');
+  }
+  return response.json();
+})
+.then(data => {
+  console.log('Kids songs data:', data);
+})
+.catch(error => {
+  console.error('Error fetching kids songs:', error);
+});
 
 
   return (

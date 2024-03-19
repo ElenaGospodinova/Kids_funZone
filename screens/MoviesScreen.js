@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, TouchableOpacity, View, Text, Image, Platform, ActivityIndicator } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Text, Image, Platform, ActivityIndicator, SafeAreaView } from 'react-native';
 import { FlatList } from 'react-native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 
@@ -13,42 +13,46 @@ const MoviesScreen = () => {
     const [movies, setMovies] = useState([]);
     const navigation = useNavigation();
   
+    
     const fetchMovies = async () => {
-      const url = 'https://imdb146.p.rapidapi.com/v1/find/?query=brad%20kids%20movies';
+      const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
       const options = {
         method: 'GET',
         headers: {
-          'X-RapidAPI-Key': '847b72ca63mshef857b9ae558dc0p1f3e08jsn3e246b4af59a',
-          'X-RapidAPI-Host': 'imdb146.p.rapidapi.com'
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzZhNjU2MTg2ZTUwMmVmNTJiNWNiNWI5YjhjMGYyZiIsInN1YiI6IjY1Zjk4YmI2NGI5YmFlMDE4MzdmMDU3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JaFUhFgqzQ_yOKWKtIk14GkzVi6zuaSN06SkILilSS0'
         }
       };
-  
       try {
         const response = await fetch(url, options);
-  
+
         if (response.ok) {
-          const result = await response.json();
-          console.log(result);
-  
-          // Extract movie data from the response
-          const movieResults = result.titleResults?.results || [];
-          const movieData = movieResults.map(movie => ({
-            id: movie.id,
-            title: movie.titleNameText,
-            image: movie.titlePosterImageModel?.url || 'https://example.com/fallback-image.jpg',
-            streamingUrl:movie.streamingUrl || null// You can set streaming URL if available in the response
-          }));
-  
-          setMovies(movieData);
-          setLoading(false);
+            const result = await response.json();
+            const movieResults = result.results || [];
+
+            const movieData = movieResults.map(movie => ({
+                id: movie.id.toString(),
+                title: movie.title,
+                image: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://example.com/fallback-image.jpg',
+                streamingUrl: null, // can set streaming URL if available in the response
+            }));
+            
+            setMovies(movieData);
+            setLoading(false);
         } else {
-          console.error('Failed to fetch data:', response.status, response.statusText);
+            console.error('Failed to fetch data:', response.status, response.statusText);
         }
-      } catch (error) {
+    } catch (error) {
         console.error('Error fetching data:', error);
-      }
-    };
-  
+    }
+}
+const filterMovies = (movies, targetAudience) => {
+  // Filter movies based on target audience
+  return movies.filter(movie => {
+      // Example: Assuming movies tagged with 'kids' are kids movies
+      return movie.genre_ids.includes('KIDS_GENRE_ID'); // Replace 'KIDS_GENRE_ID' with the actual genre ID for kids movies
+  });
+};
     useEffect(() => {
       fetchMovies();
     }, []);
@@ -58,93 +62,104 @@ const MoviesScreen = () => {
       // Logic to play the movie using the streaming URL
     };
   
-    const renderMovies = ({ item }) => (
-        <View style={styles.movieList}>
-            <Text>{item.title}</Text>
-            <TouchableOpacity onPress={() => handlePlayMovie(item.streamingUrl)}>
-                <Image
-                    source={{ uri: item.image}}
-                    resizeMode='contain'
-                    style={styles.moviesImg}
-                />
-                <Text>Play</Text>
-            </TouchableOpacity>
-        </View>
-      );
-      
   
-    return (
-      <View style={styles.container}>
-        <View style={styles.fixedHeader}>
-          <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Kids Zone')}>
-            <Entypo name="video" size={24} color="black" />
+    const renderMovies = ({ item }) => (
+      <View style={styles.movieContainer}>
+          <TouchableOpacity onPress={() => handlePlayMovie(item.streamingUrl)}>
+              <Image
+                  source={{ uri: item.image }}
+                  resizeMode="cover"
+                  style={styles.movieImage}
+              />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
-            <Entypo name="music" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.back} onPress={() => navigation.navigate('Home')}>
-            <AntDesign name="home" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        <FlatList
-          data={movies}
-          keyExtractor={item => item.id}
-          renderItem={renderMovies}
-          ListEmptyComponent={<ActivityIndicator size="large" color={colors.primary} />}
-        />
+          <Text style={styles.movieTitle}>{item.title}</Text>
       </View>
-    );
-  };
+  );
+
+  return (
+    <SafeAreaView style={styles.background}>
+      <View style={styles.container}>
+          <View style={styles.fixedHeader}>
+              <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Kids Zone')}>
+                  <Entypo name="video" size={24} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
+                  <Entypo name="music" size={24} color="black" />
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.back} onPress={() => navigation.navigate('Home')}>
+                  <AntDesign name="home" size={24} color="black" />
+              </TouchableOpacity>
+          </View>
+          {loading ? (
+              <ActivityIndicator size="large" color={colors.primary} style={styles.loadingIndicator} />
+          ) : (
+              <FlatList
+                  data={movies}
+                  keyExtractor={item => item.id}
+                  renderItem={renderMovies}
+                  contentContainerStyle={styles.moviesList}
+              />
+          )}
+      </View>
+    </SafeAreaView>
+  );
+};
 
 const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        padding: 17,
-        marginBottom: 20,
-    },
-    back: {
-        marginLeft: 10,
-    },
-    next: {
-        marginRight: 1,
-        position: 'absolute',
-        top: Platform.OS === 'android' ? -1 : 3,
-        right: 20,
-        zIndex: 12,
-        color: colors.white,
-    },
-    moviesContainer: {
-        top: 124,
-    },
-    music: {
-        position: 'absolute',
-        top: 3,
-        right: 60,
-    },
-    fixedHeader: {
-        position: 'absolute',
-        top: 40,
-        left: 0,
-        right: 0,
-        zIndex: 12,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        padding: 10,
-        backgroundColor: colors.lightBlue,
-    },
-    loadingIndicator: {
-        bottom: -305,
-        width: 200,
-        height: 100,
-        marginHorizontal: 92,
-    },
-    movieList: {
-        marginTop: 20,
-    },
-    moviesImg: {
-        width: 100,
-        height: 100,
-    },
+  background: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 12,
+  },
+  container: {
+      flex: 1,
+      padding:20,
+      
+  },
+  fixedHeader: {
+      position: 'absolute',
+      top: Platform.OS === 'android' ? 0 : 40,
+      left: 0,
+      right: 0,
+      zIndex: 12,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      padding: 10,
+      backgroundColor: colors.lightBlue,
+  },
+  next: {
+      marginRight: 1,
+  },
+  music: {
+      marginRight: 60,
+  },
+  back: {
+      marginLeft: 10,
+  },
+  loadingIndicator: {
+      position: 'absolute',
+      alignSelf: 'center',
+      top: '50%',
+  },
+  moviesList: {
+      top:103,
+      paddingVertical: 20,
+      paddingHorizontal: 10,
+  },
+  movieContainer: {
+      marginBottom: 20,
+      alignItems: 'center',
+  },
+  movieImage: {
+      width: '100%',
+      aspectRatio: 16 / 9, 
+  },
+  movieTitle: {
+      marginTop: 10,
+      fontSize: 16,
+      fontWeight: 'bold',
+  },
 });
 
 export default MoviesScreen;

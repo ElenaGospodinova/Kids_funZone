@@ -6,9 +6,9 @@ import * as ImagePicker from 'expo-image-picker'
 import colors from '../config/colors'
 
 interface Props {
-  size: number
-  url: string | null
-  onUpload: (filePath: string) => void
+  size: number;
+  url: string | null;
+  onUpload: (filePath: string) => void;
 }
 
 export default function Avatar({ url, size = 150, onUpload }: Props) {
@@ -19,6 +19,8 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
   useEffect(() => {
     if (url) downloadImage(url)
   }, [url])
+
+
 
   async function downloadImage(path: string) {
     try {

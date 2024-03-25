@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-
+import React, { useState } from 'react';
 import {
   ActivityIndicator,
   View,
@@ -14,96 +12,35 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
-import Video from 'react-native-video';
-import { AntDesign, Entypo } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-
-//import SearchVideo from '../assets/components/SearchVideo';
+import { useQuery } from '@tanstack/react-query';
+import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
+import SearchBar from '../assets/components/SearchBar';
+import LogInBtn from '../assets/components/LogInBtn';
 import colors from '../assets/config/colors';
 import VideoCard from '../assets/components/VideoCard';
 import pic from '../assets/img/photo.jpeg';
-import SearchBar from '../assets/components/SearchBar';
-import LogInBtn from '../assets/components/LogInBtn';
 
 export default function KidsScreen() {
-  const [videos, setVideos] = useState([]);
-  const [selectedVideo, setSelectedVideo] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [filteredVideos, setFilteredVideos] = useState([]);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
-  const [showVideoCard, setShowVideoCard] = useState(false); 
-  // const [localData, setLocalData] = useState(null);
-
+  const [selectedVideo, setSelectedVideo] = useState(null);
   const navigation = useNavigation();
 
-  const API_KEY = 'AIzaSyAc-mBPxmogOpFk26KPtFUp-vFKHfD_dDE'; 
-  const API_ENDPOINT = 'https://www.googleapis.com/youtube/v3/search';
-
-  async function fetchYouTubeData(searchTerm) {
-    try {
-      const response = await axios.get(API_ENDPOINT, {
-        params: {
-          part: 'snippet',
-          maxResults: 10,
-          q: searchTerm,
-          type: 'video',
-          key: API_KEY,
-        },
-      });
-
-      if (!response.data || !response.data.items) {
-        console.warn('No video items found in the response');
-        return [];
-      }
-
-      setVideos(response.data.items); // Update videos state directly
-      setFilteredVideos(response.data.items); // Set filtered videos
-      setShowVideoCard(true);
-
-
-      return response.data.items;
-    } catch (error) {
-      console.error('Error fetching YouTube data:', error.message);
-      return [];
-    }
-  }
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const searchTerm = 'cocomelon-kids-videos-blippi-CBeebies-marvel'; 
-        const fetchedVideos = await fetchYouTubeData(searchTerm);
-        setVideos(fetchedVideos); // Set the videos
-        setFilteredVideos(fetchedVideos); // Set filtered videos
-        setShowVideoCard(true);
-      } catch (error) {
-        console.warn('Error fetching data:', error.message);
-        setError('Please check your network connection.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  useEffect(() => {
-    if (searchPhrase.trim() === '') {
-      setFilteredVideos(videos);
-    } else {
-      const filtered = videos.filter((item) =>
-        item.snippet.title.toLowerCase().includes(searchPhrase.toLowerCase().trim())
+  const { isLoading, data, error } = useQuery({
+    queryKey: ['video'],
+    queryFn: async () => {
+      const response = await fetch(
+        'https://www.googleapis.com/youtube/v3/search?q=cocomelon-kids-videos-blippi-CBeebies-marvel&part=snippet&maxResults=10&type=video&key=AIzaSyAc-mBPxmogOpFk26KPtFUp-vFKHfD_dDE'
       );
-      setFilteredVideos(filtered);
-    }
-  }, [searchPhrase, videos]);
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data.items;
+    },
+  });
 
-  const onVideoSelected = (selectedVideo) => {
-    setSelectedVideo(selectedVideo);
-  };
+  const filteredVideos = data || [];
 
   const renderVideoItem = ({ item }) => {
     const thumbnailUrl = item.snippet.thumbnails.medium.url;
@@ -114,7 +51,7 @@ export default function KidsScreen() {
     }
 
     const handlePress = () => {
-      onVideoSelected(item);
+      setSelectedVideo(item);
     };
 
     return (
@@ -131,125 +68,62 @@ export default function KidsScreen() {
     );
   };
 
-
-  const searchVideos = async () => {
-    try {
-      setLoading(true);
-      const fetchedVideos = await fetchYouTubeData(searchPhrase);
-      setVideos(fetchedVideos); // Set the videos
-      setFilteredVideos(fetchedVideos); // Set filtered videos
-      setShowVideoCard(true);
-    } catch (error) {
-      console.warn('Error fetching data:', error.message);
-      setError('Please check your network connection.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.fixedHeader}>
-        <TouchableOpacity
-          style={styles.next}
-          onPress={() => navigation.navigate('Games Zone')}
-        >
+        <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Games Zone')}>
           <Entypo name="game-controller" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.music}
-          onPress={() => navigation.navigate('Music Zone')}
-        >
+        <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
           <Entypo name="music" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.back}
-          onPress={() => navigation.navigate('Home')}
-        >
+        <TouchableOpacity style={styles.back} onPress={() => navigation.navigate('Home')}>
           <AntDesign name="home" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity 
-         style={styles.user}
-          onPress={() => navigation.navigate('Your List')}>
-        <AntDesign name="user" size={24} color="black" />
+        <TouchableOpacity style={styles.user} onPress={() => navigation.navigate('Your List')}>
+          <AntDesign name="user" size={24} color="black" />
         </TouchableOpacity>
-        <TouchableOpacity style={styles.movie}
-        onPress={() => navigation.navigate('Movies Zone')}>
-        <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
+        <TouchableOpacity style={styles.movie} onPress={() => navigation.navigate('Movies Zone')}>
+          <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
         </TouchableOpacity>
       </View>
       {!clicked && <Text style={styles.titles}></Text>}
       <View style={styles.searchBar}>
-      <SearchBar
-        searchPhrase={searchPhrase}
-        setSearchPhrase={setSearchPhrase}
-        clicked={clicked}
-        setClicked={setClicked}
-       
-      />
-      </View>
-       <TouchableOpacity
-        style={styles.searchBar}
-        onPress={searchVideos}
-      >
-        <LogInBtn style={styles.searchText} title="Search"/>
-      </TouchableOpacity>
-
-      {showVideoCard && (
-        <View style={styles.listVideo}>
-          <VideoCard style={styles.playlist} title="More Videos" image={pic} />
-        </View>
-      )}
-
-      {filteredVideos.length > 0 && (
-        <FlatList
-          data={filteredVideos}
-          keyExtractor={(item) => item.id.videoId.toString()}
-          renderItem={renderVideoItem}
+        <SearchBar
+          searchPhrase={searchPhrase}
+          setSearchPhrase={setSearchPhrase}
+          clicked={clicked}
+          setClicked={setClicked}
         />
-      )}
+      </View>
+      <TouchableOpacity style={styles.searchBar} onPress={() => setClicked(true)}>
+        <LogInBtn style={styles.searchText} title="Search" />
+      </TouchableOpacity>
+      <View style={styles.listVideo}>
+        <VideoCard style={styles.playlist} title="More Videos" image={pic} />
+      </View>
+      <FlatList
+        data={filteredVideos}
+        keyExtractor={(item) => item.id.videoId.toString()}
+        renderItem={renderVideoItem}
+      />
       {!clicked && null}
-      {loading ? (
-        <ActivityIndicator size="large" color={colors.green} />
-      ) : error ? (
-        <>
-          <PlayListScreen /> 
-          {/* <MoviesScreen /> */}
-        </>
-       
-      ) : videos.length === 0 ? (
-        <View style={styles.errorContainer}>
-          <Text style={styles.errorText}>{error}</Text>
-        </View>
-      ) : videos.length === 0 ? (
-        <View style={styles.errorContainer}>
-
-        {/* {* to add link to diferent screen when there are no video! *} */}
-
-          <Text style={styles.errorText}>No videos to display</Text>
-        </View>
-      ) : (
-        <>
-          {selectedVideo && (
-            <View style={styles.videoContainer}>
-              {selectedVideo && selectedVideo.id && selectedVideo.id.videoId ? (
-                <WebView
-                  source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
-                  style={styles.video}
-                />
-              ) : (
-                <Video
-                  source={{ uri: selectedVideo.url }}
-                  style={styles.video}
-                  controls={true}
-                  resizeMode="cover"
-                />
-              )}
-              
-            </View>
-            
+      {selectedVideo && (
+        <View style={styles.videoContainer}>
+          {selectedVideo && selectedVideo.id && selectedVideo.id.videoId ? (
+            <WebView
+              source={{ uri: `https://www.youtube.com/embed/${selectedVideo.id.videoId}` }}
+              style={styles.video}
+            />
+          ) : (
+            <Video
+              source={{ uri: selectedVideo.url }}
+              style={styles.video}
+              controls={true}
+              resizeMode="cover"
+            />
           )}
-        </>
+        </View>
       )}
     </SafeAreaView>
   );

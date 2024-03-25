@@ -10,85 +10,141 @@ import colors from '../assets/config/colors';
 import VideoCard from '../assets/components/VideoCard';
 
 const MoviesScreen = () => {
-    const [loading, setLoading] = useState(true);
-    const [movies, setMovies] = useState([]);
     const navigation = useNavigation();
   
+//     const [loading, setLoading] = useState(true);
+//     const [movies, setMovies] = useState([]);
+   
     
-   const filterMovies = (movies) => {
-  // Assuming movies tagged with genre ID 16 are kids movies
-  return movies.filter(movie => movie.genre_ids.includes(16));
-};
+//    const filterMovies = (movies) => {
+//   // Assuming movies tagged with genre ID 16 are kids movies
+//   return movies.filter(movie => movie.genre_ids.includes(16));
+// };
 
-  const fetchMovies = async () => {
-    const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
-    const options = {
-      method: 'GET',
-      headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzZhNjU2MTg2ZTUwMmVmNTJiNWNiNWI5YjhjMGYyZiIsInN1YiI6IjY1Zjk4YmI2NGI5YmFlMDE4MzdmMDU3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JaFUhFgqzQ_yOKWKtIk14GkzVi6zuaSN06SkILilSS0'
-      }
-    };
-    try {
-      const response = await fetch(url, options);
+//   const fetchMovies = async () => {
+//     const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1';
+//     const options = {
+//       method: 'GET',
+//       headers: {
+//         accept: 'application/json',
+//         Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzZhNjU2MTg2ZTUwMmVmNTJiNWNiNWI5YjhjMGYyZiIsInN1YiI6IjY1Zjk4YmI2NGI5YmFlMDE4MzdmMDU3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JaFUhFgqzQ_yOKWKtIk14GkzVi6zuaSN06SkILilSS0'
+//       }
+//     };
+//     try {
+//       const response = await fetch(url, options);
 
-      if (response.ok) {
-          const result = await response.json();
-          const movieResults = result.results || [];
+//       if (response.ok) {
+//           const result = await response.json();
+//           const movieResults = result.results || [];
 
-          const movieData = movieResults.map(movie => ({
-              id: movie.id.toString(),
-              title: movie.title,
-              image: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://example.com/fallback-image.jpg',
-              streamingUrl: null, // can set streaming URL if available in the response
-              genre_ids: movie.genre_ids // assuming genre_ids are available in the response
-          }));
+//           const movieData = movieResults.map(movie => ({
+//               id: movie.id.toString(),
+//               title: movie.title,
+//               image: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://example.com/fallback-image.jpg',
+//               streamingUrl: null, // can set streaming URL if available in the response
+//               genre_ids: movie.genre_ids // assuming genre_ids are available in the response
+//           }));
           
-          setMovies(movieData);
-          setLoading(false);
-      } else {
-          console.error('Failed to fetch data:', response.status, response.statusText);
+//           setMovies(movieData);
+//           setLoading(false);
+//       } else {
+//           console.error('Failed to fetch data:', response.status, response.statusText);
+//       }
+//   } catch (error) {
+//       console.error('Error fetching data:', error);
+//   }
+// };
+
+// useEffect(() => {
+//   fetchMovies();
+// }, []);
+
+// const handlePlayMovie = (streamingUrl) => {
+//   console.log('Playing movie with streaming URL:', streamingUrl);
+//   // Logic to play the movie using the streaming URL
+// };
+
+// const renderMovies = ({ item }) => (
+//   <View style={styles.movieContainer}>
+//       <TouchableOpacity onPress={() => handlePlayMovie(item.streamingUrl)}>
+//           <Image
+//               source={{ uri: item.image }}
+//               resizeMode="cover"
+//               style={styles.movieImage}
+//           />
+//       </TouchableOpacity>
+//       <Text style={styles.movieTitle}>{item.title}</Text>
+//   </View>
+// );
+
+const { isLoading, data, error } = useQuery({
+    queryKey: ['movies'],
+    queryFn: async () => {
+      const response = await fetch('https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1', {
+        headers: {
+          accept: 'application/json',
+          Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhMzZhNjU2MTg2ZTUwMmVmNTJiNWNiNWI5YjhjMGYyZiIsInN1YiI6IjY1Zjk4YmI2NGI5YmFlMDE4MzdmMDU3NCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.JaFUhFgqzQ_yOKWKtIk14GkzVi6zuaSN06SkILilSS0',
+        },
+      });
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
       }
-  } catch (error) {
-      console.error('Error fetching data:', error);
+      const data = await response.json();
+            // Filter movies to include only those tagged as kids movies (genre ID 16)
+            const kidsMovies = data.results.filter(movie => movie.genre_ids.includes(16));
+            return kidsMovies;
+    },
+  });
+  
+  
+  if (isLoading) {
+    return <ActivityIndicator size="large" color={colors.primary} style={styles.loadingIndicator} />;
   }
-};
+  
+  if (error) {
+    console.error('Error fetching data:', error);
+    return <Text>Error fetching data</Text>;
+  }
+  
+  const movieData = data.map(movie => ({
+    id: movie.id.toString(),
+    title: movie.title,
+    image: movie.poster_path ? `https://image.tmdb.org/t/p/w500${movie.poster_path}` : 'https://example.com/fallback-image.jpg',
+    streamingUrl: null, // can set streaming URL if available in the response
+    genre_ids: movie.genre_ids // assuming genre_ids are available in the response
+  }));
 
-useEffect(() => {
-  fetchMovies();
-}, []);
 
-const handlePlayMovie = (streamingUrl) => {
-  console.log('Playing movie with streaming URL:', streamingUrl);
-  // Logic to play the movie using the streaming URL
-};
-
-const renderMovies = ({ item }) => (
-  <View style={styles.movieContainer}>
-      <TouchableOpacity onPress={() => handlePlayMovie(item.streamingUrl)}>
-          <Image
-              source={{ uri: item.image }}
-              resizeMode="cover"
-              style={styles.movieImage}
-          />
-      </TouchableOpacity>
-      <Text style={styles.movieTitle}>{item.title}</Text>
-  </View>
+  const renderMovies = ({ item }) => (
+    <View style={styles.movieContainer}>
+        <TouchableOpacity onPress={() => handlePlayMovie(item.streamingUrl)}>
+            <Image
+                source={{ uri: item.image }}
+                resizeMode="cover"
+                style={styles.movieImage}
+            />
+        </TouchableOpacity>
+        <Text style={styles.movieTitle}>{item.title}</Text>
+    </View>
 );
 
+const handlePlayMovie = (streamingUrl) => {
+    console.log('Playing movie with streaming URL:', streamingUrl);
+    // Logic to play the movie using the streaming URL
+};
+
 return (
-  <SafeAreaView style={styles.background}>
+    <SafeAreaView style={styles.background}>
     <View style={styles.container}>
         <View style={styles.fixedHeader}>
             <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Kids Zone')}>
                 <Entypo name="video" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity
-              style={styles.music}
-              onPress={() => navigation.navigate('Games Zone')}
+                style={styles.music}
+                onPress={() => navigation.navigate('Games Zone')}
             >
-              <Entypo name="game-controller" size={24} color="black" />
-
+                <Entypo name="game-controller" size={24} color="black" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
                 <Entypo name="music" size={24} color="black" />
@@ -97,18 +153,14 @@ return (
                 <AntDesign name="home" size={24} color="black" />
             </TouchableOpacity>
         </View>
-        {loading ? (
-            <ActivityIndicator size="large" color={colors.primary} style={styles.loadingIndicator} />
-        ) : (
-            <FlatList
-                data={filterMovies(movies)}
-                keyExtractor={item => item.id}
-                renderItem={renderMovies}
-                contentContainerStyle={styles.moviesList}
-            />
-        )}
+        <FlatList
+            data={movieData}
+            keyExtractor={item => item.id}
+            renderItem={renderMovies}
+            contentContainerStyle={styles.moviesList}
+        />
     </View>
-  </SafeAreaView>
+</SafeAreaView>
 );
 };
 

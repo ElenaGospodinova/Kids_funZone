@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: 7,
     marginTop: 40,
-    gap:142,
+   gap:142,
     
   },
   back: {

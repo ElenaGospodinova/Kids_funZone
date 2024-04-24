@@ -312,28 +312,32 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   songs:{
+    margin:10,
     top: 41,
-    padding:2,
+    padding:12,
     paddingBottom:2,
-   
+    backgroundColor: 'rgba(173, 216, 230, 0.8)',
+    borderRadius: 8,
+    alignItems:'center',
   },
   searchBar:{
     top:82,
-    width:"94%",
+    width:"93%",
   },
   search: {
     width: 100,
     height: '5%',
     fontSize: 15,
     backgroundColor: colors.lightGreen,
-    left: 303,
+    left: 270,
     top:34,
-    paddingLeft: 10,
+    paddingLeft: 6,
   },
   searchResult:{
-    marginTop:22,
+    marginTop:42,
     height:'100%',
-    width:'90%'
+    width:'90%',
+   
   },
   trackItem: {
     top:62,
@@ -348,17 +352,20 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginRight: 10,
+   
     
   },
   kidsSongsContainer: {
     backgroundColor:colors.green,
     height:"100%",
-    bottom:13,
+    bottom:23,
   },
+
   trackName: {
     fontSize: 18,
     fontWeight: 'bold',
     color:colors.darkBlue,
+
   },
   trackArtists: {
     fontSize: 16,

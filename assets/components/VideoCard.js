@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     padding: 2,
     paddingTop: 5,
     borderRadius: 15,
-    marginTop: 16,
+    marginTop: 20,
     height: 240,
     overflow: 'hidden',
   },
@@ -51,20 +51,21 @@ const styles = StyleSheet.create({
     left: 10,
     bottom: 40,
     width: '90%',
+    
   },
   title: {
     color: colors.white,
     fontWeight: 'bold',
     marginVertical: 6,
-    top: 48,
+    top: 40,
   },
   subTitle: {
     color: colors.background,
     top: 50,
   },
-  localDataLog: {
-    color: colors.white,
-    fontSize: 12,
-    marginTop: 10,
-  },
+  // localDataLog: {
+  //   color: colors.white,
+  //   fontSize: 12,
+  //   marginTop: 10,
+  // },
 });

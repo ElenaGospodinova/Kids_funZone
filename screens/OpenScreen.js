@@ -11,6 +11,7 @@ import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 
 
+
 const OpenScreen = () => {
   const navigation = useNavigation();
   const [session, setSession] = useState(null);
@@ -29,14 +30,14 @@ const OpenScreen = () => {
 
   useEffect(() => {
     if (session && session.user) {
-      setUserName(session.user.user_metadata.full_name); // Assuming full name is stored in user_metadata
+      setUserName(session.user.user_metadata.full_name); 
     }
   }, [session]);
 
 
 
   return (
-    <View style={styles.container}>
+  <View style={styles.container}>
     <View>
       <Logo style={styles.logoS}/>
       <Text>{userName}</Text>
@@ -48,7 +49,8 @@ const OpenScreen = () => {
         <Text style={styles.text}onPress={() => navigation.navigate('Recovery Screen')}>
           Forgotten Password
         </Text>
-      </View>
+    </View>
+      
   </View>
 )
 }

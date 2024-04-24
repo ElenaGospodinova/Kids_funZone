@@ -17,18 +17,13 @@ import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
 
 
-
-
 export default function PlayListScreen () {
   
   const [loading, setLoading] = useState(true);
   const [videos, setVideos] = useState([]);
   const [jsonData, setJsonData] = useState(null);
   const [error, setError] = useState(null);
-  
-    const navigation = useNavigation();
-
-
+  const navigation = useNavigation();
   
   const fetchLocalData = () => {
     try {
@@ -107,6 +102,9 @@ export default function PlayListScreen () {
               onPress={() => navigation.navigate('Movies Zone')}>
               <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
             </TouchableOpacity>
+            <TouchableOpacity style={styles.user} onPress={() => navigation.navigate('Your List')}>
+          <AntDesign name="user" size={24} color="black" />
+        </TouchableOpacity>
             
       </View>
       {/* <View style={styles.movies}>

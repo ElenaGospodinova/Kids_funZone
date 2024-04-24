@@ -19,7 +19,7 @@ buttonLogin:{
     justifyContent:'center',
     paddingLeft:27,
     borderRadius:12,
-    backgroundColor:colors.blue,
+    backgroundColor:colors.lightGreen,
     // shadowColor: 'black',
     // shadowOffset: { width: 0, height: 2 },
     // shadowOpacity: 1.25,

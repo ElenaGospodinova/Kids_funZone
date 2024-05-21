@@ -1,54 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Image, Alert } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../assets/utils/supabaseClient';
 
 import Logo from '../assets/components/Logo';
-import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
 import Avatar from '../assets/components/Avatar';
-
+import colors from '../assets/config/colors';
 
 export default function WelcomeScreen({ session }) {
   const navigation = useNavigation();
-  const [userName, setUserName] = useState('');
-  const [userAvatar, setUserAvatar] = useState('');
   const [loading, setLoading] = useState(false);
-  //const [error, setError] = useState('');
-
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
-    if (session) {
-      getProfile();
+    const fetchUserData = async (userId) => {
+      try {
+        setLoading(true);
+        const { data, error, status } = await supabase
+          .from('profiles')
+          .select('username, avatar_url')
+          .eq('id', userId)
+          .single();
+
+        if (error || status === 406) {
+          throw error || new Error('User data not found');
+        }
+
+        if (data) {
+          setUserData(data);
+        } else {
+          throw new Error('User data not found');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (session && session.user) {
+      fetchUserData(session.user.id);
     }
   }, [session]);
-
-  async function getProfile() {
-    try {
-      setLoading(true)
-      if (!session?.user) throw new Error('No user on the session!')
-
-      let { data, error, status } = await supabase
-        .from('profiles')
-        .select(`username, website, avatar_url`)
-        .eq('id', session?.user.id)
-        .single()
-      if (error && status !== 406) {
-        throw error
-      }
-
-      if (data) {
-        setUserName(data.username)
-        setUserAvatar(data.avatar_url)
-      }
-    } catch (error) {
-      if (error instanceof Error) {
-        Alert.alert(error.message)
-      }
-    } finally {
-      setLoading(false)
-    }
-  }
 
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
@@ -61,35 +55,35 @@ export default function WelcomeScreen({ session }) {
       greeting = 'Good Evening';
     }
 
-    return `${greeting}, ${userName || ''}`; 
-  };
+    if (userData && userData.username) {
+      greeting += `, ${userData.username}`;
+    }
 
-  const message = greetingMessage();
+    return greeting;
+  };
 
   return (
     <SafeAreaView style={styles.background}>
-    <Logo />
-    <View style={{ justifyContent: 'center', alignItems: 'center', top: 93, left: 124 }}>
-      <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', right: 33 }}>
-        {message}
-      </Text>
-      {loading ? (
-          <ActivityIndicator size="large" color={colors.lightGreen} />
+      <Logo />
+      <View style={styles.container}>
+        <Text style={styles.greeting}>{greetingMessage()}</Text>
+        {loading ? (
+          <ActivityIndicator size="large" color="white" />
+        ) : session && session.user && userData && userData.avatar_url && userData.username ? (
+          <View style={styles.userInfo}>
+            <Avatar url={userData.avatar_url} style={styles.avatar} />
+            <Text style={styles.userName}>{userData.username}</Text>
+          </View>
         ) : (
-          userAvatar && (
-            <View style={styles.userInfo}>
-              <Avatar url={userAvatar} style={styles.avatarStyle} />
-              <Text style={styles.userName}>{userName}</Text>
-            </View>
-          )
+          <Text style={styles.userName}>Loading user data...</Text>
         )}
       </View>
 
-    <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
-    <LogInBtn style={styles.childBtn} title="Games" onPress={() => navigation.navigate('Games Zone')} />
-    <LogInBtn style={styles.childBtn} title="Music" onPress={() => navigation.navigate('Music Zone')} />
-    <LogInBtn style={styles.childBtn} title="Movies" onPress={() => navigation.navigate('Movies Zone')} />
-  </SafeAreaView>
+      <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
+      <LogInBtn style={styles.childBtn} title="Games" onPress={() => navigation.navigate('Games Zone')} />
+      <LogInBtn style={styles.childBtn} title="Music" onPress={() => navigation.navigate('Music Zone')} />
+      <LogInBtn style={styles.childBtn} title="Movies" onPress={() => navigation.navigate('Movies Zone')} />
+    </SafeAreaView>
   );
 }
 
@@ -102,21 +96,32 @@ const styles = StyleSheet.create({
   },
   childBtn: {
     width: 140,
-    height: 50,
+    height: 49,
     flexDirection: 'column',
     borderRadius: 12,
     padding: 2,
     margin: 9,
     backgroundColor: colors.lightGreen,
     color: 'white',
-    top: 169,
-    left: 93,
+    top: 159,
+    left: 133,
   },
-  avatarStyle: {
+  avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
     marginBottom: 10,
   },
- 
+  userName: {
+    fontSize: 18,
+    color: colors.white,
+  },
+  userInfo: {
+    alignItems: 'center',
+  },
+  greeting: {
+    fontSize: 24,
+    color: colors.white,
+    marginBottom: 20,
+  },
 });

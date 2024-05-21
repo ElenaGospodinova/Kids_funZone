@@ -47,11 +47,11 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       setUploading(true)
 
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: ImagePicker.MediaTypeOptions.Images, // Restrict to only images
-        allowsMultipleSelection: false, // Can only select one image
-        allowsEditing: true, // Allows the user to crop / rotate their photo before uploading it
+        mediaTypes: ImagePicker.MediaTypeOptions.Images, 
+        allowsMultipleSelection: false,
+        allowsEditing: true, 
         quality: 1,
-        exif: false, // We don't want nor need that data.
+        exif: false, 
       })
 
       if (result.canceled || !result.assets || result.assets.length === 0) {
@@ -104,7 +104,7 @@ export default function Avatar({ url, size = 150, onUpload }: Props) {
       )}
       <View>
         <Button
-          buttonStyle={styles.uploadButton} // Apply custom style to the button
+          buttonStyle={styles.uploadButton} 
           title={uploading ? 'Uploading ...' : 'Upload'}
           onPress={uploadAvatar}
           disabled={uploading}

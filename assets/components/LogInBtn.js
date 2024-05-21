@@ -1,4 +1,4 @@
-import { TouchableOpacity , Text, StyleSheet} from 'react-native'
+import { TouchableOpacity , Text, StyleSheet, Platform} from 'react-native'
 import React from 'react'
 import colors from '../config/colors'
 
@@ -19,7 +19,7 @@ buttonLogin:{
     justifyContent:'center',
     paddingLeft:27,
     borderRadius:12,
-    backgroundColor:colors.blue,
+    backgroundColor:colors.lightGreen,
     // shadowColor: 'black',
     // shadowOffset: { width: 0, height: 2 },
     // shadowOpacity: 1.25,

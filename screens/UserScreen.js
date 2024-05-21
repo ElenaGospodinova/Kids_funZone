@@ -4,6 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import SongsControler from '../assets/components/SongsControler';
 
 export default function UserScreen() {
   const [watchedVideos, setWatchedVideos] = useState([]);
@@ -18,7 +19,6 @@ export default function UserScreen() {
       const jsonValue = await AsyncStorage.getItem('@watchedVideos');
       if (jsonValue !== null) {
         const videos = JSON.parse(jsonValue);
-        console.log('Fetched watched videos:', videos); // Logging fetched watched videos
         setWatchedVideos(videos);
       }
     } catch (error) {
@@ -28,10 +28,10 @@ export default function UserScreen() {
 
   const renderVideoItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('VideoDetails', { video: item })}>
+      <TouchableOpacity onPress={() => navigation.navigate('Your List', { video: item })}>
         <View style={styles.videoItem}>
-          <Image source={{ uri: item.thumbnailUrl }} style={styles.thumbnail} resizeMode="cover" />
-          <Text style={styles.titles}>{item.title}</Text>
+          <Image source={{ uri: item.url }} style={styles.thumbnail} resizeMode="cover" />
+          <Text style={styles.title}>{item.name}</Text>
         </View>
       </TouchableOpacity>
     );
@@ -39,28 +39,16 @@ export default function UserScreen() {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.next}
-        onPress={() => navigation.navigate('Kids Zone')}
-      >
+      <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Kids Zone')}>
         <Entypo name="video" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.music}
-        onPress={() => navigation.navigate('Music Zone')}
-      >
+      <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
         <Entypo name="music" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.back}
-        onPress={() => navigation.navigate('Home')}
-      >
+      <TouchableOpacity style={styles.back} onPress={() => navigation.navigate('Home')}>
         <AntDesign name="home" size={24} color="black" />
       </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.movie}
-        onPress={() => navigation.navigate('Movies Zone')}
-      >
+      <TouchableOpacity style={styles.movie} onPress={() => navigation.navigate('Movies Zone')}>
         <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
       </TouchableOpacity>
       <Text style={styles.title}>Watched Videos</Text>
@@ -69,6 +57,7 @@ export default function UserScreen() {
         keyExtractor={(item, index) => index.toString()}
         renderItem={renderVideoItem}
       />
+     
     </View>
   );
 }
@@ -104,7 +93,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginTop: 20,
-    top: 123,
   },
   videoItem: {
     marginVertical: 10,
@@ -114,10 +102,5 @@ const styles = StyleSheet.create({
     width: 250,
     height: 130,
     borderRadius: 12,
-  },
-  titles: {
-    marginTop: 5,
-    color: 'black',
-    fontWeight: 'bold',
   },
 });

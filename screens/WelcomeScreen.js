@@ -1,53 +1,48 @@
 import React, { useState, useEffect } from 'react';
-import { SafeAreaView, StyleSheet, Text, View, Alert, ActivityIndicator } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { supabase } from '../assets/utils/supabaseClient';
 
-
 import Logo from '../assets/components/Logo';
-import colors from '../assets/config/colors';
 import LogInBtn from '../assets/components/LogInBtn';
 import Avatar from '../assets/components/Avatar';
+import colors from '../assets/config/colors';
 
 export default function WelcomeScreen({ session }) {
   const navigation = useNavigation();
-  const [userAvatar, setUserAvatar] = useState('');
   const [loading, setLoading] = useState(false);
-  const [userName, setUserName] = useState('');
-  const [userId, setUserId] = useState('');
+  const [userData, setUserData] = useState(null);
 
   useEffect(() => {
+    const fetchUserData = async (userId) => {
+      try {
+        setLoading(true);
+        const { data, error, status } = await supabase
+          .from('profiles')
+          .select('username, avatar_url')
+          .eq('id', userId)
+          .single();
+
+        if (error || status === 406) {
+          throw error || new Error('User data not found');
+        }
+
+        if (data) {
+          setUserData(data);
+        } else {
+          throw new Error('User data not found');
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (session && session.user) {
       fetchUserData(session.user.id);
     }
   }, [session]);
-
-  const fetchUserData = async (userId) => {
-    try {
-      setLoading(true);
-      const { data, error, status } = await supabase
-        .from('profiles')
-        .select('username, avatar_url')
-        .eq('id', userId)
-        .single();
-
-      if (error && status !== 406) {
-        throw error;
-      }
-
-      if (data) {
-        setUserName(data.username || '');
-        setUserAvatar(data.avatar_url || '');
-        setUserId(userId);
-      } else {
-        throw new Error('User data not found');
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const greetingMessage = () => {
     const currentTime = new Date().getHours();
@@ -60,27 +55,27 @@ export default function WelcomeScreen({ session }) {
       greeting = 'Good Evening';
     }
 
-    return `${greeting}, ${userName || ''}, ${userId || ''}, ${userAvatar || ''}`;
-  };
+    if (userData && userData.username) {
+      greeting += `, ${userData.username}`;
+    }
 
-  const message = greetingMessage();
+    return greeting;
+  };
 
   return (
     <SafeAreaView style={styles.background}>
       <Logo />
-      <View style={{ justifyContent: 'center', alignItems: 'center', top: 93, left: 124 }}>
-        <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white', right: 33 }}>
-          {message}
-        </Text>
+      <View style={styles.container}>
+        <Text style={styles.greeting}>{greetingMessage()}</Text>
         {loading ? (
-          <ActivityIndicator size="large" color={colors.lightGreen} />
+          <ActivityIndicator size="large" color="white" />
+        ) : session && session.user && userData && userData.avatar_url && userData.username ? (
+          <View style={styles.userInfo}>
+            <Avatar url={userData.avatar_url} style={styles.avatar} />
+            <Text style={styles.userName}>{userData.username}</Text>
+          </View>
         ) : (
-          userAvatar && (
-            <View style={styles.userInfo}>
-              <Avatar url={userAvatar} style={styles.avatarStyle} />
-              <Text style={styles.userName}>{userName}</Text>
-            </View>
-          )
+          <Text style={styles.userName}>Loading user data...</Text>
         )}
       </View>
 
@@ -111,7 +106,7 @@ const styles = StyleSheet.create({
     top: 159,
     left: 133,
   },
-  avatarStyle: {
+  avatar: {
     width: 100,
     height: 100,
     borderRadius: 50,
@@ -120,5 +115,13 @@ const styles = StyleSheet.create({
   userName: {
     fontSize: 18,
     color: colors.white,
+  },
+  userInfo: {
+    alignItems: 'center',
+  },
+  greeting: {
+    fontSize: 24,
+    color: colors.white,
+    marginBottom: 20,
   },
 });

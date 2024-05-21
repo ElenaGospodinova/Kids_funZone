@@ -11,7 +11,6 @@ import Logo from '../assets/components/Logo';
 import colors from '../assets/config/colors';
 
 
-
 const OpenScreen = () => {
   const navigation = useNavigation();
   const [session, setSession] = useState(null);

@@ -1,0 +1,36 @@
+[
+    {
+      "album": {
+        "album_type": "single",
+        "artists": ["Exploration of Space"],
+        "external_urls": {"spotify": "https://open.spotify.com/album/7LJlzaFq8LRFGGq2kijcHX"},
+        "href": "https://api.spotify.com/v1/albums/7LJlzaFq8LRFGGq2kijcHX",
+        "id": "7LJlzaFq8LRFGGq2kijcHX",
+        "images": [],
+        "is_playable": true,
+        "name": "Exploration of Space",
+        "release_date": "2001-01-19",
+        "release_date_precision": "day",
+        "total_tracks": 8,
+        "type": "album",
+        "uri": "spotify:album:7LJlzaFq8LRFGGq2kijcHX"
+      },
+      "artists": [["Exploration of Space"]],
+      "disc_number": 1,
+      "duration_ms": 216360,
+      "explicit": false,
+      "external_ids": {"isrc": "NLD681702431"},
+      "external_urls": {"spotify": "https://open.spotify.com/track/0P2sfcfRD0lWw4b8eXegmR"},
+      "href": "https://api.spotify.com/v1/tracks/0P2sfcfRD0lWw4b8eXegmR",
+      "id": "0P2sfcfRD0lWw4b8eXegmR",
+      "is_local": false,
+      "is_playable": true,
+      "name": "Exploration of Space",
+      "popularity": 57,
+      "preview_url": "https://p.scdn.co/mp3-preview/446418fb55c5325c38e842459d0f1e98b0c0e852?cid=a829cad6b64344c88a2b7425a94e9f06",
+      "track_number": 1,
+      "type": "track",
+      "uri": "spotify:track:0P2sfcfRD0lWw4b8eXegmR"
+    }
+  ]
+  

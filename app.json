@@ -1,12 +1,11 @@
 {
   "expo": {
-    "name": "Local-Sales",
-    "slug": "Local-Sales",
-   "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "name": "Kids_Fun",
+    "slug": "Kids_Fun",
+    "version": "1.0.0",
+    "orientation": "default",
+    "icon": "./assets/img/logo.png",
     "splash": {
-      "image": "./assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,19 +16,35 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "requireFullScreen": true,
+      "bundleIdentifier": "kidsfunzone"
     },
+    "plugins": [
+      "expo-dev-client",
+      [
+        
+        "expo-screen-orientation",
+        {
+          "initialOrientation": "DEFAULT"
+        }
+      ]
+    ],
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+        "backgroundColor": "#FFFFFF",
+        "bundleIdentifier": "kidsfunzone"
+      },
+      "package": "com.elenag.Kids_Fun"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "supabaseKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnb3J2aXZtY3BiYm1tbHp2YWVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg5NTY1NTksImV4cCI6MjAyNDUzMjU1OX0.Rg7vOClsKYZeWxHN3NX_ohtlzRfp3EsRRC-G4fikgKg"
+      "supabaseKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnb3J2aXZtY3BiYm1tbHp2YWVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg5NTY1NTksImV4cCI6MjAyNDUzMjU1OX0.Rg7vOClsKYZeWxHN3NX_ohtlzRfp3EsRRC-G4fikgKg",
+      "eas": {
+        "projectId": "8b756305-ab7f-4335-8300-39d8ad33cb0a"
+      }
     }
   }
 }

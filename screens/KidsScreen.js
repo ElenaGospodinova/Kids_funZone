@@ -13,15 +13,20 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import { useQuery } from '@tanstack/react-query';
-import { AntDesign, Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
-import SearchBar from '../assets/components/SearchBar';
-import LogInBtn from '../assets/components/LogInBtn';
 import colors from '../assets/config/colors';
 import VideoCard from '../assets/components/VideoCard';
-import pic from '../assets/img/photo.jpeg';
+
+import NavigationBar from '../assets/components/NavigationBar';
+import pic from '../assets/img/MoreVideos.png';
+import MashaAndBear from '../assets/img/Masha_and_theBear.png';
+import MrBean from '../assets/img/MrBean.png';
+import GrizzyLemmings from '../assets/img/GrizzyThe_Lemmings.png';
+import LittleSchool from '../assets/img/LittleSchool.png';
+import OddbodsCartoons from '../assets/img/Oddbods_Cartoons.png';
+import StrawberryShortCake from '../assets/img/StrawberryShortcake.png';
+import NavigationScreen from '../assets/components/NavigationScreen';
 
 export default function KidsScreen() {
-  const [searchPhrase, setSearchPhrase] = useState('');
   const [clicked, setClicked] = useState(false);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const navigation = useNavigation();
@@ -53,7 +58,6 @@ export default function KidsScreen() {
     const handlePress = () => {
       setSelectedVideo(item);
     };
-
     return (
       <TouchableOpacity onPress={handlePress}>
         <View style={styles.videoItem}>
@@ -68,44 +72,82 @@ export default function KidsScreen() {
     );
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.fixedHeader}>
-        <TouchableOpacity style={styles.next} onPress={() => navigation.navigate('Games Zone')}>
-          <Entypo name="game-controller" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
-          <Entypo name="music" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.back} onPress={() => navigation.navigate('Home')}>
-          <AntDesign name="home" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.user} onPress={() => navigation.navigate('Your List')}>
-          <AntDesign name="user" size={24} color="black" />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.movie} onPress={() => navigation.navigate('Movies Zone')}>
-          <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
-      {!clicked && <Text style={styles.titles}></Text>}
-      <View style={styles.searchBar}>
-        <SearchBar
-          searchPhrase={searchPhrase}
-          setSearchPhrase={setSearchPhrase}
-          clicked={clicked}
-          setClicked={setClicked}
+  const renderHeader = () => (
+    <View>
+      <View style={styles.listVideo}>
+        <VideoCard
+          style={styles.playlist}
+          title="More Videos"
+          image={pic}
+          onPress={() => navigation.navigate('PlayList Zone')}
         />
       </View>
-      <TouchableOpacity style={styles.searchBar} onPress={() => setClicked(true)}>
-        <LogInBtn style={styles.searchText} title="Search" />
-      </TouchableOpacity>
       <View style={styles.listVideo}>
-        <VideoCard style={styles.playlist} title="More Videos" image={pic} />
+        <VideoCard
+          style={styles.playlist}
+          title=" 👧 🐻 Masha and the Bear"
+          image={MashaAndBear}
+          resizeMode="contain-cover"
+          onPress={() => navigation.navigate('Masha and the Bear ')}
+        />
       </View>
+      <View style={styles.listVideo}>
+        <VideoCard
+          style={styles.playlist}
+          title="🎬 Mr Bean 🎬"
+          image={MrBean}
+          resizeMode="contain-cover"
+          onPress={() => navigation.navigate('Mr Bean')}
+        />
+      </View>
+      <View style={styles.listVideo}>
+        <VideoCard
+          style={styles.strawberry}
+          title="🍓 Strawberry Shortcake 🍓"
+          image={StrawberryShortCake}
+          resizeMode="cover-contain"
+          onPress={() => navigation.navigate('Strawberry Shortcake')}
+        />
+      </View>
+      <View style={styles.listVideo}>
+        <VideoCard
+          style={styles.playlist}
+          title="🐻🐹 Grizzy and Lemmings"
+          image={GrizzyLemmings}
+          resizeMode="cover"
+          onPress={() => navigation.navigate('Grizzy and Lemmings')}
+        />
+      </View>
+      <View style={styles.listVideo}>
+        <VideoCard
+          style={styles.playlist}
+          title="🚀 Adventure in Learning 🚀"
+          image={LittleSchool}
+          resizeMode="contain-cover"
+          onPress={() => navigation.navigate('Dr Binocs Show')}
+        />
+      </View>
+      <View style={styles.listVideo}>
+        <VideoCard
+          style={styles.playlist}
+          title="🏀 Oddbods Cartoons ⚽🎮"
+          image={OddbodsCartoons}
+          resizeMode="cover"
+          onPress={() => navigation.navigate('Oddbods Cartoons')}
+        />
+      </View>
+    </View>
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Include the NavigationBar component */}
+      <NavigationScreen />
       <FlatList
         data={filteredVideos}
         keyExtractor={(item) => item.id.videoId.toString()}
         renderItem={renderVideoItem}
+        ListHeaderComponent={renderHeader}
       />
       {!clicked && null}
       {selectedVideo && (
@@ -132,6 +174,7 @@ export default function KidsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    top:123,
   },
   errorText: {
     color: colors.red,
@@ -140,31 +183,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: Platform.OS === 'android' ? 76 : 10,
   },
-  next: {
-    position: 'absolute',
-    top: 3,
-    right: 20,
-    zIndex: 12,
+  playlist: {
+    borderRadius: 12,
+    width:'100%',
   },
-  back: {
-    position: 'absolute',
-    top: 3,
-    left: 20,
-    zIndex: 12,
-  },
-  music: {
-    position: 'absolute',
-    top: 3,
-    right: 60,
-  },
-  movie:{
-    right:83,
-    bottom:4,
-  },
-  fixedHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
+  strawberry:{
+    borderRadius: 12,
+    width:'100%',
+    aspectRatio: 1.8,
+    overflow: 'hidden',
   },
   videoItem: {
     margin: 20,
@@ -197,25 +224,19 @@ const styles = StyleSheet.create({
     padding: 9,
     color: colors.darkBlue,
     fontWeight: 'bold',
+    fontSize:16,
   },
-  searchBar:{
-    width:"90%",
-    padding:4,
+  searchBar: {
+    width: '90%',
+    padding: 4,
   },
-  searchText:{
+  searchText: {
     width: 100,
     height: '22%',
     backgroundColor: colors.lightGreen,
     left: 303,
     bottom: 53,
     paddingLeft: 10,
-  },
-  movies:{
-    color:'white',
-    bottom:123,
-  },
-  user:{
-    left:53,
-    bottom:8,
-  },
+  }
+ 
 });

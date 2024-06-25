@@ -83,7 +83,7 @@ export default ({ onPress }: PlayerProps) => {
             <Icon name="more-horizontal" color="white" size={24} />
           </RectButton>
         </View>
-        <Image source={require("../img/Logo.png")} style={styles.cover} />
+        <Image source={require("../img/logo.png")} style={styles.cover} />
         <View style={styles.metadata}>
           <View>
             <Text style={styles.song}>The Bay</Text>

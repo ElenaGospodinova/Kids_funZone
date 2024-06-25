@@ -1,25 +1,69 @@
-// PlayListScreen.js
 import React, { useState, useEffect } from 'react';
-import { useNavigation } from '@react-navigation/native';
-import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Platform } from 'react-native';
+import { useQuery } from '@tanstack/react-query';
+import { StyleSheet, TouchableOpacity, ActivityIndicator, View, Image, Text } from 'react-native';
 import { WebView } from 'react-native-webview';
 import { FlatList } from 'react-native';
-import { AntDesign, Entypo } from '@expo/vector-icons';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import YouTube from 'react-native-youtube-iframe';
 
+import NavigationBar from '../assets/components/NavigationBar';
 import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
+import GoBackBtn from '../assets/components/GoBackBtn';
 
-export default function PlayListScreen () {
-  const [loading, setLoading] = useState(true);
-  const [videos, setVideos] = useState([]);
-  const navigation = useNavigation();
+export default function PlayListScreen() {
+  const [selectedVideo, setSelectedVideo] = useState(null);
+  const [isBuffering, setIsBuffering] = useState(false);
+ 
   
+  const { isLoading, data, error } = useQuery({
+    queryKey: ['video'],
+    queryFn: async () => {
+      const response = await fetch(
+        'https://www.googleapis.com/youtube/v3/search?q=Disney+cartoon+animation+eposodes&part=snippet&maxResults=20&type=video&key=AIzaSyAc-mBPxmogOpFk26KPtFUp-vFKHfD_dDE'
+      );
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      const data = await response.json();
+      return data.items;
+    },
+  });
+
+  const filteredVideos = data || [];
+
+  const renderVideoItem = ({ item }) => {
+    const thumbnailUrl = item.snippet.thumbnails.medium.url;
+
+    const handlePress = () => {
+      setSelectedVideo(item);
+      setIsBuffering(true);
+    };
+
+    return (
+      <TouchableOpacity onPress={handlePress}>
+        <View style={styles.videoContainer}>
+          {thumbnailUrl ? (
+            <Image source={{ uri: thumbnailUrl }} style={styles.video} resizeMode="contain" />
+          ) : (
+            <ActivityIndicator size="small" color={colors.green} />
+          )}
+          <Text style={styles.titles}>{item.snippet.title}</Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
+
+  const [localVideos, setLocalVideos] = useState([]);
   const fetchLocalData = () => {
     try {
       const localData = {
         "albums": [
+          {
+            "id": "Unicorn Academy ",
+            "name": "Incredible Unicorn PLANT MAGIC!",
+            "url": "https://www.youtube.com/embed/OV2xbYjO24g"
+          },
           {
             "id": "Hudson's Playground",
             "name": "Play with the real tractors",
@@ -28,24 +72,38 @@ export default function PlayListScreen () {
           {
             "id": "Marvel",
             "name": "Spidey and Friends",
-            "url": "https://www.youtube.com/embed/Vk36-GV81Yg" 
+            "url": "https://www.youtube.com/embed/Vk36-GV81Yg"
           },
           {
             "id": "Gecko`s Garage",
             "name": "Gescko Basketball Bedlam",
-            "url": "https://www.youtube.com/embed/fvcjuC027NU" 
+            "url": "https://www.youtube.com/embed/fvcjuC027NU"
+          },
+          {
+            "id": "Unicorn Academy",
+            "name": "Unicorn Academy",
+            "url": "https://www.youtube.com/embed/g3Vv4kfHzKk"
           },
           {
             "id": "Tracktor Ted",
             "name": "Big Machines Compilation",
             "url": "https://www.youtube.com/embed/XQEt3Pfb-DM"
+          },
+          {
+            "id": "Bluey",
+            "name": "Season 3 Full Episodes",
+            "url": "https://www.youtube.com/embed/MnFue5zu454"
+          },
+          {
+            "id": "The Amazing World of Gumball",
+            "name": "The Patato",
+            "url": "https://www.youtube.com/embed/XxFvpUhmRak"
           }
         ]
       };
 
       if (localData.albums) {
-        setVideos(localData.albums);
-        setLoading(false);
+        setLocalVideos(localData.albums);
       } else {
         console.warn('No video items found in the local response');
       }
@@ -68,114 +126,94 @@ export default function PlayListScreen () {
       console.error('Error saving watched video:', error);
     }
   };
-  
 
   return (
     <Screen>
-      {loading ? (
+      <GoBackBtn/>
+      {isLoading ? (
         <ActivityIndicator size='large' color="black" style={styles.loadingIndicator} />
       ) : (
         <View style={styles.container}>
-          <View style={styles.fixedHeader}>
-            <TouchableOpacity style={styles.next} title='Video' onPress ={() => navigation.navigate('Kids Zone')}>
-              <Entypo name="video" size={24} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.music} onPress={() => navigation.navigate('Music Zone')}>
-              <Entypo name="music" size={24} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.back} title='Home' onPress ={() => navigation.navigate('Home')}>
-              <AntDesign name="home" size={24} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.movie} onPress={() => navigation.navigate('Movies Zone')}>
-              <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.user} onPress={() => navigation.navigate('Your List')}>
-              <AntDesign name="user" size={24} color="black" />
-            </TouchableOpacity>
-          </View>
           <FlatList
-            style={styles.container}
-            data={videos}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <View style={styles.videoContainer} key={index}>
-                <WebView
-                  javaScriptEnabled={true}
-                  domStorageEnabled={true}
-                  source={{ uri: item.url }}
-                  style={styles.video}
-                  onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
-                  onLoadEnd={() => saveWatchedVideo(item)} // Save watched video on load end
-                />
-              </View>
-            )}
+            data={localVideos.concat(filteredVideos)}
+            keyExtractor={(item, index) => item.id?.videoId || item.url || index.toString()}
+            renderItem={({ item }) => {
+              if (item.snippet) {
+                return renderVideoItem({ item });
+              }
+              return (
+                <View style={styles.videoContainer}>
+                  <WebView
+                    javaScriptEnabled={true}
+                    domStorageEnabled={true}
+                    source={{ uri: item.url }}
+                    style={styles.video}
+                    onError={(syntheticEvent) => console.error('WebView error:', syntheticEvent.nativeEvent)}
+                    onLoadEnd={() => saveWatchedVideo(item)}
+                  />
+                </View>
+              );
+            }}
           />
+          {selectedVideo && (
+            <View style={styles.videoContainer}>
+              {isBuffering && (
+                <ActivityIndicator size="large" color={colors.green} style={styles.bufferingIndicator} />
+              )}
+              <YouTube
+               style={styles.video}
+                videoId={selectedVideo.id.videoId}
+                height={300}
+                play={true}
+                onReady={() => console.log('video is ready')}
+                onChangeState={() => setIsBuffering(false)}
+              />
+            </View>
+          )}
         </View>
       )}
     </Screen>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
     padding: 7,
     marginTop: 40,
-    gap: 142,
-  },
-  next: {
-    marginRight: 10,
-    position: 'absolute',
-    top: Platform.OS === 'android' ? -1 : 3,
-    right: 20,
-    zIndex: 12,
-    color: colors.white,
-  },
-  back: {
-    marginLeft: 10,
-  },
-  movies: {
-    top: 92,
-    color: colors.white,
-  },
-  movie: {
-    left: 303,
-    bottom: 6,
-  },
-  music: {
-    position: 'absolute',
-    top: 3,
-    right: 60,
-  },
-  fixedHeader: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 12,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-    backgroundColor: colors.lightBlue,
   },
   loadingIndicator: {
-    bottom: -305,
-    width: 200,
-    height: 100,
-    marginHorizontal: 92,
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   video: {
     borderRadius: 10,
     alignSelf: 'stretch',
-    flex: 1,
     height: 220,
-    padding: 2,
     marginTop: 25,
   },
-  moviesImg: {
-    height: 252,
-    width: '89%',
-    left: 17,
-    borderRadius: 12,
+  videoItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    borderRadius:12,
+  },
+  titles: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: 'bold',
+    color:'white',
+    padding:12,
+   
+  },
+  bufferingIndicator: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    marginTop: -25,
+    marginLeft: -25,
   },
 });

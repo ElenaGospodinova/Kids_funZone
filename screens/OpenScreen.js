@@ -13,31 +13,32 @@ import colors from '../assets/config/colors';
 
 const OpenScreen = () => {
   const navigation = useNavigation();
-  const [session, setSession] = useState(null);
-  const [userName, setUserName] = useState('');
+  // const [session, setSession] = useState(null);
+  // const [userName, setUserName] = useState('');
   
 
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-    });
+  // useEffect(() => {
+  //   supabase.auth.getSession().then(({ data: { session } }) => {
+  //     setSession(session);
+  //   });
 
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
-  }, []);
+  //   supabase.auth.onAuthStateChange((_event, session) => {
+  //     setSession(session);
+  //   });
+  // }, []);
 
-  useEffect(() => {
-    if (session && session.user) {
-      setUserName(session.user.user_metadata.full_name); 
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session && session.user) {
+  //     setUserName(session.user.user_metadata.full_name); 
+  //   }
+  // }, [session]);
 
 
 
   return (
   <View style={styles.container}>
-    <View>
+  <Logo/>
+    {/* <View>
       <Logo style={styles.logoS}/>
       <Text>{userName}</Text>
     </View>
@@ -48,7 +49,7 @@ const OpenScreen = () => {
         <Text style={styles.text}onPress={() => navigation.navigate('Recovery Screen')}>
           Forgotten Password
         </Text>
-    </View>
+    </View> */}
       
   </View>
 )

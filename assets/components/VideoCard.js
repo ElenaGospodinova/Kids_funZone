@@ -3,20 +3,19 @@ import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
 import colors from '../config/colors';
+import { on } from 'events';
 
 
-export default function VideoCard({ title, image }) {
+export default function VideoCard({ title, image, style, resizeMode, onPress }) {
 
     const navigation = useNavigation();
    
   return (
-    <TouchableOpacity  onPress={() => navigation.navigate('PlayList Zone')}>
-      <View style={styles.card}>
-        <Image style={styles.photo} source={image} />
+    <TouchableOpacity  onPress={onPress}>
+      <View style={[styles.card, style]}>
+        <Image style={[styles.photo, { resizeMode }]} source={image} />
         <View style={styles.detailsContainer}>
           <Text style={styles.title}>{title}</Text>
-      
-          
         </View>
       </View>
     </TouchableOpacity>
@@ -25,6 +24,7 @@ export default function VideoCard({ title, image }) {
 
 const styles = StyleSheet.create({
   card: {
+    
     padding: 2,
     paddingTop: 5,
     borderRadius: 15,
@@ -58,14 +58,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginVertical: 6,
     top: 40,
+    fontSize:18,
   },
   subTitle: {
     color: colors.background,
     top: 50,
-  },
-  // localDataLog: {
-  //   color: colors.white,
-  //   fontSize: 12,
-  //   marginTop: 10,
-  // },
+  }
 });

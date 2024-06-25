@@ -7,22 +7,24 @@ import {
   ActivityIndicator,
   TouchableOpacity,
   Image,
+  Linking,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
-import { AntDesign, Entypo, MaterialCommunityIcons } from "@expo/vector-icons";
-import { Audio } from 'expo-av';
-import Slider from '@react-native-community/slider';  // New Slider import
 
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
+import { Audio } from 'expo-av';
+import Slider from '@react-native-community/slider';
+
+import NavigationBar from "../assets/components/NavigationBar";
 import colors from "../assets/config/colors";
 import SearchBar from "../assets/components/SearchBar";
 import LogInBtn from "../assets/components/LogInBtn";
+import NavigationScreen from "../assets/components/NavigationScreen";
 
 const CLIENT_ID = "a829cad6b64344c88a2b7425a94e9f06";
 const CLIENT_SECRET = "25ab471a807e411c82a140cfa83461ba";
 
 const MusicScreen = () => {
-  const navigation = useNavigation();
-  
+
   const [searchInput, setSearchInput] = useState("");
   const [access_token, setAccessToken] = useState("");
   const [loading, setLoading] = useState(false);
@@ -166,32 +168,20 @@ const MusicScreen = () => {
     }
   };
 
+  const openSpotify = (spotifyUri) => {
+    const trackId = spotifyUri.split(':').pop();
+    const url = `https://open.spotify.com/track/${trackId}`;
+    console.log("Opening Spotify URL:", url); // Debug log
+    Linking.openURL(url).catch((err) =>
+      console.error("Failed to open URL:", err)
+    );
+  };
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.next}
-        onPress={() => navigation.navigate("Kids Zone")}
-      >
-        <Entypo name="video" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.music}
-        onPress={() => navigation.navigate("Games Zone")}
-      >
-        <Entypo name="game-controller" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.back}
-        onPress={() => navigation.navigate("Home")}
-      >
-        <AntDesign name="home" size={24} color="black" />
-      </TouchableOpacity>
-      <TouchableOpacity
-        style={styles.movie}
-        onPress={() => navigation.navigate("Movies Zone")}
-      >
-        <MaterialCommunityIcons name="movie-roll" size={24} color="black" />
-      </TouchableOpacity>
+    <View style={styles.navBar}>
+      <NavigationScreen/>
+    </View>
       <View style={styles.searchBar}>
         <SearchBar
           searchPhrase={searchInput}
@@ -254,6 +244,12 @@ const MusicScreen = () => {
                   ) : (
                     <AntDesign name="playcircleo" size={32} color="white" />
                   )}
+                  <TouchableOpacity
+                    style={styles.spotifyButton}
+                    onPress={() => openSpotify(item.uri)}
+                  >
+                    <FontAwesome name="spotify" size={32} color="green" />
+                  </TouchableOpacity>
                 </View>
               </TouchableOpacity>
               {isPlaying && currentTrack === item.preview_url && (
@@ -272,7 +268,7 @@ const MusicScreen = () => {
           )}
         />
       )}
-      <Text style={styles.header}>Your Music</Text>
+     
       <FlatList
         data={kidsSongs}
         keyExtractor={(item) => item.id.toString()}
@@ -301,10 +297,16 @@ const MusicScreen = () => {
               </View>
               <View style={styles.controls}>
                 {isPlaying && currentTrack === item.preview_url ? (
-                  <AntDesign name="pausecircleo" size={32} color="white" />
+                  <AntDesign name="pausecircleo" size={32} color="#6892d5" />
                 ) : (
-                  <AntDesign name="playcircleo" size={32} color="white" />
+                  <AntDesign name="playcircleo" size={32} color="#6892d5" />
                 )}
+                <TouchableOpacity
+                  style={styles.spotifyButton}
+                  onPress={() => openSpotify(item.uri)}
+                >
+                  <FontAwesome name="spotify" size={36} color="#20CE5E" />
+                </TouchableOpacity>
               </View>
             </TouchableOpacity>
             {isPlaying && currentTrack === item.preview_url && (
@@ -331,58 +333,35 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     height: "100%",
+    width:'100%',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: "bold",
-    bottom: 255,
-    color: "white",
-    left: 125,
-  },
-  next: {
-    position: "absolute",
-    top: 83,
-    right: 20,
-    zIndex: 12,
-  },
-  music: {
-    position: "absolute",
-    top: 83,
-    right: 60,
-  },
-  movie: {
-    left: 283,
-    top: 67,
-  },
-  back: {
-    position: "absolute",
-    top: 83,
-    left: 20,
-    zIndex: 12,
+  navBar:{
+    marginTop:152,
   },
   songs: {
-    top: 41,
-    padding: 5,
-    height:82,
-    width:344,
+    top: 51,
+    padding: 17,
+    height:'auto',
+    width:'100%',
     paddingBottom: 2,
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: colors.blue,
+    width:'100%',
+    backgroundColor: colors.veryLightBlue,
     borderRadius: 8,
   },
   searchBar: {
-    top: 82,
+    top: 22,
     right: 12,
     width: "94%",
   },
   search: {
     width: 100,
-    height: "5%",
+    height: "4.8%",
     fontSize: 15,
     backgroundColor: colors.lightGreen,
-    left: 260,
-    top: 36,
+    left: 290,
+    bottom: 24,
     paddingLeft: 10,
   },
   searchResult: {
@@ -408,10 +387,10 @@ const styles = StyleSheet.create({
   },
   trackArtists: {
     fontSize: 16,
-    color: "white",
+    color: colors.lightBlue,
   },
   activeSong: {
-    backgroundColor: colors.lightGreen,
+    backgroundColor:colors.activeS,
   },
   errorText: {
     fontSize: 18,
@@ -421,13 +400,19 @@ const styles = StyleSheet.create({
   controls: {
     flexDirection: "row",
     alignItems: "center",
-    padding:12,
+    padding:2,
+    gap:12,
+    left:4,
+    width:'auto',
+    
   },
   slider: {
-    width: "100%",
+    width:'100%',
     height: 40,
     marginTop: 10,
-   
+  },
+  spotifyButton: {
+    marginLeft: 1,
   },
 });
 

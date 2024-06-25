@@ -12,5 +12,9 @@ export default{
     gray:'#EEEEEE',
     grayBlue:'#96B6C5',
     darkBlue:'#001B79',
+    activeS:'#bfe9db',
+    lightBlue:'#007cb',
+    veryLightBlue:'#ecfeff',
+    cyanBlue:'#add8e6'
 }
 // lightGreen:'#95CD41'

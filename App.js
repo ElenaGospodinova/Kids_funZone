@@ -1,25 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Provider } from "react-redux";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { StyleSheet, View, Dimensions } from "react-native";
+import { useQuery, useMutation, useQueryClient, QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { useDeviceOrientation } from "@react-native-community/hooks";
-import { Dimensions } from "react-native";
-//import { configureStore } from '@reduxjs/toolkit';
-//import watchedVideosReducer from './store/reduser';
-import NetInfo from "@react-native-community/netinfo"; // Import NetInfo
-import { onlineManager } from "@tanstack/react-query";
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 import WelcomeScreen from "./screens/WelcomeScreen";
 import KidsScreen from "./screens/KidsScreen";
 import PlayListScreen from "./screens/PlayListScreen";
-import MoviesScreen from "./screens/MoviesScreen";
+import MashaAndBear from "./screens/MashaAndBear";
+import MrBean from "./screens/MrBean";
+import GrizzyAndLemmings from "./screens/GrizzyLemmings";
+import DrBinocsShow from './screens/DrBinocsShow';
+import OddbodsCartoons from "./screens/OddbodsCartoons";
+import StrawberryShortCake from "./screens/StrawberryShortCake";
 import GamesScreen from "./screens/GamesScreen";
 import MusicScreen from "./screens/MusicScreen";
 import BackgroundApp from "./assets/components/BackgroundApp";
@@ -28,7 +25,6 @@ import Testing from "./screens/Testing";
 import OpenScreen from "./screens/OpenScreen.js";
 import RecoveryScreen from "./screens/RecoveryScreen";
 import UserScreen from "./screens/UserScreen";
-//import Auth from './assets/components/Auth';
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -48,32 +44,23 @@ const screenOptions = {
   headerTransparent: true,
 };
 
-const tabBarOptions = {
-  style: {
-    backgroundColor: colors.backgroundBlue,
-  },
-  labelStyle: {
-    color: colors.white,
-  },
-  activeTintColor: colors.white,
-};
-
 export default function App(props) {
-  console.log(useDeviceOrientation());
-
-  // Get device window dimensions
-  const { width, height } = Dimensions.get("window");
-  console.log("Device window dimensions:", width, height);
+  useEffect(() => {
+    const lockOrientation = async () => {
+      await ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT_UP);
+    };
+    lockOrientation();
+  }, []);
 
   return (
     <>
-    
-      <QueryClientProvider client={queryClient}>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <QueryClientProvider client={queryClient}>
           <NavigationContainer>
             <Stack.Navigator screenOptions={screenOptions}>
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="Start"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: false }}
               >
                 {() => (
                   <ScreenWithBackground>
@@ -83,17 +70,17 @@ export default function App(props) {
               </Stack.Screen>
               <Stack.Screen
                 name="Recovery Screen"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: false }}
               >
                 {() => (
                   <ScreenWithBackground>
                     <RecoveryScreen />
                   </ScreenWithBackground>
                 )}
-              </Stack.Screen>
+              </Stack.Screen> */}
               <Stack.Screen
                 name="Home"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: false }}
               >
                 {() => (
                   <ScreenWithBackground>
@@ -103,7 +90,7 @@ export default function App(props) {
               </Stack.Screen>
               <Stack.Screen
                 name="Kids Zone"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: true }}
               >
                 {() => (
                   <ScreenWithBackground>
@@ -111,19 +98,19 @@ export default function App(props) {
                   </ScreenWithBackground>
                 )}
               </Stack.Screen>
-              <Stack.Screen
+              {/* <Stack.Screen
                 name="Your List"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: false }}
               >
                 {() => (
                   <ScreenWithBackground>
                     <UserScreen />
                   </ScreenWithBackground>
                 )}
-              </Stack.Screen>
+              </Stack.Screen> */}
               <Stack.Screen
                 name="PlayList Zone"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: false }}
               >
                 {() => (
                   <ScreenWithBackground>
@@ -132,18 +119,68 @@ export default function App(props) {
                 )}
               </Stack.Screen>
               <Stack.Screen
-                name="Movies Zone"
-                options={{ headerShown: false }} // Optional: To hide the header
+                name="Masha and the Bear "
+                options={{ headerShown: true }}
               >
                 {() => (
                   <ScreenWithBackground>
-                    <MoviesScreen />
+                    <MashaAndBear />
+                  </ScreenWithBackground>
+                )}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Mr Bean"
+                options={{ headerShown: true }}
+              >
+                {() => (
+                  <ScreenWithBackground>
+                    <MrBean />
+                  </ScreenWithBackground>
+                )}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Grizzy and Lemmings"
+                options={{ headerShown: true }}
+              >
+                {() => (
+                  <ScreenWithBackground>
+                    <GrizzyAndLemmings />
+                  </ScreenWithBackground>
+                )}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Dr Binocs Show"
+                options={{ headerShown: true }}
+              >
+                {() => (
+                  <ScreenWithBackground>
+                    <DrBinocsShow />
+                  </ScreenWithBackground>
+                )}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Oddbods Cartoons"
+                options={{ headerShown: true }}
+              >
+                {() => (
+                  <ScreenWithBackground>
+                    <OddbodsCartoons />
+                  </ScreenWithBackground>
+                )}
+              </Stack.Screen>
+              <Stack.Screen
+                name="Strawberry Shortcake"
+                options={{ headerShown: true }}
+              >
+                {() => (
+                  <ScreenWithBackground>
+                    <StrawberryShortCake />
                   </ScreenWithBackground>
                 )}
               </Stack.Screen>
               <Stack.Screen
                 name="Games Zone"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: true }}
               >
                 {() => (
                   <ScreenWithBackground>
@@ -153,7 +190,7 @@ export default function App(props) {
               </Stack.Screen>
               <Stack.Screen
                 name="Music Zone"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: true }}
               >
                 {() => (
                   <ScreenWithBackground>
@@ -163,7 +200,7 @@ export default function App(props) {
               </Stack.Screen>
               <Stack.Screen
                 name="Testing"
-                options={{ headerShown: false }} // Optional: To hide the header
+                options={{ headerShown: false }}
               >
                 {() => (
                   <ScreenWithBackground>
@@ -173,7 +210,8 @@ export default function App(props) {
               </Stack.Screen>
             </Stack.Navigator>
           </NavigationContainer>
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </GestureHandlerRootView>
     </>
   );
 }

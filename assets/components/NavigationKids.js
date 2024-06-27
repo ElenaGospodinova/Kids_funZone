@@ -3,17 +3,11 @@ import { StyleSheet, Text, View,TouchableOpacity, SafeAreaView } from 'react-nat
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 
-const NavigationScreen = () => {
+const NavigationKids = () => {
     const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-         <TouchableOpacity
-          style={styles.next}
-          onPress={() => navigation.navigate('Kids Zone')}
-        >
-          <Entypo name="video" size={24} color="white" />
-        </TouchableOpacity>
         <TouchableOpacity
           style={styles.music}
           onPress={() => navigation.navigate('Music Zone')}
@@ -36,7 +30,7 @@ const NavigationScreen = () => {
   )
 }
 
-export default NavigationScreen
+export default NavigationKids
 
 const styles = StyleSheet.create({
     container: {

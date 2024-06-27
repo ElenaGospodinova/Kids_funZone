@@ -10,7 +10,7 @@ import Safe_Kids_Games from '../assets/img/gamesImg/Safe_Kids_Games.png';
 import CBeebies from '../assets/img/gamesImg/CBeebies.png';
 import SplashLearn from '../assets/img/gamesImg/SplashLearn.png';
 import ABCYA from '../assets/img/gamesImg/abcya.png';
-import NavigationScreen from '../assets/components/NavigationScreen';
+import NavigationGames from '../assets/components/NavigationGames';
 
 const GamesScreen = () => {
   const [selectedGame, setSelectedGame] = useState(null);
@@ -89,7 +89,7 @@ const GamesScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.container}>
-       <NavigationScreen />
+       <NavigationGames />
        
         <FlatList
           data={games}

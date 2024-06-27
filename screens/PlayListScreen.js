@@ -6,7 +6,6 @@ import { FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import YouTube from 'react-native-youtube-iframe';
 
-import NavigationBar from '../assets/components/NavigationBar';
 import Screen from '../assets/components/Screen';
 import colors from '../assets/config/colors';
 import GoBackBtn from '../assets/components/GoBackBtn';

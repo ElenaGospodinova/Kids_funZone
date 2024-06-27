@@ -16,7 +16,7 @@ import { useQuery } from '@tanstack/react-query';
 import colors from '../assets/config/colors';
 import VideoCard from '../assets/components/VideoCard';
 
-import NavigationBar from '../assets/components/NavigationBar';
+
 import pic from '../assets/img/MoreVideos.png';
 import MashaAndBear from '../assets/img/Masha_and_theBear.png';
 import MrBean from '../assets/img/MrBean.png';
@@ -24,7 +24,7 @@ import GrizzyLemmings from '../assets/img/GrizzyThe_Lemmings.png';
 import LittleSchool from '../assets/img/LittleSchool.png';
 import OddbodsCartoons from '../assets/img/Oddbods_Cartoons.png';
 import StrawberryShortCake from '../assets/img/StrawberryShortcake.png';
-import NavigationScreen from '../assets/components/NavigationScreen';
+import NavigationKids from '../assets/components/NavigationKids';
 
 export default function KidsScreen() {
   const [clicked, setClicked] = useState(false);
@@ -142,7 +142,7 @@ export default function KidsScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Include the NavigationBar component */}
-      <NavigationScreen />
+      <NavigationKids />
       <FlatList
         data={filteredVideos}
         keyExtractor={(item) => item.id.videoId.toString()}

@@ -21,10 +21,8 @@ import GamesScreen from "./screens/GamesScreen";
 import MusicScreen from "./screens/MusicScreen";
 import BackgroundApp from "./assets/components/BackgroundApp";
 import colors from "./assets/config/colors";
-import Testing from "./screens/Testing";
-import OpenScreen from "./screens/OpenScreen.js";
-import RecoveryScreen from "./screens/RecoveryScreen";
-import UserScreen from "./screens/UserScreen";
+
+
 
 const queryClient = new QueryClient();
 const Stack = createNativeStackNavigator();
@@ -58,26 +56,6 @@ export default function App(props) {
         <QueryClientProvider client={queryClient}>
           <NavigationContainer>
             <Stack.Navigator screenOptions={screenOptions}>
-              {/* <Stack.Screen
-                name="Start"
-                options={{ headerShown: false }}
-              >
-                {() => (
-                  <ScreenWithBackground>
-                    <OpenScreen />
-                  </ScreenWithBackground>
-                )}
-              </Stack.Screen>
-              <Stack.Screen
-                name="Recovery Screen"
-                options={{ headerShown: false }}
-              >
-                {() => (
-                  <ScreenWithBackground>
-                    <RecoveryScreen />
-                  </ScreenWithBackground>
-                )}
-              </Stack.Screen> */}
               <Stack.Screen
                 name="Home"
                 options={{ headerShown: false }}
@@ -98,16 +76,6 @@ export default function App(props) {
                   </ScreenWithBackground>
                 )}
               </Stack.Screen>
-              {/* <Stack.Screen
-                name="Your List"
-                options={{ headerShown: false }}
-              >
-                {() => (
-                  <ScreenWithBackground>
-                    <UserScreen />
-                  </ScreenWithBackground>
-                )}
-              </Stack.Screen> */}
               <Stack.Screen
                 name="PlayList Zone"
                 options={{ headerShown: false }}
@@ -195,16 +163,6 @@ export default function App(props) {
                 {() => (
                   <ScreenWithBackground>
                     <MusicScreen />
-                  </ScreenWithBackground>
-                )}
-              </Stack.Screen>
-              <Stack.Screen
-                name="Testing"
-                options={{ headerShown: false }}
-              >
-                {() => (
-                  <ScreenWithBackground>
-                    <Testing />
                   </ScreenWithBackground>
                 )}
               </Stack.Screen>

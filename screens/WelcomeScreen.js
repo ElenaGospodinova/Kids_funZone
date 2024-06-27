@@ -6,44 +6,11 @@ import * as Animatable from 'react-native-animatable';
 
 import Logo from '../assets/components/Logo';
 import LogInBtn from '../assets/components/LogInBtn';
-import Avatar from '../assets/components/Avatar';
 import colors from '../assets/config/colors';
+
 
 export default function WelcomeScreen({ session }) {
   const navigation = useNavigation();
-  // const [loading, setLoading] = useState(false);
-  // const [userData, setUserData] = useState(null);
-
-  // useEffect(() => {
-  //   const fetchUserData = async (userId) => {
-  //     try {
-  //       setLoading(true);
-  //       const { data, error, status } = await supabase
-  //         .from('profiles')
-  //         .select('username, avatar_url')
-  //         .eq('id', userId)
-  //         .single();
-
-  //       if (error || status === 406) {
-  //         throw error || new Error('User data not found');
-  //       }
-
-  //       if (data) {
-  //         setUserData(data);
-  //       } else {
-  //         throw new Error('User data not found');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error fetching user data:', error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (session && session.user) {
-  //     fetchUserData(session.user.id);
-  //   }
-  // }, [session]);
 
 
   return (

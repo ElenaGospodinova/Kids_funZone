@@ -14,7 +14,6 @@ import YouTube from 'react-native-youtube-iframe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import colors from '../assets/config/colors';
-import NavigationBar from '../assets/components/NavigationBar';
 import GoBackBtn from '../assets/components/GoBackBtn';
 
 const cacheKey = 'videoData';

@@ -14,11 +14,11 @@ import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import { Audio } from 'expo-av';
 import Slider from '@react-native-community/slider';
 
-import NavigationBar from "../assets/components/NavigationBar";
+
 import colors from "../assets/config/colors";
 import SearchBar from "../assets/components/SearchBar";
 import LogInBtn from "../assets/components/LogInBtn";
-import NavigationScreen from "../assets/components/NavigationScreen";
+import NavigationMusic from "../assets/components/NavigationMusic";
 
 const CLIENT_ID = "a829cad6b64344c88a2b7425a94e9f06";
 const CLIENT_SECRET = "25ab471a807e411c82a140cfa83461ba";
@@ -180,7 +180,7 @@ const MusicScreen = () => {
   return (
     <View style={styles.container}>
     <View style={styles.navBar}>
-      <NavigationScreen/>
+      <NavigationMusic/>
     </View>
       <View style={styles.searchBar}>
         <SearchBar

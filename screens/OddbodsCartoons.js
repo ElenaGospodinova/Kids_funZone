@@ -4,7 +4,6 @@ import { WebView } from 'react-native-webview';
 import { FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import NavigationBar from '../assets/components/NavigationBar';
 import Screen from '../assets/components/Screen';
 import GoBackBtn from '../assets/components/GoBackBtn';
 

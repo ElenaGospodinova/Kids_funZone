@@ -2,15 +2,18 @@
   "expo": {
     "name": "Kids_Fun",
     "slug": "Kids_Fun",
+    "description": "Learn, Laugh, and Play",
     "version": "1.0.0",
     "orientation": "default",
     "icon": "./assets/img/logo.png",
     "splash": {
+      "image": "./assets/img/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0
+      "fallbackToCacheTimeout": 0,
+      "url": "https://u.expo.dev/8b756305-ab7f-4335-8300-39d8ad33cb0a"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -23,7 +26,6 @@
     "plugins": [
       "expo-dev-client",
       [
-        
         "expo-screen-orientation",
         {
           "initialOrientation": "DEFAULT"
@@ -32,8 +34,8 @@
     ],
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#FFFFFF",
-        "bundleIdentifier": "kidsfunzone"
+        "foregroundImage": "./assets/img/adaptive-icon.png",
+        "backgroundColor": "#FFFFFF"
       },
       "package": "com.elenag.Kids_Fun"
     },
@@ -41,10 +43,13 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "supabaseKey": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRnb3J2aXZtY3BiYm1tbHp2YWVnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg5NTY1NTksImV4cCI6MjAyNDUzMjU1OX0.Rg7vOClsKYZeWxHN3NX_ohtlzRfp3EsRRC-G4fikgKg",
+      "appAuthRedirectScheme": "exp+kidsfun",
       "eas": {
         "projectId": "8b756305-ab7f-4335-8300-39d8ad33cb0a"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

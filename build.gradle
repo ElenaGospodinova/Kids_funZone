@@ -1,0 +1,13 @@
+android {
+    compileSdkVersion 33
+    defaultConfig {
+        applicationId "com.elenag.Kids_Fun.app"
+        minSdkVersion 21
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        manifestPlaceholders = [appAuthRedirectScheme: "kidsfunzone"]
+    }
+    ...
+}

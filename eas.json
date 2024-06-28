@@ -1,10 +1,12 @@
 {
   "build": {
-    "preview": {
-      "channel": "preview"
-    },
     "production": {
-      "channel": "production"
+      "android": {
+        "image": "ubuntu-20.04-android-30"
+      },
+      "ios": {
+        "image": "macos-11.0-xcode-12.4"
+      }
     }
   }
 }

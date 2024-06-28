@@ -2,7 +2,7 @@
   "build": {
     "production": {
       "android": {
-        "image": "ubuntu-20.04-jdk-11-ndk-r21e"
+        "image": "ubuntu-22.04-jdk-17-ndk-r25b"
       },
       "ios": {
         "image": "macos-11.0-xcode-12.4"

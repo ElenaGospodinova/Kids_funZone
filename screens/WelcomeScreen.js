@@ -44,10 +44,10 @@ const styles = StyleSheet.create({
     color: 'white',
     top: 159,
     left: 133,
+  
   },
-  elephantImg:{
-    
-  }
+
+ 
   // avatar: {
   //   width: 100,
   //   height: 100,

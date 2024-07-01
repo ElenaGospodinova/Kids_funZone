@@ -123,10 +123,10 @@ export default function KidsScreen() {
       <View style={styles.listVideo}>
         <VideoCard
           style={styles.playlist}
-          title="🚀 Adventure in Learning 🚀"
+          title="🚀 Scientists' Lab 🚀"
           image={LittleSchool}
           resizeMode="contain-cover"
-          onPress={() => navigation.navigate('Dr Binocs Show')}
+          onPress={() => navigation.navigate("Scientists' Lab")}
         />
       </View>
       <View style={styles.listVideoL}>

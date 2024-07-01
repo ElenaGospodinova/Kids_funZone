@@ -13,7 +13,7 @@ const GoBackBtn = () => {
   
     <View style={styles.fixedHeader}>
       <TouchableOpacity style={styles.goBack} onPress={() => navigation.navigate('Kids Zone')}>
-        <AntDesign name="back" size={24} color="black" />
+        <AntDesign name="back" size={24} color="white" />
       </TouchableOpacity>
     </View>
   );
@@ -24,17 +24,19 @@ const styles = StyleSheet.create({
     fixedHeader: {
       flexDirection: 'row',
       justifyContent: 'space-between',
-      padding: 13,
+      padding: 15,
       position:'fixed',
-      backgroundColor:colors.cyanBlue,
-      width:'13%',
+      backgroundColor:colors.lightGreen,
+      width:'16%',
       borderRadius:22,
       zIndex: 1000, 
-      marginTop:'10%',
+      marginTop:'16%',
+      left:23,
     },
     goBack: {
       position: 'absolute',
-      left: 12,
+      left: 20,
+      padding:2,
     }
   });
   

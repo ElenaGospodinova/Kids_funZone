@@ -11,6 +11,7 @@ import CBeebies from '../assets/img/gamesImg/CBeebies.png';
 import SplashLearn from '../assets/img/gamesImg/SplashLearn.png';
 import ABCYA from '../assets/img/gamesImg/abcya.png';
 import NavigationGames from '../assets/components/NavigationGames';
+import HomeNavBtn from '../assets/components/HomeNavBtn';
 
 const GamesScreen = () => {
   const [selectedGame, setSelectedGame] = useState(null);
@@ -109,6 +110,7 @@ const GamesScreen = () => {
           </View>
         )}
       </View>
+      <HomeNavBtn/>
     </SafeAreaView>
   );
 };
@@ -116,8 +118,9 @@ const GamesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
+    padding: 18,
     marginTop:33,
+   
   },
   fixedHeader: {
     fontSize: 24,
@@ -131,12 +134,12 @@ const styles = StyleSheet.create({
     width: 270,
   },
   gameItem: {
-    margin: 20,
+    margin: 30,
     right: 10,
     padding: 23,
     alignItems: 'center',
     borderRadius: 42,
-    width: '90%',
+    width: '93%',
     backgroundColor: colors.cyanBlue,
   },
   gameName: {

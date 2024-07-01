@@ -2,6 +2,7 @@ import React from 'react'
 import { StyleSheet, Text, View,TouchableOpacity, SafeAreaView } from 'react-native'
 import { AntDesign, Entypo } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import colors from '../config/colors';
 
 const NavigationKids = () => {
     const navigation = useNavigation();
@@ -20,12 +21,7 @@ const NavigationKids = () => {
         >
           <Entypo name="game-controller" size={24} color="white" />
         </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.back}
-          onPress={() => navigation.navigate('Home')}
-        >
-          <AntDesign name="home" size={24} color="white" />
-        </TouchableOpacity>
+     
     </View>
   )
 }
@@ -34,27 +30,29 @@ export default NavigationKids
 
 const styles = StyleSheet.create({
     container: {
-    
         flex: 1,
-        padding: 16,
-        left:13,
+        top:2,
+        padding: 26,
+        marginTop:10,
+        marginVertical:23,
+        height:'60%',
+        // Background color matching the button container
+        justifyContent: 'center', // Centers the buttons horizontally
+        alignItems: 'center',
+        zIndex:1000,
         },
-    next: {
-        position: 'absolute',
-        right: 20,
-        zIndex: 12,
-      },
       music: {
         position: 'absolute',
-        right: 60,
-      },
-      back: {
-        position: 'absolute',
-        left: 20,
-        zIndex: 12,
+        left: 24,
+        backgroundColor:colors.lightGreen,
+        padding:6,
+        borderRadius:12,
       },
       game:{
         position:'absolute',
-        right:94,
+        right:24,
+        backgroundColor:colors.lightGreen,
+        padding:6,
+        borderRadius:12,
       }
 })

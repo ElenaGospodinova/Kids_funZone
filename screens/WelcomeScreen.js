@@ -18,9 +18,9 @@ export default function WelcomeScreen({ session }) {
       <Logo/>
       <View style={styles.buttonContainer}>
        
-        <LogInBtn style={styles.childBtn} title="Videos" onPress={() => navigation.navigate('Kids Zone')} />
-        <LogInBtn style={styles.childBtn} title="Games" onPress={() => navigation.navigate('Games Zone')} />
-        <LogInBtn style={styles.childBtn} title="Music" onPress={() => navigation.navigate('Music Zone')} />
+        <LogInBtn style={styles.childBtn} title="Videos 🎬" onPress={() => navigation.navigate('Kids Zone')} />
+        <LogInBtn style={styles.childBtn} title="Games 🎮" onPress={() => navigation.navigate('Games Zone')} />
+        <LogInBtn style={styles.childBtn} title="Music 🎶" onPress={() => navigation.navigate('Music Zone')} />
       </View>
     </SafeAreaView>
   );
@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     zIndex: 12,
   },
   childBtn: {
-    width: 140,
+    width: 155,
     height: 49,
     flexDirection: 'column',
     borderRadius: 12,

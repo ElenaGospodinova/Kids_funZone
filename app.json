@@ -5,9 +5,9 @@
     "description": "Learn, Laugh, and Play",
     "version": "1.0.0",
     "orientation": "default",
-    "icon": "./assets/img/logo.png",
+    "icon": "./assets/img/icon-logo.png",
     "splash": {
-      "image": "./assets/img/splash.png",
+      "image": "./assets/img/splash-logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -25,6 +25,7 @@
     },
     "plugins": [
       "expo-dev-client",
+      
       [
         "expo-screen-orientation",
         {
@@ -40,16 +41,17 @@
       "package": "com.elenag.Kids_Fun"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/img/favicon.png"
     },
     "extra": {
-      "appAuthRedirectScheme": "exp+kidsfun",
+      "appAuthRedirectScheme": "kidsfunzone",
       "eas": {
         "projectId": "8b756305-ab7f-4335-8300-39d8ad33cb0a"
       }
     },
     "runtimeVersion": {
       "policy": "appVersion"
-    }
+    },
+    "owner": "elenag"
   }
 }

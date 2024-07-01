@@ -25,6 +25,7 @@ import LittleSchool from '../assets/img/LittleSchool.png';
 import OddbodsCartoons from '../assets/img/Oddbods_Cartoons.png';
 import StrawberryShortCake from '../assets/img/StrawberryShortcake.png';
 import NavigationKids from '../assets/components/NavigationKids';
+import HomeNavBtn from '../assets/components/HomeNavBtn';
 
 export default function KidsScreen() {
   const [clicked, setClicked] = useState(false);
@@ -68,6 +69,7 @@ export default function KidsScreen() {
           )}
           <Text style={styles.titles}>{item.snippet.title}</Text>
         </View>
+       
       </TouchableOpacity>
     );
   };
@@ -127,7 +129,7 @@ export default function KidsScreen() {
           onPress={() => navigation.navigate('Dr Binocs Show')}
         />
       </View>
-      <View style={styles.listVideo}>
+      <View style={styles.listVideoL}>
         <VideoCard
           style={styles.playlist}
           title="🏀 Oddbods Cartoons ⚽🎮"
@@ -136,13 +138,19 @@ export default function KidsScreen() {
           onPress={() => navigation.navigate('Oddbods Cartoons')}
         />
       </View>
-    </View>
+     
+  </View>
+  
+    
   );
 
   return (
+    <>
     <SafeAreaView style={styles.container}>
       {/* Include the NavigationBar component */}
       <NavigationKids />
+    
+  
       <FlatList
         data={filteredVideos}
         keyExtractor={(item) => item.id.videoId.toString()}
@@ -165,16 +173,20 @@ export default function KidsScreen() {
               resizeMode="cover"
             />
           )}
+        
         </View>
+        
       )}
+      <HomeNavBtn/>
     </SafeAreaView>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    top:123,
+    bottom:1,
   },
   errorText: {
     color: colors.red,
@@ -183,9 +195,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginTop: Platform.OS === 'android' ? 76 : 10,
   },
+
   playlist: {
     borderRadius: 12,
     width:'100%',
+    top:12,
+    bottom:33,
   },
   strawberry:{
     borderRadius: 12,
@@ -213,6 +228,7 @@ const styles = StyleSheet.create({
     alignSelf: 'stretch',
     flex: 1,
     height: 310,
+    //marginBottom:83,
   },
   thumbnail: {
     width: 250,
@@ -237,6 +253,7 @@ const styles = StyleSheet.create({
     left: 303,
     bottom: 53,
     paddingLeft: 10,
-  }
+  },
+ 
  
 });

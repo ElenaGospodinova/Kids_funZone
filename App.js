@@ -58,7 +58,7 @@ export default function App(props) {
             <Stack.Navigator screenOptions={screenOptions}>
               <Stack.Screen
                 name="Home"
-                options={{ headerShown: false }}
+                options={{ headerShown: true }}
               >
                 {() => (
                   <ScreenWithBackground>

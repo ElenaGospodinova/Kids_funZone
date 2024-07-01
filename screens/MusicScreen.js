@@ -19,6 +19,7 @@ import colors from "../assets/config/colors";
 import SearchBar from "../assets/components/SearchBar";
 import LogInBtn from "../assets/components/LogInBtn";
 import NavigationMusic from "../assets/components/NavigationMusic";
+import HomeNavBtn from "../assets/components/HomeNavBtn";
 
 const CLIENT_ID = "a829cad6b64344c88a2b7425a94e9f06";
 const CLIENT_SECRET = "25ab471a807e411c82a140cfa83461ba";
@@ -324,6 +325,9 @@ const MusicScreen = () => {
           </View>
         )}
       />
+
+        <HomeNavBtn styles={styles.homeBtn}/>
+      
     </View>
   );
 };
@@ -334,12 +338,13 @@ const styles = StyleSheet.create({
     padding: 16,
     height: "100%",
     width:'100%',
+    
   },
   navBar:{
     marginTop:152,
   },
   songs: {
-    top: 51,
+    bottom: 5,
     padding: 17,
     height:'auto',
     width:'100%',
@@ -351,7 +356,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   searchBar: {
-    top: 22,
+    bottom: 41,
     right: 12,
     width: "94%",
   },
@@ -361,16 +366,21 @@ const styles = StyleSheet.create({
     fontSize: 15,
     backgroundColor: colors.lightGreen,
     left: 290,
-    bottom: 24,
+    bottom: 86,
     paddingLeft: 10,
+ 
   },
   searchResult: {
-    marginTop: 22,
+    marginTop: 12,
     height: "100%",
     width: "90%",
   },
   trackContainer: {
-    marginBottom: 20,
+    //marginBottom: 10,
+    bottom:83,
+    padding:6,
+   
+    
   },
   trackImage: {
     width: 50,
@@ -379,6 +389,7 @@ const styles = StyleSheet.create({
   },
   trackInfo: {
     flex: 1,
+   
   },
   trackName: {
     fontSize: 18,

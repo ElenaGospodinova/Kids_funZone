@@ -1,13 +1,28 @@
-android {
-    compileSdkVersion 33
-    defaultConfig {
-        applicationId "com.elenag.Kids_Fun.app"
-        minSdkVersion 21
-        targetSdkVersion 33
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders = [appAuthRedirectScheme: "exp+kidsfun"]
+buildscript {
+    ext.kotlin_version = '1.7.20'
+    repositories {
+        google()
+        mavenCentral()
     }
-    ...
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.1.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+android {
+    defaultConfig {
+        // Your existing code here
+        manifestPlaceholders = [appAuthRedirectScheme: 'kidsfunzone']
+    }
 }

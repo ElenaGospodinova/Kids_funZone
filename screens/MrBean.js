@@ -91,7 +91,9 @@ export default function MrBean() {
 
   return (
     <SafeAreaView style={styles.container}>
+    <View>
       <GoBackBtn />
+    </View>
       {isLoading && <ActivityIndicator size="large" color={colors.green} />}
       <FlatList
         data={filteredVideos}

@@ -117,7 +117,7 @@ export default function App(props) {
                 )}
               </Stack.Screen>
               <Stack.Screen
-                name="Dr Binocs Show"
+                name="Scientists' Lab"
                 options={{ headerShown: true }}
               >
                 {() => (

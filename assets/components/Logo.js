@@ -87,6 +87,10 @@ const styles = StyleSheet.create({
     left:53,
     position: 'absolute',
     bottom:Platform.OS === 'android' ? 230 : 290,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 1.20,
+    shadowRadius: 5.84,
     
   },
   img:{
@@ -165,6 +169,7 @@ const styles = StyleSheet.create({
     transform: [{rotate: '24deg'}],
     bottom:331,
     right:50,
+
   },
   slothImg:{
     width:78,

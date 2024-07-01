@@ -1,5 +1,7 @@
 buildscript {
-    ext.kotlin_version = '1.7.20'
+    ext {
+        kotlin_version = '1.9.22'  // Check for the latest version compatible with your setup
+    }
     repositories {
         google()
         mavenCentral()
@@ -21,8 +23,20 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 android {
+    compileSdkVersion 31
     defaultConfig {
-        // Your existing code here
-        manifestPlaceholders = [appAuthRedirectScheme: 'kidsfunzone']
+        applicationId "com.example.kidsfunzone"
+        minSdkVersion 21
+        targetSdkVersion 31
+        versionCode 1
+        versionName "1.0"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
+        }
     }
 }
+
+
